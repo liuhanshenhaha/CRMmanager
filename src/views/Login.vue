@@ -1,11 +1,16 @@
 <template>
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">系统登录</h3>
-    <el-form-item prop="account">
+    <el-form-item>
       <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
-    <el-form-item prop="checkPass">
+    <el-form-item>
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-input type="text" v-model="ruleForm2.captcha" auto-complete="off" placeholder="验证码">
+        <template slot="prepend"><img src="http://97498cc2.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk" alt=""></template>
+      </el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
@@ -16,6 +21,7 @@
 </template>
 
 <script>
+  import { getCaptcha } from '../api/api';
   import { requestLogin } from '../api/api';
   //import NProgress from 'nprogress'
   export default {
@@ -23,8 +29,9 @@
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
-          checkPass: '123456'
+          account: '',
+          checkPass: '',
+          captcha: ''
         },
         rules2: {
           account: [
@@ -33,6 +40,10 @@
           ],
           checkPass: [
             { required: true, message: '请输入密码', trigger: 'blur' },
+            //{ validator: validaePass2 }
+          ],
+          captcha: [
+            { required: true, message: '请输入验证码', trigger: 'blur' },
             //{ validator: validaePass2 }
           ]
         },
@@ -50,21 +61,19 @@
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            requestLogin(loginParams).then(data => {
-              this.logining = false;
-              //NProgress.done();
-              let { msg, code, user } = data;
-              if (code !== 200) {
-                this.$message({
-                  message: msg,
-                  type: 'error'
-                });
-              } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/table' });
+            var loginParams = {
+              "source":"backend",
+              "content":{
+                "userAccountNo":this.ruleForm2.account, 
+                "userPassword":this.ruleForm2.checkPass,
+                "code":this.ruleForm2.captcha,
+                "deviceId":"gyk"
               }
-            });
+            };
+            requestLogin(JSON.stringify(loginParams)).then(data => {
+              this.logining = false;
+              this.$router.push({ path: '/table' });
+            }).catch(error => console.log(error));
           } else {
             console.log('error submit!!');
             return false;

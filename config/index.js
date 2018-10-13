@@ -27,7 +27,15 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        // '/api': {
+        //     target: 'http://97498cc2.ngrok.io',  //目标接口域名
+        //     changeOrigin: true,  //是否跨域
+        //     pathRewrite: {
+        //         '^/api': ''   //重写接口
+        //     }
+        // },
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
