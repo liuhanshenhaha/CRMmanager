@@ -1,62 +1,58 @@
 <template>
-  <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+  <el-form :model="loginForm" :rules="rules" status-icon ref="loginForm" label-position="left" label-width="0px" class="login-container">
     <h3 class="title">系统登录</h3>
     <el-form-item>
-      <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" v-model="loginForm.account" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+      <el-input type="password" v-model="loginForm.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <el-form-item>
-      <el-input type="text" v-model="ruleForm2.captcha" auto-complete="off" placeholder="验证码">
+    <el-form-item :error="loginForm.captchaError">
+      <el-input type="text" v-model="loginForm.captcha" auto-complete="off" placeholder="验证码" class="custome-captcha">
         <template slot="prepend"><img src="http://97498cc2.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk" alt=""></template>
       </el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
-      <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+      <el-button type="primary" style="width:100%;" @click.native.prevent="loginSubmit" :loading="logining">登录</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-  import { getCaptcha } from '../api/api';
   import { requestLogin } from '../api/api';
+  import { setCookie } from '../utils/utils';
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
         logining: false,
-        ruleForm2: {
-          account: '',
-          checkPass: '',
-          captcha: ''
+        loginForm: {
+          account: 'admin',
+          accountError: '',
+          checkPass: '8888',
+          checkPassError: '',
+          captcha: '',
+          captchaError: '',
         },
-        rules2: {
+        rules: {
           account: [
             { required: true, message: '请输入账号', trigger: 'blur' },
-            //{ validator: validaePass }
           ],
           checkPass: [
             { required: true, message: '请输入密码', trigger: 'blur' },
-            //{ validator: validaePass2 }
           ],
           captcha: [
             { required: true, message: '请输入验证码', trigger: 'blur' },
-            //{ validator: validaePass2 }
           ]
         },
         checked: true
       };
     },
     methods: {
-      handleReset2() {
-        this.$refs.ruleForm2.resetFields();
-      },
-      handleSubmit2(ev) {
+      loginSubmit(ev) {
         var _this = this;
-        this.$refs.ruleForm2.validate((valid) => {
+        this.$refs.loginForm.validate((valid) => {
           if (valid) {
             //_this.$router.replace('/table');
             this.logining = true;
@@ -64,15 +60,21 @@
             var loginParams = {
               "source":"backend",
               "content":{
-                "userAccountNo":this.ruleForm2.account, 
-                "userPassword":this.ruleForm2.checkPass,
-                "code":this.ruleForm2.captcha,
+                "userAccountNo":this.loginForm.account, 
+                "userPassword":this.loginForm.checkPass,
+                "code":this.loginForm.captcha,
                 "deviceId":"gyk"
               }
             };
-            requestLogin(JSON.stringify(loginParams)).then(data => {
+            requestLogin(loginParams).then(res => {
               this.logining = false;
-              this.$router.push({ path: '/table' });
+              switch(res.code){
+                case "000000": {
+                  setCookie('token',res.token,1)
+                  this.$router.push({ path: '/form' });
+                }break;
+                case "100001": this.loginForm.captchaError = res.msg;break;
+              }
             }).catch(error => console.log(error));
           } else {
             console.log('error submit!!');

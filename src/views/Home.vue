@@ -72,11 +72,12 @@
 </template>
 
 <script>
+	import { delCookie } from "../utils/utils"
 	export default {
 		data() {
 			return {
 				sysName:'VUEADMIN',
-				collapsed:false,
+				collapsed:document.body.clientWidth < 1024,//移动端直接收起侧边栏
 				sysUserName: '',
 				sysUserAvatar: '',
 				form: {
@@ -109,7 +110,7 @@
 				this.$confirm('确认退出吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
-					sessionStorage.removeItem('user');
+					delCookie("token")
 					_this.$router.push('/login');
 				}).catch(() => {
 
@@ -119,7 +120,11 @@
 			},
 			//折叠导航栏
 			collapse:function(){
-				this.collapsed=!this.collapsed;
+				if(document.body.clientWidth < 1024){//移动端直接收起侧边栏
+					this.collapsed = true;
+				}else{
+					this.collapsed=!this.collapsed;
+				}
 			},
 			showMenu(i,status){
 				this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';

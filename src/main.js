@@ -10,9 +10,9 @@ import Vuex from 'vuex'
 //import NProgress from 'nprogress'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
-// import Mock from './mock'
-// Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
+import './styles/custome.scss'
+import {getCookie,delCookie} from './utils/utils';
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
@@ -24,13 +24,14 @@ const router = new VueRouter({
   routes
 })
 
+// 登录限制 -- 必须登录才能访问其他页面
 router.beforeEach((to, from, next) => {
   //NProgress.start();
   if (to.path == '/login') {
-    sessionStorage.removeItem('user');
+    delCookie('token');
   }
-  let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
+  let token = getCookie('token');
+  if (!token && to.path != '/login') {
     next({ path: '/login' })
   } else {
     next()
@@ -42,11 +43,8 @@ router.beforeEach((to, from, next) => {
 //});
 
 new Vue({
-  //el: '#app',
-  //template: '<App/>',
   router,
   store,
-  //components: { App }
   render: h => h(App)
 }).$mount('#app')
 

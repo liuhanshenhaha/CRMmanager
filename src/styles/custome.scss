@@ -1,0 +1,18 @@
+@import "vars.scss";
+@media (max-width: $mobile-max){
+	html,body,.login-container{
+		width:100%!important;
+	}
+	.login-container{
+		box-sizing: border-box;
+	}
+}
+.custome-captcha{
+	.el-input-group__prepend{
+		padding: 0;
+		img{
+			display: block;
+			height: 34px;
+		}
+	}
+}
