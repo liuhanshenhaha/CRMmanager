@@ -5,7 +5,6 @@ import Main from './views/Main.vue'//空框架
 // 合约管理
 import Market from './views/agreements/Market.vue'//市场管理
 
-import Table from './views/nav1/Table.vue'
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
 import Page4 from './views/nav2/Page4.vue'
