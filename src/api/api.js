@@ -1,9 +1,11 @@
 import { getData, postData} from '../utils/http-service';
 
-let base = 'http://2f9b9a99.ngrok.io/xtjichu';
+let base = 'http://642bf6c4.ngrok.io/xtjichu';
 
 // 登录接口
 export const requestLogin = params => { return postData(`${base}/login`, params) };
+// 目录树
+export const selectTree = params => { return postData(`${base}/menu/selectTree`) };
 
 //合约管理 - 市场管理
 export const agreementsQuest = {

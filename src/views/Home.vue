@@ -73,6 +73,7 @@
 
 <script>
 	import { delCookie } from "../utils/utils"
+	import { selectTree } from "../api/api"
 	export default {
 		data() {
 			return {
@@ -91,6 +92,9 @@
 					desc: ''
 				}
 			}
+		},
+		created(){
+			selectTree().then(res => console.log("树",res))
 		},
 		methods: {
 			onSubmit() {

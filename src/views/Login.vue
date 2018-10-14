@@ -9,7 +9,7 @@
     </el-form-item>
     <el-form-item :error="loginForm.captchaError">
       <el-input type="text" v-model="loginForm.captcha" auto-complete="off" placeholder="验证码" class="custome-captcha">
-        <template slot="prepend"><img :src="'http://2f9b9a99.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk?' + captchaSrc" alt=""></template>
+        <template slot="prepend"><img :src="'http://642bf6c4.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk?' + captchaSrc" alt=""></template>
       </el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
