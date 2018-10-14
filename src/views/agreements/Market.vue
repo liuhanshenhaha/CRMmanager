@@ -54,12 +54,12 @@
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
 				<el-row>
-					<el-col :span="12">
+					<el-col :span="12" :xs="24">
 						<el-form-item label="代码" prop="marketCode">
 							<el-input v-model="addForm.marketCode" auto-complete="off"></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="12" :xs="24">
 						<el-form-item label="名称" prop="marketName">
 							<el-input v-model="addForm.marketName" auto-complete="off"></el-input>
 						</el-form-item>
