@@ -3,6 +3,8 @@
 ``` bash
 	npm install
 ```
+或直接解压项目目录下的node_modules.zip
+
 开发模式调试
 ```bash
 	npm run dev
