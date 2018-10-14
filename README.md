@@ -1,3 +1,13 @@
+# How to use
+安装依赖包
+``` bash
+	npm install
+```
+开发模式调试
+```bash
+	npm run dev
+```
+
 # Folder structure
 * build - webpack config files
 * config - webpack config files
