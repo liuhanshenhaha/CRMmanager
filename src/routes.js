@@ -34,7 +34,7 @@ let routes = [
         children: [
             // { path: '/main', component: Main, name: 's', hidden: true },
             { path: '/market', component: Market, name: '市场管理' },
-            { path: '/form', component: Table, name: '商品管理' },
+            { path: '/form', component: Form, name: '商品管理' },
             { path: '/user', component: user, name: '合约管理' },
         ]
     },
