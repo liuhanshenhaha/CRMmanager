@@ -18,7 +18,7 @@
 					<el-button type="primary" v-on:click="getMarket">查询</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="()=>{this.addFormVisible=true;this.isModify=false;}">新增</el-button>
+					<el-button type="primary" @click="addMarket">新增</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -152,6 +152,16 @@
 					this.getMarket();
 				});
 			},
+			// 弹出新增弹窗
+			addMarket(){
+				this.addFormVisible = true;
+				this.isModify = false;
+				this.addForm = {
+					marketCode: "",
+					marketName: "",
+					remark: ""
+				}
+			},
 			// 弹出编辑弹窗
 			modifyMarket(row){
 				this.addFormVisible = true;
@@ -159,7 +169,8 @@
 				this.addForm = {
 					marketCode: row.marketCode,
 					marketName: row.marketName,
-					remark: row.remark
+					remark: row.remark,
+					id: row.id
 				}
 			},
 			// 新增/更新市场
