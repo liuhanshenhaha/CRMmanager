@@ -1,4 +1,6 @@
 # How to use
+安装项目目录下softwares压缩包中的两个安装包（node是环境，git bash是命令行工具）
+在项目目录下右键选择git bash，下方的命令均在此命令行工具处执行
 安装依赖包
 ``` bash
 	npm install
