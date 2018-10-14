@@ -1,37 +1,18 @@
-**demo**: [https://taylorchen709.github.io/vue-admin/](https://taylorchen709.github.io/vue-admin/)
-
-# To start
-
-This is a project template for [vue-cli](https://github.com/vuejs/vue-cli)
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8081
-npm run dev
-
-# build for production with minification
-npm run build
-
-```
-
 # Folder structure
 * build - webpack config files
 * config - webpack config files
 * dist - build
-* src -your app
-    * api
-    * assets
-    * common
-    * components - your vue components
-    * mock
-    * styles
-    * views - your pages
+* src - app 目录
+    * api - 接口配置列表
+    * assets - 主题
+    * components - 组件目录
+    * styles - 样式 （包括vars.scss）
+    * views - 页面目录
+        * agreements - 合约管理
     * vuex
     * App.vue
-    * main.js - main file
-    * routes.js
+    * main.js - 入口js
+    * routes.js - 路由配置
 * static - static assets
 
 # Theme
@@ -52,6 +33,3 @@ You can change theme by
 # Browser support
 
 Modern browsers and IE 10+.
-
-# License
-[MIT](http://opensource.org/licenses/MIT)

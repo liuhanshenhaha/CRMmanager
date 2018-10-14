@@ -1,6 +1,21 @@
-export const commonParams = {};
+/*
+ * @title axios 二次封装
+ * @describe
+ *   instance 拦截器
+ *       请求200    判断code不是000000的 认为是失败 使用Message提示用户，终止后续then 否则继续then
+ *       请求非200  switch http状态 区分错误 使用Message提示用户，终止后续then
+ * @export
+ *   getData(urlLink, param)
+ *   postData(urlLink, param)
+ */
+
 import axios from 'axios';
 import qs from 'qs';
+import { Message } from 'element-ui';
+import { getCookie } from './utils';
+export const commonParams = {
+  "source":"backend"
+};
 
 const instance = axios.create({
   baseURL: 'http://97498cc2.ngrok.io/xtjichu',
@@ -16,23 +31,14 @@ const instance = axios.create({
  */
 instance.interceptors.response.use((response) => {
   const data = response.data
-  // console.info("response", response)
+  console.log("拦截器 成功",response)
 
   if(data){
-  //   switch (data.status) {
-  //     case '0':
-  //       //处理相关业务
-  //       return data
-  //     // 需要重新登录
-  //     case '0005':
-  //       //写相关需要登录的代码
-  //         location.replace(`/user/login?${search}`)
-  //       // 不显示提示消息
-  //       data.message = ''
-  //       break
-  //     default:
-  //   }
-    return response
+    if(data.code !== "000000"){
+      Message.error(data.msg)
+      return Promise.reject(response)
+    }
+    return Promise.resolve(response)
   }else{
     const err = new Error("未知错误，请重试")
     err.data = data
@@ -41,6 +47,7 @@ instance.interceptors.response.use((response) => {
   }
 // 根据返回的code值来做不同的处理（和后端约定）
 }, function (err) {
+      console.log("拦截器 失败",err)
   if (err && err.response) {
     switch (err.response.status) {
       case 400:
@@ -90,7 +97,7 @@ instance.interceptors.response.use((response) => {
       default:
     }
   }
-
+  Message.error(err.message)
   return Promise.reject(err)
 })
 
@@ -104,19 +111,14 @@ export default axios
  */
 export function getData(urlLink, param) {
   const url = urlLink
-  const data = Object.assign({}, commonParams, param)
+  const data = Object.assign({}, {"token": getCookie("token"), "content": param})
 
   return instance.get(url, {
     params: data,
     timeout: 5000
-  })
-    .then((res) => {
-      console.info("then", res)
+  }).then((res) => {
+      console.log("get 成功",res)
       return Promise.resolve(res.data)
-    })
-    .catch(function (error) {
-      console.info("error", error)
-      return Promise.resolve(error.data)
     });
 }
 
@@ -127,13 +129,10 @@ export function getData(urlLink, param) {
  * @returns {Promise<AxiosResponse>}
  */
 export function postData(urlLink, param) {
-  const data = Object.assign({}, commonParams, param)
+  const data = Object.assign({}, commonParams, {"token": getCookie("token"), "content": param})
   return instance.post(urlLink, JSON.stringify(data))
     .then((res) => {
+      console.log("post 成功",res)
       return Promise.resolve(res.data)
-    })
-    .catch(function (error) {
-      console.info("postDataerror", error)
-      return Promise.resolve(error)
     });
 }

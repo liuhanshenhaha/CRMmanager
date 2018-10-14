@@ -1,17 +1,14 @@
 import { getData, postData} from '../utils/http-service';
 
-let base = 'http://97498cc2.ngrok.io/xtjichu';
+let base = 'http://2f9b9a99.ngrok.io/xtjichu';
 
-export const requestLogin = params => { return postData(`${base}/login`, params); };
+// 登录接口
+export const requestLogin = params => { return postData(`${base}/login`, params) };
 
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
-
-export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
-
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
-
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
-
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
-
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+//合约管理 - 市场管理
+export const agreementsQuest = {
+	getMarket: (params) => { return postData(`${base}/market/selectByRecord`, params) },//获取市场列表
+	modifyStatus: (params) => { return postData(`${base}/market/modifyStatus`, params) },//修改状态
+	addMarket: (params) => { return postData(`${base}/market/add`, params) },//新增市场
+	modifyMarket: (params) => { return postData(`${base}/market/modify`, params) },//修改市场
+}

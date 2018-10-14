@@ -105,7 +105,7 @@
 </template>
 
 <script>
-	import util from '../../common/js/util'
+	// import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
 	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
 
@@ -241,8 +241,8 @@
 					}
 				});
 			},
-			//新增
-			addSubmit: function () {
+			//新增/更新市场
+			updateMarket: function () {
 				this.$refs.addForm.validate((valid) => {
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {

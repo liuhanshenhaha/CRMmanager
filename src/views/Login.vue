@@ -9,7 +9,7 @@
     </el-form-item>
     <el-form-item :error="loginForm.captchaError">
       <el-input type="text" v-model="loginForm.captcha" auto-complete="off" placeholder="验证码" class="custome-captcha">
-        <template slot="prepend"><img src="http://97498cc2.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk" alt=""></template>
+        <template slot="prepend"><img :src="'http://2f9b9a99.ngrok.io/xtjichu/login/getAuthImage?deviceId=gyk?' + captchaSrc" alt=""></template>
       </el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
@@ -27,6 +27,7 @@
     data() {
       return {
         logining: false,
+        captchaSrc: 0,
         loginForm: {
           account: 'admin',
           accountError: '',
@@ -58,13 +59,10 @@
             this.logining = true;
             //NProgress.start();
             var loginParams = {
-              "source":"backend",
-              "content":{
-                "userAccountNo":this.loginForm.account, 
-                "userPassword":this.loginForm.checkPass,
-                "code":this.loginForm.captcha,
-                "deviceId":"gyk"
-              }
+              "userAccountNo":this.loginForm.account, 
+              "userPassword":this.loginForm.checkPass,
+              "code":this.loginForm.captcha,
+              "deviceId":"gyk?" + this.captchaSrc
             };
             requestLogin(loginParams).then(res => {
               this.logining = false;
@@ -73,9 +71,12 @@
                   setCookie('token',res.token,1)
                   this.$router.push({ path: '/form' });
                 }break;
-                case "100001": this.loginForm.captchaError = res.msg;break;
+                case "100001": {
+                  this.captchaSrc ++;
+                  this.loginForm.captchaError = res.msg;
+                }break;
               }
-            }).catch(error => console.log(error));
+            })
           } else {
             console.log('error submit!!');
             return false;
@@ -88,13 +89,19 @@
 </script>
 
 <style lang="scss" scoped>
+  html{
+    position:relative;
+  }
   .login-container {
     /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
     -webkit-border-radius: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
-    margin: 180px auto;
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
     width: 350px;
     padding: 35px 35px 15px 35px;
     background: #fff;
