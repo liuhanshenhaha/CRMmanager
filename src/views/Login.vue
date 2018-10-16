@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  import { requestLogin, selectTree } from '../api/api';
   import { setCookie } from '../utils/utils';
   //import NProgress from 'nprogress'
   export default {
@@ -64,18 +64,21 @@
               "code":this.loginForm.captcha,
               "deviceId":"gyk?" + this.captchaSrc
             };
-            requestLogin(loginParams).then(res => {
-              this.logining = false;
-              switch(res.code){
-                case "000000": {
-                  setCookie('token',res.token,1)
-                  this.$router.push({ path: '/form' });
-                }break;
-                case "100001": {
-                  this.captchaSrc ++;
-                  this.loginForm.captchaError = res.msg;
-                }break;
-              }
+            requestLogin(loginParams).then(response => {
+              selectTree().then((res) => {
+                this.logining = false;
+                localStorage.setItem("allows",res.content)
+                switch(response.code){
+                  case "000000": {
+                    setCookie('token',res.token,1)
+                    this.$router.push({ path: '/form' });
+                  }break;
+                  case "100001": {
+                    this.captchaSrc ++;
+                    this.loginForm.captchaError = res.msg;
+                  }break;
+                }
+              })
             })
           } else {
             console.log('error submit!!');

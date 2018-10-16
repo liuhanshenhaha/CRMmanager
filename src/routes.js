@@ -1,3 +1,5 @@
+const allows = JSON.parse(localStorage.getItem("allows"));//权限相关信息
+
 import Login from './views/Login.vue'//登陆
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'//框架
@@ -25,14 +27,19 @@ let routes = [
         name: '',
         hidden: true
     },
-    //{ path: '/main', component: Main },
+    {
+        path: '*',
+        hidden: true,
+        redirect: { path: '/404' }
+    },
+    // 从此往下均是菜单相关 默认hidden均是true
     {
         path: '/',
         component: Home,
         name: '合约管理',
         iconCls: 'fa el-icon-document',//图标样式class
+        hidden: true,
         children: [
-            // { path: '/main', component: Main, name: 's', hidden: true },
             { path: '/market', component: Market, name: '市场管理' },
             { path: '/form', component: Form, name: '商品管理' },
             { path: '/user', component: user, name: '合约管理' },
@@ -41,37 +48,33 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '导航二',
-        iconCls: 'fa fa-id-card-o',
-        children: [
-            { path: '/page4', component: Page4, name: '页面4' },
-            { path: '/page5', component: Page5, name: '页面5' }
-        ]
-    },
-    // {
-    //     path: '/',
-    //     component: Home,
-    //     name: '',
-    //     iconCls: 'fa fa-address-card',
-    //     leaf: true,//只有一个节点
-    //     children: [
-    //         { path: '/page6', component: Page6, name: '导航三' }
-    //     ]
-    // },
-    // {
-    //     path: '/',
-    //     component: Home,
-    //     name: 'Charts',
-    //     iconCls: 'fa fa-bar-chart',
-    //     children: [
-    //         { path: '/echarts', component: echarts, name: 'echarts' }
-    //     ]
-    // },
-    {
-        path: '*',
+        name: '系统管理',
+        code: 'system',
+        iconCls: 'fa el-icon-setting',
         hidden: true,
-        redirect: { path: '/404' }
+        children: [
+            { path: '/page4', component: Page4, code: 'user', name: '用户管理',hidden: true },
+            { path: '/page5', component: Page5, code: 'role', name: '角色管理',hidden: true }
+        ]
     }
 ];
+
+// 菜单根据权限重构routes
+allows.map((menuItem,index) => {
+    routes.map((routeItem,idx) => {
+        if(menuItem.code === routeItem.code){
+            routeItem.hidden = false;
+            if(routeItem.children && routeItem.children.length > 0){
+                routeItem.children.map((routeItemChild,ix) => {
+                    menuItem.childs.map((menuItemChild,i) => {
+                        if(menuItemChild.code === routeItemChild.code){
+                            routeItemChild.hidden = false;
+                        }
+                    })
+                })
+            }
+        }
+    })
+})
 
 export default routes;
