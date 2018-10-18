@@ -4,10 +4,10 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.marketCode" placeholder="代码"></el-input>
+					<el-input v-model="filters.marketCode" placeholder="市场代码"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="filters.marketName" placeholder="名称"></el-input>
+					<el-input v-model="filters.marketName" placeholder="市场名称"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-select v-model="filters.status" placeholder="状态">
@@ -25,9 +25,9 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
-			<el-table-column prop="marketCode" label="代码" sortable width="100">
+			<el-table-column prop="marketCode" label="市场代码" sortable width="100">
 			</el-table-column>
-			<el-table-column prop="marketName" label="名称" sortable min-width="150">
+			<el-table-column prop="marketName" label="市场名称" sortable min-width="150">
 			</el-table-column>
 			<el-table-column prop="status" label="状态" sortable width="100" :formatter="statusFormat">
 			</el-table-column>
@@ -41,7 +41,7 @@
 			</el-table-column>
 			<el-table-column prop="modifyTime" label="更新时间" sortable width="150" :formatter="dateFormat">
 			</el-table-column>
-			<el-table-column prop="status" label="操作" align="center" fixed="right" width="150">
+			<el-table-column label="操作" align="center" fixed="right" width="150">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click="modifyMarket(scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" v-if="scope.row.status === 'A'" @click="modifyStatus(scope.row)">作废</el-button>

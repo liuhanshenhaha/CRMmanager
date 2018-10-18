@@ -6,6 +6,7 @@ import Home from './views/Home.vue'//框架
 import Main from './views/Main.vue'//空框架
 // 合约管理
 import Market from './views/agreements/Market.vue'//市场管理
+import Contract from './views/agreements/Contract.vue'//市场管理
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -38,11 +39,11 @@ let routes = [
         component: Home,
         name: '合约管理',
         iconCls: 'fa el-icon-document',//图标样式class
-        hidden: true,
+        hidden: false,
         children: [
             { path: '/market', component: Market, name: '市场管理' },
             { path: '/form', component: Form, name: '商品管理' },
-            { path: '/user', component: user, name: '合约管理' },
+            { path: '/agreements', component: Contract, name: '合约管理' },
         ]
     },
     {
