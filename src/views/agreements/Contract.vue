@@ -7,14 +7,6 @@
 					<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="filters.contractName" placeholder="合约名称"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-select v-model="filters.status" placeholder="状态">
-						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item>
 					<el-button type="primary" v-on:click="getContract">查询</el-button>
 				</el-form-item>
 			</el-form>
@@ -52,11 +44,25 @@
 			</el-table-column>
 			<el-table-column prop="modifyTime" label="更新时间" sortable width="150" :formatter="dateFormat">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="200">
+			<el-table-column label="操作" align="center" fixed="right" width="150">
 				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="">新增</el-button>
+					<!-- <el-button type="primary" size="small" @click="">新增</el-button>
+					<el-button type="primary" size="small" @click="">编辑</el-button>
 					<el-button type="primary" size="small" @click="modifyContract(scope.row)">设置</el-button>
-					<el-button type="danger" size="small" @click="">删除</el-button>
+					<el-button type="primary" size="small" @click="">修改首次交易时间</el-button>
+					<el-button type="primary" size="small" @click="">修改最后交易时间</el-button>
+					<el-button type="danger" size="small" @click="">删除</el-button> -->
+					<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
+						操作
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item command="add">新增</el-dropdown-item>
+							<el-dropdown-item command="edit">编辑</el-dropdown-item>
+							<el-dropdown-item command="settings">设置</el-dropdown-item>
+							<el-dropdown-item command="updateFirstDate">修改首次交易时间</el-dropdown-item>
+							<el-dropdown-item command="updateLastDate">修改最后交易时间</el-dropdown-item>
+							<el-dropdown-item command="delete">删除</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -107,7 +113,7 @@
 
 <script>
 	import { dateFormat } from "../../utils/utils"
-	import { agreementsQuest } from "../../api/api"
+	import { contractQuest } from "../../api/api"
 	export default {
 		data(){
 			return {
@@ -159,10 +165,8 @@
 			// 获取合约列表
 			getContract(){
 				// this.listLoading = true;
-				// agreementsQuest.getContract({
-				// 	marketCode: this.filters.marketCode,
-				// 	marketName: this.filters.marketName,
-				// 	status: this.filters.status
+				// contractQuest.getContract({
+				// 	marketCode: this.filters.contractCode,
 				// }).then(res => {
 				// 	this.tableData = JSON.parse(res.content);
 				// 	// console.log(this.tableData)
@@ -186,6 +190,17 @@
 					"modifyTime": "2018-01-09",
 				}]
 			},
+			// 表格记录操作switch
+			tableOptions(command,row){
+				switch(command){
+					case "add": ;break;
+					case "edit": ;break;
+					case "settings": ;break;
+					case "updateFirstDate": ;break;
+					case "updateLastDate": ;break;
+					case "delete": ;break;
+				}
+			},
 			// 弹出设置弹窗
 			modifyContract(row){
 				this.modifyFormVisible = true;
@@ -203,7 +218,7 @@
 				this.$refs.modifyForm.validate(valid => {
 					if(valid){
 						this.modifyLoading = true;
-						agreementsQuest.modifyContract(this.modifyForm).then(res => {
+						contractQuest.modifyContract(this.modifyForm).then(res => {
 							this.modifyLoading = false;
 							this.modifyFormVisible = false;
 							this.getContract();

@@ -81,7 +81,7 @@
 
 <script>
 	import { dateFormat } from "../../utils/utils"
-	import { agreementsQuest } from "../../api/api"
+	import { marketQuest } from "../../api/api"
 	export default {
 		data(){
 			return {
@@ -131,7 +131,7 @@
 			// 获取市场列表
 			getMarket(){
 				this.listLoading = true;
-				agreementsQuest.getMarket({
+				marketQuest.getMarket({
 					marketCode: this.filters.marketCode,
 					marketName: this.filters.marketName,
 					status: this.filters.status
@@ -144,7 +144,7 @@
 			// 操作按钮方法
 			modifyStatus(row){
 				this.listLoading = true;
-				agreementsQuest.modifyStatus({
+				marketQuest.modifyStatus({
 					id: row.id,
 					status: row.status === "A" ? "C" : "A"
 				}).then(res => {
@@ -179,13 +179,13 @@
 					if(valid){
 						this.addLoading = true;
 						if(!this.isModify){
-							agreementsQuest.addMarket(this.addForm).then(res => {
+							marketQuest.addMarket(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getMarket();
 							});
 						}else{
-							agreementsQuest.modifyMarket(this.addForm).then(res => {
+							marketQuest.modifyMarket(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getMarket();

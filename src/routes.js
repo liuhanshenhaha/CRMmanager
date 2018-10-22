@@ -37,13 +37,13 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '合约管理',
+        name: '合约管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
             { path: '/market', component: Market, name: '市场管理' },
             { path: '/form', component: Form, name: '商品管理' },
-            { path: '/agreements', component: Contract, name: '合约管理' },
+            { path: '/contract', component: Contract, name: '合约管理' },
         ]
     },
     {
