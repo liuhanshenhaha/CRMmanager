@@ -7,7 +7,24 @@
 					<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
 				</el-form-item>
 				<el-form-item>
+					<el-input v-model="filters.contractName" placeholder="合约名称"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.goodsId" placeholder="商品ID"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.marketId" placeholder="市场ID"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-select v-model="filters.status" placeholder="状态">
+						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
 					<el-button type="primary" v-on:click="getContract">查询</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="() => modifyContract('add')">新增</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -70,33 +87,85 @@
 
 		<!--新增/更新界面-->
 		<el-dialog title="设置" v-model="modifyFormVisible" :close-on-click-modal="false">
-			<el-form :model="modifyForm" label-width="80px" :rules="modifyFormRules" ref="modifyForm">
-				<el-row>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="开始时间" prop="startTime">
-							<el-time-picker :editable="false" v-model="modifyForm.startTime" placeholder="开始时间"></el-time-picker>
+			<el-form :model="modifyForm" label-width="100px" :rules="modifyFormRules" ref="modifyForm">
+				<el-row :gutter="20">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="商品ID" prop="type">
+							<el-input v-model="modifyForm.goodsId" :disabled="modifyForm.disabled"></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="结束时间" prop="startTime">
-							<el-time-picker :editable="false" v-model="modifyForm.overTime" placeholder="结束时间"></el-time-picker>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="合约代码" prop="type">
+							<el-input v-model="modifyForm.contractCode" :disabled="modifyForm.disabled"></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="" prop="overTimeNextDay">
-							<el-checkbox v-model="modifyForm.overTimeNextDay">结束时间是否跨天</el-checkbox>
+					<el-col :span="8" :xs="24">
+						<el-form-item label="合约名称" prop="type">
+							<el-input v-model="modifyForm.contractName" :disabled="modifyForm.disabled"></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :span="12" :xs="24">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="状态" prop="status">
+							<el-select v-model="modifyForm.status" placeholder="状态" :disabled="modifyForm.disabled">
+								<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="首次交易日" prop="firstTradeDate">
+							<el-date-picker :editable="false" v-model="modifyForm.firstTradeDate" type="date" placeholder="首次交易日" :disabled="modifyForm.disabled&&!(modifyForm.disabled === 'firstDate')"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24">
+						<el-form-item label="最后交易日" prop="lastTradeDate">
+							<el-date-picker :editable="false" v-model="modifyForm.lastTradeDate" type="date" placeholder="最后交易日" :disabled="modifyForm.disabled&&!(modifyForm.disabled === 'lastDate')"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24">
+						<el-form-item prop="allowOvernight">
+							<el-checkbox v-model="modifyForm.allowOvernight" :disabled="modifyForm.disabled">是否允许隔夜</el-checkbox>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20" v-for="(dayCloseItem,index) in modifyForm.tempDayClose" :key="index">
+					<el-col :span="8" :xs="24">
+						<el-form-item :label="index === 0 ? '每日强平时间': ''">
+							<el-time-picker :editable="false" v-model="dayCloseItem.tempDayCloseTime" @change="updateDayClose" placeholder="每日强平时间" :disabled="modifyForm.disabled"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24">
+						<el-form-item>
+							<el-checkbox v-model="dayCloseItem.tempDayCloseOvernight" @change="updateDayClose" :disabled="modifyForm.disabled">每日强平时间是否跨天</el-checkbox>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24" v-if="index === modifyForm.tempDayClose.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="addDailyClose" :disabled="modifyForm.disabled">新增每日强平时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24" v-if="index !== modifyForm.tempDayClose.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDailyClose(index)" disabled="modifyForm.disabled">删除每日强平时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :xs="24">
+						<el-form-item>
+							<div>
+								
+							</div>
+						</el-form-item>
+					</el-col>
+					<!-- <el-col :span="12" :xs="24">
 						<el-form-item label="类别" prop="type">
 							<el-input v-model="modifyForm.type"></el-input>
 						</el-form-item>
-					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="状态" prop="status">
-							<el-input v-model="modifyForm.status"></el-input>
-						</el-form-item>
-					</el-col>
+					</el-col> -->
 					<el-col :span="24">
 						<el-form-item label="备注" prop="remark">
 							<el-input type="textarea" resize="none" v-model="modifyForm.remark"></el-input>
@@ -121,6 +190,8 @@
 				filters:{//查询表单数据
 					contractCode: "",
 					contractName: "",
+					goodsId: "",
+					marketId: "",
 					status: "",
 				},
 				statusOptions: [{
@@ -135,12 +206,15 @@
 				modifyLoading: false,//增改加载中标识
 				modifyFormVisible: false,//设置弹窗显示标识
 				modifyForm: {//设置弹窗表单数据
-					startTime: "",
-					overTime: "",
-					overTimeNextDay: "",
-					type: "",
+					goodsId: "",
+					contractCode: "",
+					contractName: "",
 					status: "",
-					remark: "",
+					firstTradeDate: "",
+					lastTradeDate: "",
+					allowOvernight: "",
+					dayClose: "",
+					tempDayClose: [],
 				},
 				modifyFormRules:{
 					contractCode: [{required: true, message: '请输入代码', trigger: 'blur'}],
@@ -177,27 +251,86 @@
 			// 表格记录操作switch
 			tableOptions(command,row){
 				switch(command){
-					case "add": ;break;
-					case "edit": ;break;
-					case "updateFirstDate": ;break;
-					case "updateLastDate": ;break;
+					case "add": this.modifyContract('add',row);break;
+					case "edit": this.modifyContract('update',row);break;
+					case "updateFirstDate": this.modifyContract('update',row,'firstDate');break;
+					case "updateLastDate": this.modifyContract('update',row,'lastDate');break;
 					case "delete": ;break;
 				}
 			},
-			// 弹出设置弹窗
-			modifyContract(row){
+			/* 弹出新增/更新合约窗体
+			 * params
+			 * type string 'add' 'update'
+			 * row 根据此参数是否为undefined判断是否是独立新增
+			 * dateType 根据此字段是否为undefined判断是否需要对字段做disabled 'firstDate' 除firstDate外全部disabled 'lastDate'除lastDate外全部disabled
+			 */ 
+			modifyContract(type,row,dateType){
 				this.modifyFormVisible = true;
-				this.modifyForm = {
-					startTime: row.createTime,
-					overTime: row.modifyTime,
-					overTimeNextDay: row.overTimeNextDay,
-					type: "",
-					status: row.status,
-					remark: row.remark,
+				switch(type){
+					case "add": 
+						this.modifyForm = {
+							goodsId: "",
+							contractCode: "",
+							contractName: "",
+							status: "",
+							firstTradeDate: "",
+							lastTradeDate: "",
+							allowOvernight: "",
+							dayClose: "",
+							tempDayClose: [{
+								tempDayCloseTime: new Date().setSeconds(0),
+								tempDayCloseOvernight: false,
+							}]
+						}
+						break;
+					case "update": 
+						this.modifyForm = {
+							goodsId: row.goodsId,
+							contractCode: row.contractCode,
+							contractName: row.contractName,
+							status: row.status,
+							firstTradeDate: row.firstTradeDate,
+							lastTradeDate: row.lastTradeDate,
+							allowOvernight: row.allowOvernight === "Y",
+							dayClose: row.dayClose,
+							tempDayClose: row.dayClose.split(";").map((item,index) => {
+								let tempDate = new Date();
+								tempDate.setHours(item.split("-")[0].split(":")[0])
+								tempDate.setMinutes(item.split("-")[0].split(":")[1])
+								tempDate.setSeconds(0)
+								return {
+									tempDayCloseTime: tempDate,
+									tempDayCloseOvernight: item.split("-")[1] === "Y",
+								}
+							})
+						}
+						if(dateType){
+							this.modifyForm.disabled = dateType;
+						}
+						break;
 				}
 			},
+			addDailyClose(){
+				this.modifyForm.tempDayClose.push({
+					tempDayCloseTime: new Date().setSeconds(0),
+					tempDayCloseOvernight: false,
+				})
+			},
+			removeDailyClose(index){
+				this.modifyForm.tempDayClose.splice(index,1)
+			},
+			updateDayClose(){
+				this.modifyForm.dayClose = (()=>{
+					let temp = "";
+					this.modifyForm.tempDayClose.map((item, index) => {
+						let tempDayCloseTime = new Date(item.tempDayCloseTime)
+						temp += tempDayCloseTime.getHours() + ":" + (tempDayCloseTime.getMinutes() < 10 ? "0" + tempDayCloseTime.getMinutes() : tempDayCloseTime.getMinutes()) + ":00" + "-" + (item.tempDayCloseOvernight ? "Y" : "N") + ";"
+					})
+					return temp;
+				})()
+			},
 			// 新增/更新市场
-			updateContract(){
+			updateContract(type,row){
 				this.$refs.modifyForm.validate(valid => {
 					if(valid){
 						this.modifyLoading = true;
