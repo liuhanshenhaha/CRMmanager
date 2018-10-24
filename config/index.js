@@ -28,13 +28,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        // '/api': {
-        //     target: 'http://97498cc2.ngrok.io',  //目标接口域名
-        //     changeOrigin: true,  //是否跨域
-        //     pathRewrite: {
-        //         '^/api': ''   //重写接口
-        //     }
-        // },
+        '/xtjichu': {
+            target: 'http://128.1.132.11:8080',  //目标接口域名
+            changeOrigin: true,  //是否跨域
+            // pathRewrite: {
+            //     '^/api': ''   //重写接口
+            // }
+        },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

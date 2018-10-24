@@ -1,4 +1,4 @@
-const allows = JSON.parse(localStorage.getItem("allows"));//权限相关信息
+const allows = JSON.parse(localStorage.getItem("allows")) || [];//权限相关信息
 
 import Login from './views/Login.vue'//登陆
 import NotFound from './views/404.vue'

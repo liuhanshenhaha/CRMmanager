@@ -32,6 +32,8 @@
 			</el-table-column>
 			<el-table-column prop="allowOvernight" label="是否允许隔夜" sortable width="150">
 			</el-table-column>
+			<el-table-column prop="lastContractId" label="上一个合约ID" sortable width="150">
+			</el-table-column>
 			<el-table-column prop="status" label="状态" sortable width="150" :formatter="statusFormat">
 			</el-table-column>
 			<el-table-column prop="remark" label="备注" sortable width="150">
@@ -57,7 +59,6 @@
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item command="add">新增</el-dropdown-item>
 							<el-dropdown-item command="edit">编辑</el-dropdown-item>
-							<el-dropdown-item command="settings">设置</el-dropdown-item>
 							<el-dropdown-item command="updateFirstDate">修改首次交易时间</el-dropdown-item>
 							<el-dropdown-item command="updateLastDate">修改最后交易时间</el-dropdown-item>
 							<el-dropdown-item command="delete">删除</el-dropdown-item>
@@ -164,38 +165,20 @@
 			},
 			// 获取合约列表
 			getContract(){
-				// this.listLoading = true;
-				// contractQuest.getContract({
-				// 	marketCode: this.filters.contractCode,
-				// }).then(res => {
-				// 	this.tableData = JSON.parse(res.content);
-				// 	// console.log(this.tableData)
-				// 	this.listLoading = false;
-				// });
-				this.tableData = [{
-					"marketId": "1",
-					"goodsId": "1",
-					"contractCode": "XG",
-					"contractName": "张三李四公司",
-					"firstTradeDate": "2018-01-09",
-					"lastTradeDate": "2018-10-18",
-					"dayClose": "15:00",
-					"dayOpen": "09:00",
-					"allowOvernight": "Y",
-					"status": "A",
-					"remark": "12312321312",
-					"createBy": "管理员",
-					"createTime": "2018-01-09",
-					"modifyBy": "管理员",
-					"modifyTime": "2018-01-09",
-				}]
+				this.listLoading = true;
+				contractQuest.getContract({
+					marketCode: this.filters.contractCode,
+				}).then(res => {
+					this.tableData = JSON.parse(res.content);
+					// console.log(this.tableData)
+					this.listLoading = false;
+				});
 			},
 			// 表格记录操作switch
 			tableOptions(command,row){
 				switch(command){
 					case "add": ;break;
 					case "edit": ;break;
-					case "settings": ;break;
 					case "updateFirstDate": ;break;
 					case "updateLastDate": ;break;
 					case "delete": ;break;

@@ -18,7 +18,7 @@ export const commonParams = {
 };
 
 const instance = axios.create({
-  baseURL: 'http://97498cc2.ngrok.io/xtjichu',
+  baseURL: '/xtjichu',
   timeout: 20000,
   headers: {
     'Content-Type': 'application/json;charset=utf-8;',
@@ -36,7 +36,7 @@ instance.interceptors.response.use((response) => {
   if(data){
     if(data.code !== "000000"){
       Message.error(data.msg)
-      return Promise.reject(response)
+      return Promise.reject(response.data)
     }
     return Promise.resolve(response)
   }else{
