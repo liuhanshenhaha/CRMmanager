@@ -149,7 +149,7 @@
 					</el-col>
 					<el-col :span="8" :xs="24" v-if="index !== modifyForm.tempDayClose.length - 1">
 						<el-form-item>
-							<el-button type="danger" @click.native="()=>removeDailyClose(index)" disabled="modifyForm.disabled">删除每日强平时间</el-button>
+							<el-button type="danger" @click.native="()=>removeDailyClose(index)" :disabled="modifyForm.disabled">删除每日强平时间</el-button>
 						</el-form-item>
 					</el-col>
 				</el-row>
