@@ -144,72 +144,66 @@
 					marketName: this.filters.marketName,
 					status: this.filters.status
 				}).then(res => {
-					this.tableData = JSON.parse(res.content);
+					this.tableData = res.content;
 					// console.log(this.tableData)
 					this.listLoading = false;
-				});
+				}).catch(err=>{this.listLoading = false;});
 			},
 			// 操作按钮方法
-			modifyStatus(row){
-				this.listLoading = true;
-				marketQuest.modifyStatus({
-					id: row.id,
-					status: row.status === "A" ? "C" : "A"
-				}).then(res => {
-					this.listLoading = false;
-					this.getMarket();
-				});
-			},
+			// modifyStatus(row){
+			// 	this.listLoading = true;
+			// 	marketQuest.modifyStatus({
+			// 		id: row.id,
+			// 		status: row.status === "A" ? "C" : "A"
+			// 	}).then(res => {
+			// 		this.listLoading = false;
+			// 		this.getMarket();
+			// 	});
+			// },
 			// 弹出新增弹窗
-			addMarket(){
-				this.addFormVisible = true;
-				this.isModify = false;
-				this.addForm = {
-					marketCode: "",
-					marketName: "",
-					remark: ""
-				}
-			},
+			// addMarket(){
+			// 	this.addFormVisible = true;
+			// 	this.isModify = false;
+			// 	this.addForm = {
+			// 		marketCode: "",
+			// 		marketName: "",
+			// 		remark: ""
+			// 	}
+			// },
 			// 弹出编辑弹窗
-			modifyMarket(row){
-				this.addFormVisible = true;
-				this.isModify = true;
-				this.addForm = {
-					marketCode: row.marketCode,
-					marketName: row.marketName,
-					remark: row.remark,
-					id: row.id
-				}
-			},
+			// modifyMarket(row){
+			// 	this.addFormVisible = true;
+			// 	this.isModify = true;
+			// 	this.addForm = {
+			// 		marketCode: row.marketCode,
+			// 		marketName: row.marketName,
+			// 		remark: row.remark,
+			// 		id: row.id
+			// 	}
+			// },
 			// 新增/更新市场
-			updateMarket(){
-				this.$refs.addForm.validate(valid => {
-					if(valid){
-						this.addLoading = true;
-						if(!this.isModify){
-							marketQuest.addMarket(this.addForm).then(res => {
-								this.addLoading = false;
-								this.addFormVisible = false;
-								this.getMarket();
-							});
-						}else{
-							marketQuest.modifyMarket(this.addForm).then(res => {
-								this.addLoading = false;
-								this.addFormVisible = false;
-								this.getMarket();
-							}).catch(err => this.addLoading = false);
-						}
-					}else{
-						return false;
-					}
-				})
-			},
+			// updateMarket(){
+			// 	this.$refs.addForm.validate(valid => {
+			// 		if(valid){
+			// 			this.addLoading = true;
+			// 			if(!this.isModify){
+			// 				marketQuest.addMarket(this.addForm).then(res => {
+			// 					this.addLoading = false;
+			// 					this.addFormVisible = false;
+			// 					this.getMarket();
+			// 				});
+			// 			}else{
+			// 				marketQuest.modifyMarket(this.addForm).then(res => {
+			// 					this.addLoading = false;
+			// 					this.addFormVisible = false;
+			// 					this.getMarket();
+			// 				}).catch(err => this.addLoading = false);
+			// 			}
+			// 		}else{
+			// 			return false;
+			// 		}
+			// 	})
+			// },
 		}
 	}
 </script>
-
-<style scoped lang="scss">
-	.el-select-dropdown{
-		z-index: 10001;
-	}
-</style>

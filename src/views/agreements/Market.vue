@@ -25,7 +25,7 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
-			<el-table-column prop="marketCode" label="市场代码" sortable width="100">
+			<el-table-column prop="marketCode" label="市场代码" sortable width="120">
 			</el-table-column>
 			<el-table-column prop="marketName" label="市场名称" sortable min-width="150">
 			</el-table-column>
@@ -136,10 +136,10 @@
 					marketName: this.filters.marketName,
 					status: this.filters.status
 				}).then(res => {
-					this.tableData = JSON.parse(res.content);
+					this.tableData = res.content;
 					// console.log(this.tableData)
 					this.listLoading = false;
-				});
+				}).catch(err=>{this.listLoading = false;});
 			},
 			// 操作按钮方法
 			modifyStatus(row){
@@ -150,7 +150,7 @@
 				}).then(res => {
 					this.listLoading = false;
 					this.getMarket();
-				});
+				}).catch(err=>{this.listLoading = false;});
 			},
 			// 弹出新增弹窗
 			addMarket(){
@@ -183,13 +183,13 @@
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getMarket();
-							});
+							}).catch(err=>{this.listLoading = false;});
 						}else{
 							marketQuest.modifyMarket(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getMarket();
-							}).catch(err => this.addLoading = false);
+							}).catch(err=>{this.listLoading = false;});
 						}
 					}else{
 						return false;
@@ -199,9 +199,3 @@
 		}
 	}
 </script>
-
-<style scoped lang="scss">
-	.el-select-dropdown{
-		z-index: 10001;
-	}
-</style>

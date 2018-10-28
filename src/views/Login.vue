@@ -66,13 +66,12 @@
             };
             requestLogin(loginParams).then(response => {
               setCookie('token',response.token,1)
+              localStorage.setItem("userInfo",JSON.stringify(response.content));
               selectTree().then((res) => {
                 this.logining = false;
-                localStorage.setItem("allows",res.content)
+                localStorage.setItem("allows",JSON.stringify(res.content))
                 this.$router.push({ path: '/form' });
-              }).catch(err => {
-                this.logining = false;
-              })   
+              }).catch(err=>{this.listLoading = false;})   
             }).catch(err => {
               this.captchaSrc ++;
               this.loginForm.captchaError = err.msg;   

@@ -15,7 +15,17 @@ export const marketQuest = {
 
 //合约管理 - 合约管理
 export const contractQuest = {
-	getContract: (params) => { return postData(`/contract/selectByRecord`, params) },//获取合约列表
+	getContract: (params) => { return postData(`/contract/queryPage`, params) },//获取合约列表
+	addContract: (params) => { return postData(`/contract/add`, params) },//新增合约
+	modifyContract: (params) => { return postData(`/contract/modify`, params) },//修改合约
+	modifyStatus: (params) => { return postData(`/contract/modifyStatus`, params) },//修改状态
+	getContractByGoodsId: (params) => { return postData(`/contract/selectByGoodsId`, params) },//根据商品查询合约
+	getSetting: (params) => { return postData(`/contract/time/selectByContractId`, params) },//新增市场
+}
+
+//合约管理 - 商品管理
+export const goodsQuest = {
+	getGoods: (params) => { return postData(`/goods/selectByRecord`, params) },//获取商品列表
 	addContract: (params) => { return postData(`/contract/add`, params) },//新增合约
 	modifyStatus: (params) => { return postData(`/contract/modifyStatus`, params) },//修改状态
 	addMarket: (params) => { return postData(`/contract/add`, params) },//新增市场

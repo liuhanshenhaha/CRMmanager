@@ -1,4 +1,27 @@
 @import "vars.scss";
+.logo-text{
+	font-size:32px;
+	margin: 0;
+	height: 60px;
+	line-height: 60px;
+}
+.top-title{
+	height: 60px;
+	line-height: 60px;
+	margin:0;
+	text-align:right;
+	font-size: 24px;
+}
+.el-menu-item, .el-submenu__title,.el-submenu .el-menu-item{
+	height:32px !important;
+	line-height:32px !important;
+}
+.breadcrumb-container{
+	margin-bottom:1em;
+}
+.container .main .content-container .breadcrumb-container .title{
+	width:auto;
+}
 @media (max-width: $mobile-max){
 	html,body,.login-container{
 		width:100%!important;
@@ -18,4 +41,14 @@
 			height: 34px;
 		}
 	}
+}
+.el-table__fixed-right{
+	overflow-y: hidden;
+}
+
+.w70p{
+	width: 70%!important; 
+}
+.el-input,.el-select{
+	width:100% !important;
 }

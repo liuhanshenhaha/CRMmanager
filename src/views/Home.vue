@@ -2,22 +2,18 @@
 	<el-row class="container">
 		<el-col :span="24" class="header">
 			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-				{{collapsed?'':sysName}}
+				<h1 class="logo-text">{{collapsed?'':sysName}}</h1>
 			</el-col>
-			<el-col :span="10">
+			<el-col :span="1">
 				<div class="tools" @click.prevent="collapse">
 					<i class="fa fa-align-justify"></i>
 				</div>
 			</el-col>
+			<el-col :span="9">
+				<p class="top-title">WELCOME TO LEBUT+</p>
+			</el-col>
 			<el-col :span="4" class="userinfo">
-				<el-dropdown trigger="hover">
-					<span class="el-dropdown-link userinfo-inner"><img :src="this.sysUserAvatar" /> {{sysUserName}}</span>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>我的消息</el-dropdown-item>
-						<el-dropdown-item>设置</el-dropdown-item>
-						<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
+				<p style="margin: 0;">{{sysUserName}}<a href="javascript:;" style="color:white;margin-left: 10px;text-decoration:none;" @click="logout">退出登录</a></p>
 			</el-col>
 		</el-col>
 		<el-col :span="24" class="main">
@@ -76,10 +72,9 @@
 	export default {
 		data() {
 			return {
-				sysName:'VUEADMIN',
+				sysName:'LEBUT+',
 				collapsed:document.body.clientWidth < 1024,//移动端直接收起侧边栏
 				sysUserName: '',
-				sysUserAvatar: '',
 				form: {
 					name: '',
 					region: '',
@@ -112,9 +107,7 @@
 				}).then(() => {
 					delCookie("token")
 					_this.$router.push('/login');
-				}).catch(() => {
-
-				});
+				}).catch(err=>console.error(err));
 
 
 			},
@@ -131,11 +124,10 @@
 			}
 		},
 		mounted() {
-			var user = sessionStorage.getItem('user');
+			var user = localStorage.userInfo;
 			if (user) {
 				user = JSON.parse(user);
 				this.sysUserName = user.name || '';
-				this.sysUserAvatar = user.avatar || '';
 			}
 
 		}

@@ -129,7 +129,7 @@ export function getData(urlLink, param) {
  * @returns {Promise<AxiosResponse>}
  */
 export function postData(urlLink, param) {
-  const data = Object.assign({}, commonParams, {"token": getCookie("token"), "content": param})
+  const data = Object.assign({}, commonParams, {"token": getCookie("token")||"", "content": param})
   return instance.post(urlLink, JSON.stringify(data))
     .then((res) => {
       console.log("post 成功",res)

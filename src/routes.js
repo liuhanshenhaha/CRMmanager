@@ -172,7 +172,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/contract',
         component: Home,
         name: '合约管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
