@@ -405,7 +405,6 @@
 			},
 			// 获取配置列表
 			getSettings(contractId){
-				contractId = 1;
 				this.listLoading2 = true;
 				this.settingContractId = contractId;
 				contractQuest.getSetting({
