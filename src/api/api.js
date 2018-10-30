@@ -21,6 +21,9 @@ export const contractQuest = {
 	modifyStatus: (params) => { return postData(`/contract/modifyStatus`, params) },//修改状态
 	getContractByGoodsId: (params) => { return postData(`/contract/selectByGoodsId`, params) },//根据商品查询合约
 	getSetting: (params) => { return postData(`/contract/time/selectByContractId`, params) },//新增市场
+	addContractTime: (params) => { return postData(`/contract/time/add`, params) },//合约配置增加
+	modifyContractTime: (params) => { return postData(`/contract/time/modify`, params) },//合约配置增加
+	modifyContractTimeStatus: (params) => { return postData(`/contract/time/modifyStatus`, params) },//合约配置增加
 }
 
 //合约管理 - 商品管理

@@ -54,13 +54,14 @@
 			<el-table-column prop="remark" label="备注" width="150">
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="150">
-				<template slot-scope="scope">					<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
+				<template slot-scope="scope">
+					<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
 						操作
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item command="add">新增</el-dropdown-item>
 							<el-dropdown-item command="edit">编辑</el-dropdown-item>
-							<el-dropdown-item v-if="scope.row.status !== 'A'" command="modifyStatus">激活</el-dropdown-item>
-							<el-dropdown-item v-if="scope.row.status === 'A'" command="modifyStatus">作废</el-dropdown-item>
+							<el-dropdown-item command="modifyStatus">修改状态</el-dropdown-item>
+							<el-dropdown-item command="settings">配置</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
 				</template>
@@ -166,40 +167,55 @@
 			</div>
 		</el-dialog>
 
-		<!--新增/配置界面-->
-		<el-dialog customClass="w70p" title="设置" v-model="modifyFormVisible2" :close-on-click-modal="false" >
-			
+		<!--修改状态界面-->
+		<el-dialog customClass="w70p" title="修改状态" v-model="modifyFormVisible3" :close-on-click-modal="false" >
+			<el-table stripe border fixed :data="modifyStatusData" highlight-current-row style="width: 100%;">
+				<el-table-column prop="marketId" label="市场名称"></el-table-column>
+				<el-table-column prop="goodsId" label="商品名称"></el-table-column>
+				<el-table-column prop="contractCode" label="合约代码"></el-table-column>
+				<el-table-column prop="contractName" label="合约名称"></el-table-column>
+				<el-table-column label="操作" align="center" fixed="right" width="150">
+					<template slot-scope="scope">
+						<el-select v-model="scope.row.status" placeholder="状态">
+							<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						</el-select>
+					</template>
+				</el-table-column>
+			</el-table>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="modifyFormVisible2 = false">取消</el-button>
-				<el-button type="primary" @click.native="update" :loading="modifyLoading">提交</el-button>
+				<el-button @click.native="modifyFormVisible3 = false">取消</el-button>
+				<el-button type="primary" @click.native="()=>modifyStatus(modifyStatusData[0])" :loading="modifyLoading">提交</el-button>
 			</div>
 		</el-dialog>
 
 		<!--新增/配置界面-->
-		<el-dialog customClass="w70p" title="设置" v-model="modifyFormVisible2" :close-on-click-modal="false" >
+		<el-dialog customClass="w80p" title="设置" v-model="modifyFormVisible2" :close-on-click-modal="false" >
+			<el-col :span="24" class="toolbar">
+				<el-button type="primary" v-on:click="() => modifyContract('subAdd')">新增</el-button>
+			</el-col>
 			<el-table stripe border fixed :data="tableData2" highlight-current-row v-loading="listLoading2" @selection-change="" style="width: 100%;">
-				<el-table-column prop="contractId" label="合约ID" sortable width="100">
+				<el-table-column prop="contractId" label="合约ID">
 				</el-table-column>
-				<el-table-column prop="startTime" label="开始时间" sortable min-width="150">
+				<el-table-column prop="startTime" label="开始时间">
 				</el-table-column>
-				<el-table-column prop="overTime" label="结束时间" sortable width="150">
+				<el-table-column prop="overTime" label="结束时间">
 				</el-table-column>
-				<el-table-column prop="overTimeNextDay" label="结束时间是否跨天" sortable width="200">
+				<el-table-column prop="overTimeNextDay" label="结束时间是否跨天">
 				</el-table-column>
-				<el-table-column prop="type" label="类别" sortable width="150">
+				<el-table-column prop="type" label="类别">
 				</el-table-column>
-				<el-table-column prop="status" label="状态" sortable width="150">
+				<el-table-column prop="status" label="状态">
 				</el-table-column>
-				<el-table-column prop="remark" label="备注" sortable width="150">
+				<el-table-column prop="remark" label="备注">
 				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right" width="150">
-					<template slot-scope="scope">					<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
+				<el-table-column label="操作" align="center" fixed="right" width="140">
+					<template slot-scope="scope">
+						<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
 							操作
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="add">新增</el-dropdown-item>
-								<el-dropdown-item command="edit">编辑</el-dropdown-item>
-								<el-dropdown-item v-if="scope.row.status !== 'A'" command="modifyStatus">激活</el-dropdown-item>
-								<el-dropdown-item v-if="scope.row.status === 'A'" command="modifyStatus">作废</el-dropdown-item>
+								<el-dropdown-item command="subEdit">编辑</el-dropdown-item>
+								<el-dropdown-item command="subModifyStatus" v-if="scope.row.status !== 'A'">激活</el-dropdown-item>
+								<el-dropdown-item command="subModifyStatus" v-if="scope.row.status === 'A'">作废</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
 					</template>
@@ -208,6 +224,49 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="modifyFormVisible2 = false">取消</el-button>
 				<el-button type="primary" @click.native="update" :loading="modifyLoading">提交</el-button>
+			</div>
+		</el-dialog>
+
+		<!--新增/更新界面-->
+		<el-dialog :title="subModifyType == 'subAdd' ? '新增' : '设置'" v-model="modifyFormVisible4" :close-on-click-modal="false" append-to-body>
+			<el-form :model="subModifyForm" :rules="subModifyFormRules" label-width="100px" ref="subModifyForm" size="medium">
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="开始时间" prop="startTime">
+							<el-time-picker :editable="false" v-model="subModifyForm.subStartTime" placeholder="开始时间"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="结束时间" prop="subOverTime">
+							<el-time-picker :editable="false" v-model="subModifyForm.subOverTime" placeholder="结束时间"></el-time-picker>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item>
+							<el-checkbox v-model="subModifyForm.subOverTimeNextDay">结束时间是否跨天</el-checkbox>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="类别" prop="subType">
+							<el-select v-model="subModifyForm.subType" placeholder="类别">
+								<el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="24">
+						<el-form-item label="备注" prop="subRemark">
+							<el-input type="textarea" resize="none" v-model="subModifyForm.subRemark"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="modifyFormVisible4 = false">取消</el-button>
+				<el-button type="primary" @click.native="subUpdate" :loading="modifyLoading">提交</el-button>
 			</div>
 		</el-dialog>
 	</section>
@@ -230,10 +289,26 @@
 				},
 				statusOptions: [{
 					value: "A",
-					label: "已激活"
+					label: "激活"
 				},{
 					value: "C",
-					label: "已作废"
+					label: "作废"
+				},{
+					value: "T",
+					label: "禁止交易"
+				},{
+					value: "S",
+					label: "只能平仓"
+				}],
+				typeOptions: [{
+					value: 1,
+					label: "开仓"
+				},{
+					value: 2,
+					label: "平仓"
+				},{
+					value: 3,
+					label: "撤销"
 				}],
 				goodListOptions: [],//商品列表
 				contractListOptions: [],//商品对应的有效合约列表
@@ -245,6 +320,8 @@
 				modifyLoading: false,//增改加载中标识
 				modifyFormVisible: false,//设置弹窗显示标识
 				modifyFormVisible2: false,//设置弹窗显示标识
+				modifyFormVisible3: false,//修改状态弹窗显示标识
+				modifyFormVisible4: false,//修改状态弹窗显示标识
 				modifyForm: {//设置弹窗表单数据
 					goodsId: undefined,
 					marketId: "",
@@ -265,6 +342,21 @@
 					contractName: [{required: true, message: '请输入合约名称', trigger: 'blur'}],
 					firstTradeDate: [{type:'date',required: true, message: '请设置首次交易时间', trigger: 'blur'}],
 					lastTradeDate: [{type:'date',required: true, message: '请设置最后交易时间', trigger: 'blur'}]
+				},
+				modifyStatusData: [],//修改状态弹窗数据
+				settingContractId: "",//配置中的合约ID
+				subModifyType: "subAdd",
+				subModifyForm: {
+					subStartTime: "",
+					subOverTime: "",
+					subOverTimeNextDay: "",
+					subType: "",
+					subRemark: ""
+				},
+				subModifyFormRules:{
+					subType: [{type:'number',required: true, message: '请选择类型', trigger: 'blur'}],
+					subStartTime: [{type:'date',required: true, message: '请设置开始时间', trigger: 'blur'}],
+					subOverTime: [{type:'date',required: true, message: '请设置结束时间', trigger: 'blur'}]
 				}
 			}
 		},
@@ -275,10 +367,7 @@
 		methods:{
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
-				switch(cellValue){
-					case "A": return "已激活";
-					case "C": return "已作废";
-				}
+				return this.statusOptions.map(item => item.value === cellValue ? item.label : "")
 			},
 			// 获取商品列表
 			getGoods(){
@@ -316,12 +405,14 @@
 			},
 			// 获取配置列表
 			getSettings(contractId){
+				contractId = 1;
 				this.listLoading2 = true;
+				this.settingContractId = contractId;
 				contractQuest.getSetting({
 					contractId: contractId
 				}).then(res => {
 					this.tableData2 = res.content;
-					this.listLoading = false;
+					this.listLoading2 = false;
 				}).catch(err => this.listLoading2 = false)
 			},
 			// 表格记录操作switch
@@ -329,7 +420,15 @@
 				switch(command){
 					case "add": this.modifyContract('add',row);break;
 					case "edit": this.modifyContract('update',row);break;
-					case "delete": ;break;
+					case "modifyStatus": this.modifyContract('modifyStatus',row);break;
+					case "settings": this.modifyContract('settings',row);break;
+					case "subEdit": this.modifyContract('subEdit',row);break;
+					case "subModifyStatus": 
+						contractQuest.modifyContractTimeStatus({
+							id: row.id,
+							status: row.status === "A" ? "C" : "A"
+						}).then(res => this.getSettings(row.contractId)).catch(err => console.log(err))
+						break;
 				}
 			},
 			/* 弹出新增/更新合约窗体
@@ -339,12 +438,12 @@
 			 * dateType 根据此字段是否为undefined判断是否需要对字段做disabled 'firstDate' 除firstDate外全部disabled 'lastDate'除lastDate外全部disabled
 			 */ 
 			modifyContract(type,row){
-				this.modifyFormVisible = true;
 				switch(type){
-					case "add": 
+					case "add":
+						row && this.getContractByGoodsId(row.goodsId); 
 						this.modifyForm = {
 							goodsId: row ? row.goodsId : "",
-							contractId: row ? row.lastContractId : "",
+							contractId: "",
 							contractCode: "",
 							contractName: "",
 							firstTradeDate: "",
@@ -359,9 +458,11 @@
 								tempDayCloseOvernight: false,
 							}]
 						}
+						this.modifyFormVisible = true;
 						this.modifyType = type;
 						break;
 					case "update": 
+						row && this.getContractByGoodsId(row.goodsId); 
 						this.modifyForm = {
 							id: row.id,
 							goodsId: row.goodsId,
@@ -392,7 +493,55 @@
 								}
 							})
 						}
+						this.modifyFormVisible = true;
 						this.modifyType = type;
+						break;
+					case "modifyStatus": 
+						this.modifyStatusData = new Array(row);
+						this.modifyFormVisible3 = true;
+						break;
+					case "settings":
+						this.modifyFormVisible2 = true; 
+						this.getSettings(row.id);
+						break;
+					case "subAdd":
+						this.modifyFormVisible4 = true;
+						this.subModifyType = type;
+						this.subModifyForm = {
+							subStartTime: "",
+							subOverTime: "",
+							subOverTimeNextDay: "",
+							subType: "",
+							subRemark: ""
+						}
+						break;
+					case "subEdit":
+						this.modifyFormVisible4 = true;
+						this.subModifyType = type;
+						this.subModifyForm = {
+							contractId: row.contractId,
+							subStartTime: (() => {
+								let tempDate = new Date();
+								tempDate.setHours(row.startTime.split(":")[0])
+								tempDate.setMinutes(row.startTime.split(":")[1])
+								tempDate.setSeconds(row.startTime.split(":")[2])
+								return tempDate
+							})(),
+							subOverTime: (() => {
+								let tempDate = new Date();
+								tempDate.setHours(row.overTime.split(":")[0])
+								tempDate.setMinutes(row.overTime.split(":")[1])
+								tempDate.setSeconds(row.overTime.split(":")[2])
+								return tempDate
+							})(),
+							subOverTimeNextDay: row.overTimeNextDay === "Y",
+							subType: row.type,
+							subRemark: row.remark
+						}
+						break;
+					case "subModifyStatus":
+						this.modifyFormVisible4 = true;
+						this.subModifyType = type;
 						break;
 				}
 			},
@@ -423,6 +572,9 @@
 					this.modifyForm.tempDayClose.splice(index,1)
 				}
 			},
+			rebuildTime(time){
+				return time.getHours() + ":" + (time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()) + ":" + (time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds())
+			},
 			updateDayClose(){
 				this.modifyForm.dayClose = (()=>{
 					let temp = "";
@@ -451,18 +603,60 @@
 						this.updateDayClose();
 						this.modifyLoading = true;
 						switch(this.modifyType){
-							case "add":;break;
-							case "update":contractQuest.modifyContract(this.modifyForm).then(res=>{
-
+							case "add":contractQuest.addContract(this.modifyForm).then(res=>{
+								this.getContract(this.filters.pageNo)
 							}).catch(err=>this.modifyLoading=false);break;
-							case "firstDate":;break;
-							case "lastDate":;break;
+							case "update":contractQuest.modifyContract(this.modifyForm).then(res=>{
+								this.getContract(this.filters.pageNo)
+							}).catch(err=>this.modifyLoading=false);break;
 						}
 					}else{
 						return false;
 					}
 				})
 			},
+			// 修改合约状态
+			modifyStatus(row){
+				this.modifyLoading = true;
+				contractQuest.modifyStatus({
+					id: row.id,
+					status: row.status
+				}).then(res => {
+					this.modifyFormVisible3 = false;
+					this.getContract(this.filters.pageNo);
+				}).catch(err=>this.modifyLoading=false)
+			},
+			subUpdate(){
+				this.$refs.subModifyForm.validate(valid => {
+					if(valid){
+						let submitData = {};
+						this.modifyLoading = true;
+						submitData.startTime = this.rebuildTime(this.subModifyForm.subStartTime);
+						submitData.overTime = this.rebuildTime(this.subModifyForm.subOverTime);
+						submitData.overTimeNextDay = this.subModifyForm.subOverTimeNextDay ? "Y" : "N";
+						submitData.type = this.subModifyForm.subType;
+						submitData.remark = this.subModifyForm.subRemark;
+						switch(this.subModifyType){
+							case "subAdd": 
+								contractQuest.addContractTime(submitData).then(res => {
+									this.getSettings(this.settingContractId)
+									this.modifyLoading = false;
+									this.modifyFormVisible4 = false;
+								}).catch(err => this.modifyLoading = false);
+								break;
+							case "subEdit": 
+								submitData.contractId = this.subModifyForm.contractId;
+								submitData.id = this.subModifyForm.contractId;
+								contractQuest.modifyContractTime(submitData).then(res => {
+									this.getSettings(this.settingContractId)
+									this.modifyLoading = false;
+									this.modifyFormVisible4 = false;
+								}).catch(err => this.modifyLoading = false);
+								break;
+						}
+					}
+				})
+			}
 		}
 	}
 </script>
