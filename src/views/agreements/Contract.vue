@@ -31,9 +31,9 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
-			<el-table-column prop="marketId" label="市场名称" width="100">
+			<el-table-column prop="marketName" label="市场名称" width="150">
 			</el-table-column>
-			<el-table-column prop="goodsId" label="商品名称" min-width="100">
+			<el-table-column prop="goodsName" label="商品名称" min-width="100">
 			</el-table-column>
 			<el-table-column prop="contractCode" label="合约代码" sortable width="150">
 			</el-table-column>
@@ -194,8 +194,6 @@
 				<el-button type="primary" v-on:click="() => modifyContract('subAdd')">新增</el-button>
 			</el-col>
 			<el-table stripe border fixed :data="tableData2" highlight-current-row v-loading="listLoading2" @selection-change="" style="width: 100%;">
-				<el-table-column prop="contractId" label="合约ID">
-				</el-table-column>
 				<el-table-column prop="startTime" label="开始时间">
 				</el-table-column>
 				<el-table-column prop="overTime" label="结束时间">
@@ -603,9 +601,11 @@
 						this.modifyLoading = true;
 						switch(this.modifyType){
 							case "add":contractQuest.addContract(this.modifyForm).then(res=>{
+								this.modifyLoading=false;
 								this.getContract(this.filters.pageNo)
 							}).catch(err=>this.modifyLoading=false);break;
 							case "update":contractQuest.modifyContract(this.modifyForm).then(res=>{
+								this.modifyLoading=false;
 								this.getContract(this.filters.pageNo)
 							}).catch(err=>this.modifyLoading=false);break;
 						}
@@ -623,6 +623,10 @@
 				}).then(res => {
 					this.modifyFormVisible3 = false;
 					this.getContract(this.filters.pageNo);
+					this.$message({
+						message: '修改合约状态成功！',
+						type: 'success'
+					});
 				}).catch(err=>this.modifyLoading=false)
 			},
 			subUpdate(){
