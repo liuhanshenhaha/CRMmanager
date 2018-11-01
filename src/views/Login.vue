@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import { requestLogin, selectTree } from '../api/api';
+  import { requestLogin, selectTree, getDictionary } from '../api/api';
   import { setCookie } from '../utils/utils';
   //import NProgress from 'nprogress'
   export default {
@@ -68,9 +68,12 @@
               setCookie('token',response.token,1)
               localStorage.setItem("userInfo",JSON.stringify(response.content));
               selectTree().then((res) => {
-                this.logining = false;
-                localStorage.setItem("allows",JSON.stringify(res.content))
-                this.$router.push({ path: '/form' });
+                getDictionary().then((re) => {
+                  this.logining = false;
+                  localStorage.setItem("dictionary",JSON.stringify(re.content))
+                  localStorage.setItem("allows",JSON.stringify(res.content))
+                  this.$router.push({ path: '/form' });
+                })
               }).catch(err=>{this.listLoading = false;})   
             }).catch(err => {
               this.captchaSrc ++;

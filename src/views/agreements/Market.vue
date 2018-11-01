@@ -85,18 +85,22 @@
 	export default {
 		data(){
 			return {
+				dictionary: JSON.parse(localStorage.dictionary),
 				filters:{//查询表单数据
 					marketCode: "",
 					marketName: "",
 					status: "",
 				},
 				statusOptions: [{
-						value: "A",
-						label: "已激活"
-					},{
-						value: "C",
-						label: "已作废"
-					}],
+					value: "",
+					label: "全部"
+				},{
+					value: "A",
+					label: "激活"
+				},{
+					value: "C",
+					label: "作废"
+				}],
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				addLoading: false,//增改加载中标识
@@ -123,10 +127,7 @@
 			},
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
-				switch(cellValue){
-					case "A": return "已激活";
-					case "C": return "已作废";
-				}
+				return this.dictionary.CommonStatus[cellValue]
 			},
 			// 获取市场列表
 			getMarket(){
@@ -149,6 +150,10 @@
 					status: row.status === "A" ? "C" : "A"
 				}).then(res => {
 					this.listLoading = false;
+					this.$message({
+						message: '修改市场状态成功！',
+						type: 'success'
+					});
 					this.getMarket();
 				}).catch(err=>{this.listLoading = false;});
 			},

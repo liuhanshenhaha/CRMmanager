@@ -4,6 +4,8 @@ import { getData, postData} from '../utils/http-service';
 export const requestLogin = params => { return postData(`/login`, params) };
 // 目录树
 export const selectTree = params => { return postData(`/menu/selectTree`) };
+// 字典
+export const getDictionary = params => { return postData(`/util/getData`) };
 
 //合约管理 - 市场管理
 export const marketQuest = {
@@ -29,7 +31,7 @@ export const contractQuest = {
 //合约管理 - 商品管理
 export const goodsQuest = {
 	getGoods: (params) => { return postData(`/goods/selectByRecord`, params) },//获取商品列表
-	addContract: (params) => { return postData(`/contract/add`, params) },//新增合约
+	addGoods: (params) => { return postData(`/goods/add`, params) },//新增商品
 	modifyStatus: (params) => { return postData(`/contract/modifyStatus`, params) },//修改状态
 	addMarket: (params) => { return postData(`/contract/add`, params) },//新增市场
 	modifyMarket: (params) => { return postData(`/contract/modify`, params) },//修改市场

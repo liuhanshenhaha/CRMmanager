@@ -17,7 +17,7 @@
 				</el-form-item>
 				<el-form-item>
 					<el-select v-model="filters.status" placeholder="状态">
-						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						<el-option v-for="item in filterStatusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item>
@@ -43,7 +43,7 @@
 			</el-table-column>
 			<el-table-column prop="lastTradeDate" label="最后交易时间" sortable width="200">
 			</el-table-column>
-			<el-table-column prop="dayClose" label="每日强平时间" width="150">
+			<el-table-column prop="dayClose" label="每日强平时间" width="150" :formatter="dayCloseFormat">
 			</el-table-column>
 			<el-table-column prop="dayOpen" label="每日开盘时间" width="150">
 			</el-table-column>
@@ -198,11 +198,11 @@
 				</el-table-column>
 				<el-table-column prop="overTime" label="结束时间">
 				</el-table-column>
-				<el-table-column prop="overTimeNextDay" label="结束时间是否跨天">
+				<el-table-column prop="overTimeNextDay" label="结束时间是否跨天" :formatter="YNFormatter">
 				</el-table-column>
-				<el-table-column prop="type" label="类别">
+				<el-table-column prop="type" label="类别" :formatter="typeFormatter">
 				</el-table-column>
-				<el-table-column prop="status" label="状态">
+				<el-table-column prop="status" label="状态" :formatter="commonStatusFormat">
 				</el-table-column>
 				<el-table-column prop="remark" label="备注">
 				</el-table-column>
@@ -276,6 +276,7 @@
 	export default {
 		data(){
 			return {
+				dictionary: JSON.parse(localStorage.dictionary),
 				filters:{//查询表单数据
 					contractCode: "",
 					contractName: "",
@@ -285,6 +286,22 @@
 					pageSize: 10,//默认查询每页记录数
 					pageNo: ""
 				},
+				filterStatusOptions: [{
+					value: "",
+					label: "全部"
+				},{
+					value: "A",
+					label: "激活"
+				},{
+					value: "C",
+					label: "作废"
+				},{
+					value: "T",
+					label: "禁止交易"
+				},{
+					value: "S",
+					label: "只能平仓"
+				}],
 				statusOptions: [{
 					value: "A",
 					label: "激活"
@@ -298,16 +315,16 @@
 					value: "S",
 					label: "只能平仓"
 				}],
-				typeOptions: [{
-					value: 1,
-					label: "开仓"
-				},{
-					value: 2,
-					label: "平仓"
-				},{
-					value: 3,
-					label: "撤销"
-				}],
+				typeOptions: (() => {
+					let temp = [];
+					for(let key in JSON.parse(localStorage.dictionary).TradeTimeType){
+						temp.push({
+							value: key,
+							label: JSON.parse(localStorage.dictionary).TradeTimeType[key]
+						})
+					}
+					return temp;
+				})(),
 				goodListOptions: [],//商品列表
 				contractListOptions: [],//商品对应的有效合约列表
 				tableData: [],//表格数据
@@ -366,6 +383,18 @@
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
 				return this.statusOptions.map(item => item.value === cellValue ? item.label : "")
+			},
+			commonStatusFormat(row, col, cellValue){
+				return this.dictionary.CommonStatus[cellValue]
+			},
+			YNFormatter(row, col, cellValue){
+				return this.dictionary.YesOrNoEnum[cellValue]
+			},
+			typeFormatter(row, col, cellValue){
+				return this.dictionary.TradeTimeType[cellValue]
+			},
+			dayCloseFormat(row, col, cellValue){
+				return cellValue.replace(/\Y/g,"允许隔夜").replace(/\N/g,"不允许隔夜")
 			},
 			// 获取商品列表
 			getGoods(){
