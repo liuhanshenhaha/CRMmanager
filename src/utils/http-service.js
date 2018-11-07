@@ -38,6 +38,7 @@ instance.interceptors.response.use((response) => {
       Message.error(data.msg)
       return Promise.reject(response.data)
     }
+    data.msg.length>3&&Message.success(data.msg)
     return Promise.resolve(response)
   }else{
     const err = new Error("未知错误，请重试")

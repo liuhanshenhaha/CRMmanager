@@ -778,18 +778,10 @@
 							case "add":contractQuest.addContract(this.modifyForm).then(res=>{
 								this.modifyLoading=false;
 								this.getContract(this.filters.pageNo)
-								this.$message({
-									message: '新增合约成功！',
-									type: 'success'
-								});
 							}).catch(err=>this.modifyLoading=false);break;
 							case "update":contractQuest.modifyContract(this.modifyForm).then(res=>{
 								this.modifyLoading=false;
 								this.getContract(this.filters.pageNo)
-								this.$message({
-									message: '修改合约成功！',
-									type: 'success'
-								});
 							}).catch(err=>this.modifyLoading=false);break;
 						}
 					}else{
@@ -806,10 +798,6 @@
 				}).then(res => {
 					this.modifyFormVisible3 = false;
 					this.getContract(this.filters.pageNo);
-					this.$message({
-						message: '修改合约状态成功！',
-						type: 'success'
-					});
 				}).catch(err=>this.modifyLoading=false)
 			},
 			subUpdate(){
@@ -828,10 +816,6 @@
 									this.getSettings(this.settingContractId)
 									this.modifyLoading = false;
 									this.modifyFormVisible4 = false;
-									this.$message({
-										message: '添加成功！',
-										type: 'success'
-									});
 								}).catch(err => this.modifyLoading = false);
 								break;
 							case "subEdit": 
@@ -841,10 +825,6 @@
 									this.getSettings(this.settingContractId)
 									this.modifyLoading = false;
 									this.modifyFormVisible4 = false;
-									this.$message({
-										message: '修改状态成功！',
-										type: 'success'
-									});
 								}).catch(err => this.modifyLoading = false);
 								break;
 						}
@@ -866,10 +846,6 @@
 									this.getDate(this.settingContractId)
 									this.modifyLoading = false;
 									this.modifyFormVisible6 = false;
-									this.$message({
-										message: '添加成功！',
-										type: 'success'
-									});
 								}).catch(err => this.modifyLoading = false);
 								break;
 							case "subEdit2": 
@@ -879,10 +855,6 @@
 									this.getDate(this.settingContractId)
 									this.modifyLoading = false;
 									this.modifyFormVisible6 = false;
-									this.$message({
-										message: '修改状态成功！',
-										type: 'success'
-									});
 								}).catch(err => this.modifyLoading = false);
 								break;
 						}

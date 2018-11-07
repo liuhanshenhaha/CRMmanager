@@ -1,6 +1,7 @@
 const allows = JSON.parse(localStorage.getItem("allows")) || [];//权限相关信息
 
 import Login from './views/Login.vue'//登陆
+import CustomerRegister from './views/CustomerRegister.vue'//客户开户
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'//框架
 import Main from './views/Main.vue'//空框架
@@ -23,6 +24,12 @@ let routes = [
     {
         path: '/login',
         component: Login,
+        name: '',
+        hidden: true
+    },
+    {
+        path: '/customer-register',
+        component: CustomerRegister,
         name: '',
         hidden: true
     },

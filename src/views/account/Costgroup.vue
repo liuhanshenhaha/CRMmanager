@@ -1,7 +1,8 @@
 <template>
 	<section>
 		<el-row :gutter="20">
-			<el-col :span="11" :xs="24">
+			<el-col :span="11" :xs="24" class="goodsGroupTable">
+				<el-button class="goodsGroupAddBtn" type="primary" size="small" @click="()=>showGoodsGroup('add')">添加商品组</el-button>
 				<!--成本组列表-->
 				<el-table stripe border fixed :data="groupData" highlight-current-row @current-change="(currentRow)=>getGoods(currentRow.id)" v-loading="listLoading1">
 					<el-table-column label="成本组">
@@ -10,6 +11,13 @@
 						<el-table-column prop="status" label="状态" :formatter="statusFormat">
 						</el-table-column>
 						<el-table-column prop="userType" label="用户类型" :formatter="userTypeFormat">
+						</el-table-column>
+						<el-table-column label="操作" align="center" fixed="right" width="140">
+							<template slot-scope="scope">
+								<el-button type="primary" size="small" @click="()=>showGoodsGroup('modify',scope.row)">编辑</el-button>
+								<el-button type="success" v-if="!Boolean(scope.row.status)" size="small" @click="()=>modifyStatusGoodsGroup(scope.row)">激活</el-button>
+								<el-button type="danger" v-if="Boolean(scope.row.status)" size="small" @click="()=>modifyStatusGoodsGroup(scope.row)">作废</el-button>
+							</template>
 						</el-table-column>
 					</el-table-column>
 				</el-table>				
@@ -73,11 +81,36 @@
 				<el-button type="primary" @click.native="addGoods" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
+
+		<!--新增成本组界面-->
+		<el-dialog :title="type === 'add' ? '新增成本组' : '编辑成本组'" v-model="addGoodsGroupVisible" :close-on-click-modal="false">
+			<el-form :model="addGoodsGroupForm" ref="addGoodsGroupForm" label-width="100px">
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="成本组名称" prop="goodsGroupName" :rules="[{required:true,message:'请输入成本组名称'}]">
+							<el-input type="text" v-model.number="addGoodsGroupForm.goodsGroupName">
+							</el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="用户类型" prop="userType" :rules="[{required:true,message:'请选择用户类型'}]">
+							<el-select v-model="addGoodsGroupForm.userType" placeholder="用户类型">
+								<el-option v-for="item in userTypeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="addGoodsGroupVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="addGoodsGroup" :loading="addLoading">提交</el-button>
+			</div>
+		</el-dialog>
 	</section>
 </template>
 
 <script>
-	import { formatters } from "../../utils/utils"
+	import { formatters,buildOptions } from "../../utils/utils"
 	import { accountQuest } from "../../api/api"
 	export default {
 		data(){
@@ -114,12 +147,19 @@
 					commissionValue: ""
 				},
 				commissionRules: [
-					{required:true,message:'请输入客户成本'},
+					{required:true, message:'请输入客户成本'},
 					{type:'number', message: '客户成本必须为数字值'},
 					{validator: commissionCondition,trigger: 'blur'}
 				],
 				commissionType: "",//客户成本类型
 				batchAddData: "",//批量添加的ids
+				addGoodsGroupVisible: false,
+				type: "add",
+				addGoodsGroupForm:{
+					goodsGroupName: "",
+					userType: ""
+				},
+				userTypeOptions: buildOptions("UserType")
 			}
 		},
 		created(){
@@ -178,10 +218,6 @@
 					id: this.goodsData[this.editingRow].id,
 					commissionValue: Number(this.goodsData[this.editingRow].commissionValue)
 				}).then(res => {
-					this.$message({
-						message: '修改客户成本成功！',
-						type: 'success'
-					});
 					this.editingRow = -1;
 				}).catch(err => {
 					this.errorRow = this.editingRow;
@@ -210,12 +246,62 @@
 								this.addGoodsVisible = false;
 								this.commissionForm.commissionValue = "";
 								this.getGoods(this.currentGroupId);
-								this.$message({message: res.msg,type:'success'})
 							}).catch(err=>{this.addLoading = false;});
 						}else{
 							this.$message.error("请选择商品！")
 						}
 					}
+				})
+			},
+			showGoodsGroup(type,row){
+				switch(type){
+					case 'add':
+						this.addGoodsGroupVisible = true;
+						this.type = 'add';
+						this.addGoodsGroupForm = {
+							goodsGroupName: "",
+							userType: ""
+						};
+						break;
+					case 'modify':
+						this.addGoodsGroupVisible = true;
+						this.type = 'modify';
+						this.addGoodsGroupForm = {
+							goodsGroupName: row.goodsGroupName,
+							userType: row.userType,
+							id: row.id
+						};
+						break;
+				}
+			},
+			addGoodsGroup(row){
+				this.$refs.addGoodsGroupForm.validate(valid => {
+					if(valid){
+						this.addLoading = true;
+						if(this.type === "add"){
+							accountQuest.addGroup(this.addGoodsGroupForm).then(res => {
+								this.addLoading = false;
+								this.addGoodsGroupVisible = false;
+								this.getGroup();
+							}).catch(error => this.addLoading = false);
+						}else{
+							accountQuest.modifyGroup(this.addGoodsGroupForm).then(res => {
+								this.addLoading = false;
+								this.addGoodsGroupVisible = false;
+								this.getGroup();
+							}).catch(error => this.addLoading = false);
+						}
+					}
+				})
+			},
+			modifyStatusGoodsGroup(row){
+				accountQuest.modifyStatusGroup({
+					id: row.id,
+					status: row.status ? 0 : 1
+				}).then(res => {
+					this.addLoading = false;
+					this.addGoodsGroupVisible = false;
+					this.getGroup();
 				})
 			}
 		}

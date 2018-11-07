@@ -128,10 +128,6 @@
 					status: row.status ? 0 : 1
 				}).then(res => {
 					this.listLoading = false;
-					this.$message({
-						message: '修改市场状态成功！',
-						type: 'success'
-					});
 					this.getMarket();
 				}).catch(err=>{this.listLoading = false;});
 			},

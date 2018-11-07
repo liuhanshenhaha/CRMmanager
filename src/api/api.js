@@ -44,8 +44,12 @@ export const goodsQuest = {
 //账户管理 - 成本组管理
 export const accountQuest = {
 	getGroup: (params) => { return postData(`/goods/group/selectByRecord`, params) },//获取成本组列表
+	addGroup: (params) => { return postData(`/goods/group/add`, params) },//新增成本组
+	modifyGroup: (params) => { return postData(`/goods/group/modify`, params) },//修改成本组
+	modifyStatusGroup: (params) => { return postData(`/goods/group/modifyStatus`, params) },//删除成本组
 	getGoods: (params) => { return postData(`/goods/group/detail/selectMyCostByGoodsGroupId`, params) },//获取成本组商品列表
 	modifyGoods: (params) => { return postData(`/goods/group/detail/modify`, params) },//修改客户成本
 	getNotAddedGoods: (params) => { return postData(`/goods/group/detail/selectNoConfigByGoodsGroupId`, params) },//查看未添加的商品
 	addBatch: (params) => { return postData(`/goods/group/detail/addBatch`, params) },//批量添加商品
+	uploadPic: (params) => { return postData(`/agent/uploadPic`, params) },//上传图片
 };
