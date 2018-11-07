@@ -62,3 +62,20 @@ export function dateFormat(date, pattern) {
         }
     });
 }
+
+export function formatters(type,value){
+    let dictionary = localStorage.dictionary && JSON.parse(localStorage.dictionary);
+    switch(type){
+        case "date": return dateFormat(value);
+        default: return dictionary[type] ? dictionary[type][value] : value;
+    }
+}
+
+export function buildOptions(type,hasAll){
+    let dictionary = localStorage.dictionary && JSON.parse(localStorage.dictionary),
+        options = Object.keys(dictionary[type]).map(item => ({value:Number(item),label:dictionary[type][item]}))
+    if(hasAll){
+        options.unshift({value:"",label:"全部"})
+    }
+    return options;
+}

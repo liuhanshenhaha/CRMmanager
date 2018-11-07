@@ -33,19 +33,11 @@
 			</el-table-column>
 			<el-table-column prop="remark" label="备注" sortable width="200">
 			</el-table-column>
-			<el-table-column prop="createBy" label="创建人" sortable width="100">
-			</el-table-column>
-			<el-table-column prop="createTime" label="创建时间" sortable width="150" :formatter="dateFormat">
-			</el-table-column>
-			<el-table-column prop="modifyBy" label="更新人" sortable width="100">
-			</el-table-column>
-			<el-table-column prop="modifyTime" label="更新时间" sortable width="150" :formatter="dateFormat">
-			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="150">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click="modifyMarket(scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" v-if="scope.row.status === 'A'" @click="modifyStatus(scope.row)">作废</el-button>
-					<el-button type="success" size="small" v-if="scope.row.status === 'C'" @click="modifyStatus(scope.row)">激活</el-button>
+					<el-button type="danger" size="small" v-if="Boolean(scope.row.status)" @click="modifyStatus(scope.row)">作废</el-button>
+					<el-button type="success" size="small" v-if="!Boolean(scope.row.status)" @click="modifyStatus(scope.row)">激活</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -80,27 +72,17 @@
 </template>
 
 <script>
-	import { dateFormat } from "../../utils/utils"
+	import { formatters,buildOptions } from "../../utils/utils"
 	import { marketQuest } from "../../api/api"
 	export default {
 		data(){
 			return {
-				dictionary: JSON.parse(localStorage.dictionary),
 				filters:{//查询表单数据
 					marketCode: "",
 					marketName: "",
 					status: "",
 				},
-				statusOptions: [{
-					value: "",
-					label: "全部"
-				},{
-					value: "A",
-					label: "激活"
-				},{
-					value: "C",
-					label: "作废"
-				}],
+				statusOptions: buildOptions("CommonStatus",true),
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				addLoading: false,//增改加载中标识
@@ -121,13 +103,9 @@
 			this.getMarket()
 		},
 		methods:{
-			// 表格数据格式化 日期
-			dateFormat(row, col, cellValue){
-				return dateFormat(new Date(cellValue))
-			},
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
-				return this.dictionary.CommonStatus[cellValue]
+				return formatters("CommonStatus",cellValue)
 			},
 			// 获取市场列表
 			getMarket(){
@@ -147,7 +125,7 @@
 				this.listLoading = true;
 				marketQuest.modifyStatus({
 					id: row.id,
-					status: row.status === "A" ? "C" : "A"
+					status: row.status ? 0 : 1
 				}).then(res => {
 					this.listLoading = false;
 					this.$message({

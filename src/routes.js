@@ -7,9 +7,10 @@ import Main from './views/Main.vue'//空框架
 // 合约管理
 import Market from './views/agreements/Market.vue'//市场管理
 import Contract from './views/agreements/Contract.vue'//市场管理
-import Goods from './views/agreements/Goods.vue'//市场管理
+// import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
 import Agent from './views/account/Agent.vue'//代理信息
+import Costgroup from './views/account/Costgroup.vue'//代理信息
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -49,7 +50,7 @@ let routes = [
             { path: 'contract', component: Contract, name: '代理设置列表' },
             { path: '1', component: Form, name: '客户设置列表' },
             { path: '2', component: Form, name: '账户配置' },
-            { path: '3', component: Form, name: '成本组设置' },
+            { path: 'costgroup', component: Costgroup, name: '成本组设置' },
         ]
     },
     {
@@ -87,10 +88,11 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '资金划转' },
+            { path: 'market', component: Market, name: '资金流水' },
+            { path: 'market2', component: Market, name: '出入金流水' },
+            { path: 'market3', component: Market, name: '资金划转' },
             { path: 'form', component: Form, name: '转账审核' },
             { path: 'contract', component: Contract, name: '出金审核' },
-            { path: '1', component: Form, name: '佣金审核' },
             { path: '2', component: Form, name: '汇率列表' },
         ]
     },
@@ -109,22 +111,12 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '出入金报表 ',
-        iconCls: 'fa el-icon-document',//图标样式class
-        hidden: false,
-        leaf: true,
-        children: [
-            { path: '1', component: Page6, name: '出入金报表' }
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
         name: '佣金管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
             { path: 'market', component: Market, name: '佣金汇总' },
+            { path: '1', component: Form, name: '佣金审核' },
             { path: 'form', component: Form, name: '佣金明细' },
         ]
     },
@@ -162,17 +154,6 @@ let routes = [
         ]
     },
     {
-        path: '/',
-        component: Home,
-        name: '清算 ',
-        iconCls: 'fa el-icon-document',//图标样式class
-        hidden: false,
-        children: [
-            { path: 'market', component: Market, name: '合约清算' },
-            { path: 'form', component: Form, name: '各单位清算' },
-        ]
-    },
-    {
         path: '/contract',
         component: Home,
         name: '合约管理 ',
@@ -180,10 +161,8 @@ let routes = [
         hidden: false,
         children: [
             { path: 'market', component: Market, name: '交易市场' },
-            { path: 'goods', component: Goods, name: '交易商品' },
+            // { path: 'goods', component: Goods, name: '交易商品' },
             { path: 'contract', component: Contract, name: '合约列表' },
-            { path: '1', component: Form, name: '开市时间' },
-            { path: '2', component: Form, name: '休市列表' },
         ]
     },
     {
