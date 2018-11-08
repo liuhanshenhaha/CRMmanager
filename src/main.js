@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
     delCookie('token');
   }
   let token = getCookie('token');
-  if (!token && to.path != '/login') {
+  if (!token && to.path != '/login' && to.path != "/customer-register") {
     next({ path: '/login' })
   } else {
     next()

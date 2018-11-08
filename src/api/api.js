@@ -52,4 +52,5 @@ export const accountQuest = {
 	getNotAddedGoods: (params) => { return postData(`/goods/group/detail/selectNoConfigByGoodsGroupId`, params) },//查看未添加的商品
 	addBatch: (params) => { return postData(`/goods/group/detail/addBatch`, params) },//批量添加商品
 	uploadPic: (params) => { return postData(`/agent/uploadPic`, params) },//上传图片
+	customerRegister: (params) => { return postData(`/customer/register`, params) },//客户开户
 };

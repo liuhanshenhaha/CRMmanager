@@ -57,6 +57,8 @@
 			</el-table-column>
 			<el-table-column prop="lastTradeDate" label="最后交易时间" sortable width="200">
 			</el-table-column>
+			<el-table-column prop="lastOpenDate" label="最后开仓日期" sortable width="200">
+			</el-table-column>
 			<el-table-column prop="status" label="状态" sortable width="150" :formatter="statusFormat">
 			</el-table-column>
 			<el-table-column prop="remark" label="备注" width="150">
@@ -120,6 +122,13 @@
 					<el-col :span="12" :xs="24">
 						<el-form-item label="最后交易时间" prop="lastTradeDate">
 							<el-date-picker :editable="false" v-model="modifyForm.lastTradeDate" type="datetime" placeholder="最后交易时间"></el-date-picker>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="最后开仓日期" prop="lastOpenDate">
+							<el-date-picker :editable="false" v-model="modifyForm.lastOpenDate" type="datetime" placeholder="最后开仓日期"></el-date-picker>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -405,7 +414,7 @@
 					pageSize: 10,//默认查询每页记录数
 					pageNo: ""
 				},
-				filterStatusOptions: buildOptions("CommonStatus",true),
+				filterStatusOptions: buildOptions("ContractStatus",true),
 				statusOptions: buildOptions("CommonStatus"),
 				typeOptions: (() => {
 					let temp = [];
@@ -444,6 +453,7 @@
 					contractName: "",
 					firstTradeDate: "",
 					lastTradeDate: "",
+					lastOpenDate: "",
 					dayClose: "",
 					dayOpen: "",
 					tempDayOpen: [],
@@ -455,7 +465,8 @@
 					contractCode: [{required: true, message: '请输入合约代码', trigger: 'blur'}],
 					contractName: [{required: true, message: '请输入合约名称', trigger: 'blur'}],
 					firstTradeDate: [{type:'date',required: true, message: '请设置首次交易时间', trigger: 'blur'}],
-					lastTradeDate: [{type:'date',required: true, message: '请设置最后交易时间', trigger: 'blur'}]
+					lastTradeDate: [{type:'date',required: true, message: '请设置最后交易时间', trigger: 'blur'}],
+					lastOpenDate: [{type:'date',required: true, message: '请设置最后开仓时间', trigger: 'blur'}],
 				},
 				modifyStatusData: [],//修改状态弹窗数据
 				settingContractId: "",//配置中的合约ID
@@ -492,7 +503,7 @@
 		methods:{
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
-				return formatters("CommonStatus",cellValue)
+				return formatters("ContractStatus",cellValue)
 			},
 			// 获取商品列表
 			getGoods(){
@@ -591,6 +602,7 @@
 							contractName: "",
 							firstTradeDate: "",
 							lastTradeDate: "",
+							lastOpenDate: "",
 							dayClose: "",
 							dayOpen: "",
 							tempDayOpen: [{
@@ -614,6 +626,7 @@
 							contractName: row.contractName,
 							firstTradeDate: new Date(row.firstTradeDate),
 							lastTradeDate: new Date(row.lastTradeDate),
+							lastOpenDate: new Date(row.lastOpenDate),
 							dayClose: row.dayClose,
 							dayOpen: row.dayOpen,
 							tempDayOpen: row.dayOpen.split(";").map((item,index) => {

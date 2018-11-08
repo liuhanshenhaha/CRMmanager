@@ -29,7 +29,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/xtjichu': {
-            target: 'http://128.1.132.11:8080',  //目标接口域名
+            // target: 'http://128.1.132.11:8080',  //目标接口域名
+            target: 'http://192.168.100.103:8080',  //目标接口域名
             changeOrigin: true,  //是否跨域
             // pathRewrite: {
             //     '^/api': ''   //重写接口
