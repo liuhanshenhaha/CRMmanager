@@ -12,6 +12,8 @@ import Contract from './views/agreements/Contract.vue'//市场管理
 // 账户管理
 import Agent from './views/account/Agent.vue'//代理信息
 import Costgroup from './views/account/Costgroup.vue'//代理信息
+// 审核
+import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -76,14 +78,14 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/audit',
         component: Home,
         name: '后台审核 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
             { path: 'market', component: Market, name: '代理审核' },
-            { path: 'form', component: Form, name: '客户审核' },
+            { path: 'customer', component: CustomerAudit, name: '客户审核' },
             { path: 'contract', component: Contract, name: '换绑银行卡审核' },
             { path: '1', component: Form, name: '切换IB关系审核' },
         ]
