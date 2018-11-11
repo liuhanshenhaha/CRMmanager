@@ -58,11 +58,10 @@
 					<el-button type="primary" size="small" @click="viewPics(scope.row.id)">查看</el-button>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="220">
+			<el-table-column label="操作" align="center" fixed="right" width="160">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click="()=>pass(scope.row)">通过</el-button>
-					<el-button size="small" @click="()=>reject(scope.row)">拒绝</el-button>
-					<el-button type="danger" size="small" @click="()=>delete(scope.row)">删除</el-button>
+					<el-button type="danger" size="small" @click="()=>reject(scope.row)">拒绝</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
