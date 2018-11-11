@@ -238,17 +238,34 @@
 				<el-row :gutter="20"  v-for="(openItem,index) in modifyForm.tempOpenTradeTime" :key="'openTradeTime'+ index">
 					<el-col :span="12" :xs="24">
 						<el-form-item :label="index === 0 ? '开仓时间': ''" :prop="'tempOpenTradeTime.'+index+'.openTradeTime'" :rules="{type:'date',required: index === 0, message: '请设置至少一个开仓时间', trigger: 'blur'}">
-							<el-time-picker :editable="false" v-model="openItem.openTradeTime" placeholder="开仓时间"></el-time-picker>
+							<el-time-picker is-range range-separator="-" :editable="false" v-model="openItem.openTradeTime" placeholder="开仓时间"></el-time-picker>
 						</el-form-item>
 					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempDayClose.length - 1">
+					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempOpenTradeTime.length - 1">
 						<el-form-item>
-							<el-button type="primary" @click.native="()=>addDaily('dayClose')">新增每日强平时间</el-button>
+							<el-button type="primary" @click.native="()=>addDaily('openTime')">新增开仓时间</el-button>
 						</el-form-item>
 					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempDayClose.length - 1">
+					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempOpenTradeTime.length - 1">
 						<el-form-item>
-							<el-button type="danger" @click.native="()=>removeDaily('dayClose',index)">删除每日强平时间</el-button>
+							<el-button type="danger" @click.native="()=>removeDaily('openTime',index)">删除开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-for="(closeItem,index) in modifyForm.tempCloseTradeTime" :key="'closeTradeTime'+ index">
+					<el-col :span="12" :xs="24">
+						<el-form-item :label="index === 0 ? '平仓时间': ''" :prop="'tempCloseTradeTime.'+index+'.closeTradeTime'" :rules="{type:'date',required: index === 0, message: '请设置至少一个平仓时间', trigger: 'blur'}">
+							<el-time-picker is-range range-separator="-" :editable="false" v-model="closeItem.closeTradeTime" placeholder="平仓时间"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempCloseTradeTime.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('closeTime')">新增平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempCloseTradeTime.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDaily('closeTime',index)">删除平仓时间</el-button>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -491,7 +508,35 @@
 									tempDayCloseTime: tempDate,
 									tempDayCloseOvernight: item.split("-")[1] === "Y",
 								}
-							})
+							}),
+							closeTradeTime: row.closeTradeTime,
+							tempCloseTradeTime: row.closeTradeTime.split(";").map(item => {
+								let tempDate1 = new Date();
+								let tempDate2 = new Date();
+								tempDate1.setHours(item.split("-")[0].split(":")[0])
+								tempDate1.setMinutes(item.split("-")[0].split(":")[1])
+								tempDate1.setSeconds(item.split("-")[0].split(":")[2])
+								tempDate2.setHours(item.split("-")[1].split(":")[0])
+								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
+								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
+								return {
+									closeTradeTime: [tempDate1,tempDate2]
+								}
+							}),
+							openTradeTime: row.openTradeTime,
+							tempOpenTradeTime: row.openTradeTime.split(";").map(item => {
+								let tempDate1 = new Date();
+								let tempDate2 = new Date();
+								tempDate1.setHours(item.split("-")[0].split(":")[0])
+								tempDate1.setMinutes(item.split("-")[0].split(":")[1])
+								tempDate1.setSeconds(item.split("-")[0].split(":")[2])
+								tempDate2.setHours(item.split("-")[1].split(":")[0])
+								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
+								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
+								return {
+									openTradeTime: [tempDate1,tempDate2]
+								}
+							}),
 						};
 						break;
 				}
@@ -518,6 +563,14 @@
 						tempDayCloseTime: new Date().setSeconds(0),
 						tempDayCloseOvernight: false,
 					})
+				}else if(type === "openTime"){
+					this.modifyForm.tempOpenTradeTime.push({
+						openTradeTime: [new Date(),new Date()]
+					})
+				}else if(type === "closeTime"){
+					this.modifyForm.tempCloseTradeTime.push({
+						closeTradeTime: [new Date(),new Date()]
+					})
 				}
 			},
 			/*
@@ -529,6 +582,10 @@
 					this.modifyForm.tempDayOpen.splice(index,1)
 				}else if(type === "dayClose"){
 					this.modifyForm.tempDayClose.splice(index,1)
+				}else if(type === "openTime"){
+					this.modifyForm.tempOpenTradeTime.splice(index,1)
+				}else if(type === "closeTime"){
+					this.modifyForm.tempCloseTradeTime.splice(index,1)
 				}
 			},
 			updateDayClose(){
