@@ -3,9 +3,9 @@
 		<el-row :gutter="20">
 			<el-col :span="11" :xs="24" class="goodsGroupTable">
 				<el-button class="goodsGroupAddBtn" type="primary" size="small" @click="()=>showGoodsGroup('add')">添加商品组</el-button>
-				<!--成本组列表-->
+				<!--佣金组列表-->
 				<el-table stripe border fixed :data="groupData" highlight-current-row @current-change="(currentRow)=>getGoods(currentRow.id)" v-loading="listLoading1">
-					<el-table-column label="成本组">
+					<el-table-column label="佣金组">
 						<el-table-column prop="goodsGroupName" label="商品组名称">
 						</el-table-column>
 						<el-table-column prop="status" label="状态" :formatter="statusFormat">
@@ -24,9 +24,9 @@
 			</el-col>
 			<el-col :span="13" :xs="24" class="goodsGroupTable" v-if="showGoodsTable">
 				<el-button class="goodsGroupAddGoodBtn" type="primary" size="small" @click="showNotAddedGoodsTable">添加商品</el-button>
-				<!--成本组商品列表-->
+				<!--佣金组商品列表-->
 				<el-table stripe border fixed :data="goodsData" v-loading="listLoading2" :row-class-name="tableRowClassName">
-					<el-table-column label="成本组商品">
+					<el-table-column label="佣金组商品">
 						<el-table-column prop="goodsCode" label="商品代码">
 						</el-table-column>
 						<el-table-column prop="goodsName" label="商品名称">
@@ -82,12 +82,12 @@
 			</div>
 		</el-dialog>
 
-		<!--新增成本组界面-->
-		<el-dialog :title="type === 'add' ? '新增成本组' : '编辑成本组'" v-model="addGoodsGroupVisible" :close-on-click-modal="false">
+		<!--新增佣金组界面-->
+		<el-dialog :title="type === 'add' ? '新增佣金组' : '编辑佣金组'" v-model="addGoodsGroupVisible" :close-on-click-modal="false">
 			<el-form :model="addGoodsGroupForm" ref="addGoodsGroupForm" label-width="100px">
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
-						<el-form-item label="成本组名称" prop="goodsGroupName" :rules="[{required:true,message:'请输入成本组名称'}]">
+						<el-form-item label="佣金组名称" prop="goodsGroupName" :rules="[{required:true,message:'请输入佣金组名称'}]">
 							<el-input type="text" v-model.number="addGoodsGroupForm.goodsGroupName">
 							</el-input>
 						</el-form-item>
@@ -131,12 +131,12 @@
 			}
 			return {
 				dictionary: JSON.parse(localStorage.dictionary),
-				groupData: [],//成本组列表
+				groupData: [],//佣金组列表
 				goodsData: [],//已添加的商品列表
 				notAddedGoodsData: [],//未添加的商品列表
-				currentGroupId: null,//当前操作的成本组id
+				currentGroupId: null,//当前操作的佣金组id
 				showGoodsTable: false,//默认不显示商品列表
-				listLoading1: false,//成本组表格加载标识
+				listLoading1: false,//佣金组表格加载标识
 				listLoading2: false,//商品表格加载标识
 				listLoading3: false,//商品表格加载标识
 				editingRow: -1,//当前编辑的行号
@@ -178,15 +178,15 @@
 			myCostFormatter(row, col, cellValue){
 				return Boolean(cellValue) ? cellValue : 0;
 			},
-			// 获取成本组列表
+			// 获取佣金组列表
 			getGroup(){
 				this.listLoading1 = true;
-				accountQuest.getGroup().then(res => {
+				accountQuest.getGroup({}).then(res => {
 					this.groupData = res.content;
 					this.listLoading1 = false;
 				}).catch(err=>{this.listLoading1 = false;});
 			},
-			// 获取成本组对应的商品列表
+			// 获取佣金组对应的商品列表
 			getGoods(id){
 				this.showGoodsTable = true;
 				this.listLoading2 = true;

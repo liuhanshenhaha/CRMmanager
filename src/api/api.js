@@ -36,21 +36,26 @@ export const contractQuest = {
 export const goodsQuest = {
 	getGoods: (params) => { return postData(`/goods/selectByRecord`, params) },//获取商品列表
 	addGoods: (params) => { return postData(`/goods/add`, params) },//新增商品
-	modifyStatus: (params) => { return postData(`/contract/modifyStatus`, params) },//修改状态
+	modifyStatus: (params) => { return postData(`/goods/modifyStatus`, params) },//修改状态
 	addMarket: (params) => { return postData(`/contract/add`, params) },//新增市场
 	modifyMarket: (params) => { return postData(`/contract/modify`, params) },//修改市场
 };
 
-//账户管理 - 成本组管理
+//账户管理
 export const accountQuest = {
-	getGroup: (params) => { return postData(`/goods/group/selectByRecord`, params) },//获取成本组列表
-	addGroup: (params) => { return postData(`/goods/group/add`, params) },//新增成本组
-	modifyGroup: (params) => { return postData(`/goods/group/modify`, params) },//修改成本组
-	modifyStatusGroup: (params) => { return postData(`/goods/group/modifyStatus`, params) },//删除成本组
-	getGoods: (params) => { return postData(`/goods/group/detail/selectMyCostByGoodsGroupId`, params) },//获取成本组商品列表
+	getGroup: (params) => { return postData(`/goods/group/selectByOwner`, params) },//获取佣金组列表
+	addGroup: (params) => { return postData(`/goods/group/add`, params) },//新增佣金组
+	modifyGroup: (params) => { return postData(`/goods/group/modify`, params) },//修改佣金组
+	modifyStatusGroup: (params) => { return postData(`/goods/group/modifyStatus`, params) },//删除佣金组
+	getGoods: (params) => { return postData(`/goods/group/detail/selectMyCostByGoodsGroupId`, params) },//获取佣金组商品列表
 	modifyGoods: (params) => { return postData(`/goods/group/detail/modify`, params) },//修改客户成本
 	getNotAddedGoods: (params) => { return postData(`/goods/group/detail/selectNoConfigByGoodsGroupId`, params) },//查看未添加的商品
 	addBatch: (params) => { return postData(`/goods/group/detail/addBatch`, params) },//批量添加商品
 	uploadPic: (params) => { return postData(`/agent/uploadPic`, params) },//上传图片
 	customerRegister: (params) => { return postData(`/customer/register`, params) },//客户开户
+	auditList: (params) => { return postData(`/agent/audit/list`, params) },//客户/代理待审核列表
+	getAuditInfo: (params) => { return postData(`/agent/get`, params) },//获取客户/代理信息
+	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
+	getRoleId: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
+	customerAudit: (params) => { return postData(`/customer/audit`, params) },//客户审核通过
 };

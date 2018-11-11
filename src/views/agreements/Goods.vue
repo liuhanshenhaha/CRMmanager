@@ -39,7 +39,7 @@
 			</el-table-column>
 			<el-table-column prop="goodsType" label="商品类型" min-width="100">
 			</el-table-column>
-			<el-table-column prop="currency" label="币种" :formatter="currencyFormat">
+			<el-table-column prop="currency" label="币种" :formatter="(row,col,cellValue) => formatter('CurrencyTypeEnu',cellValue)">
 			</el-table-column>
 			<el-table-column prop="contractMultiplier" label="合约乘数" width="100">
 			</el-table-column>
@@ -53,7 +53,7 @@
 			</el-table-column>
 			<el-table-column prop="maxHold" label="最大持仓量" width="150">
 			</el-table-column>
-			<el-table-column prop="depositType" label="保证金类型" width="150" :formatter="commissionTypeFormat">
+			<el-table-column prop="depositType" label="保证金类型" width="150" :formatter="(row,col,cellValue) => formatter('DepositType',cellValue)">
 			</el-table-column>
 			<el-table-column prop="depositValue" label="保证金额度" width="150">
 			</el-table-column>
@@ -61,13 +61,13 @@
 			</el-table-column>
 			<el-table-column prop="overnightDeposit" label="隔夜保证金" width="150">
 			</el-table-column>
-			<el-table-column prop="dayClose" label="每日强平时间" width="150" :formatter="dayCloseFormat">
+			<el-table-column prop="dayClose" label="每日强平时间" width="150">
 			</el-table-column>
 			<el-table-column prop="dayOpen" label="每日开盘时间" width="150">
 			</el-table-column>
-			<el-table-column prop="commissionType" label="手续费类型" width="120" :formatter="commissionTypeFormat">
+			<el-table-column prop="commissionType" label="手续费类型" width="120" :formatter="(row,col,cellValue) => formatter('DepositType',cellValue)">
 			</el-table-column>
-			<el-table-column prop="commissionCurrency" label="手续费币种" width="120" :formatter="currencyFormat">
+			<el-table-column prop="commissionCurrency" label="手续费币种" width="120" :formatter="(row,col,cellValue) => formatter('CurrencyTypeEnu',cellValue)">
 			</el-table-column>
 			<el-table-column prop="customerCommissionStart" label="客户佣金区间1" width="150">
 			</el-table-column>
@@ -77,22 +77,21 @@
 			</el-table-column>
 			<el-table-column prop="agentCommissionOver" label="代理佣金区间2" width="150">
 			</el-table-column>
-			<el-table-column prop="isForceSend" label="是否强制报单" width="150" :formatter="YNFormatter">
+			<el-table-column prop="openTradeTime" label="开仓时间" width="160">
 			</el-table-column>
-			<el-table-column prop="status" label="状态" width="150" :formatter="statusFormat">
+			<el-table-column prop="closeTradeTime" label="平仓时间" width="160">
+			</el-table-column>
+			<el-table-column prop="isForceSend" label="是否强制报单" width="150" :formatter="(row,col,cellValue) => formatter('YesOrNoEnum',cellValue)">
+			</el-table-column>
+			<el-table-column prop="status" label="状态" width="150" :formatter="(row,col,cellValue) => formatter('CommonStatus',cellValue)">
 			</el-table-column>
 			<el-table-column prop="remark" label="备注" width="150">
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="150">
 				<template slot-scope="scope">
-					<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
-						操作
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="edit">编辑</el-dropdown-item>
-							<el-dropdown-item command="modifyStatus">修改状态</el-dropdown-item>
-							<el-dropdown-item command="settings">配置</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
+					<el-button type="primary" size="small" @click="()=>updateGoods('modify',scope.row)">编辑</el-button>
+					<el-button v-if="scope.row.status == 1" type="danger" size="small" @click="modifyStatus(scope.row.id,0)">作废</el-button>
+					<el-button v-if="scope.row.status != 1" type="success" size="small" @click="modifyStatus(scope.row.id,1)">激活</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -236,6 +235,23 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
+				<el-row :gutter="20"  v-for="(openItem,index) in modifyForm.tempOpenTradeTime" :key="'openTradeTime'+ index">
+					<el-col :span="12" :xs="24">
+						<el-form-item :label="index === 0 ? '开仓时间': ''" :prop="'tempOpenTradeTime.'+index+'.openTradeTime'" :rules="{type:'date',required: index === 0, message: '请设置至少一个开仓时间', trigger: 'blur'}">
+							<el-time-picker :editable="false" v-model="openItem.openTradeTime" placeholder="开仓时间"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempDayClose.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('dayClose')">新增每日强平时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempDayClose.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDaily('dayClose',index)">删除每日强平时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label=客户佣金区间1 prop="customerCommissionStart">
@@ -280,111 +296,11 @@
 				<el-button type="primary" @click.native="update" :loading="modifyLoading">提交</el-button>
 			</div>
 		</el-dialog>
-
-		<!--修改状态界面-->
-		<!-- <el-dialog customClass="w70p" title="修改状态" v-model="modifyFormVisible3" :close-on-click-modal="false" >
-			<el-table stripe border fixed :data="modifyStatusData" highlight-current-row style="width: 100%;">
-				<el-table-column prop="marketId" label="市场名称"></el-table-column>
-				<el-table-column prop="goodsId" label="商品名称"></el-table-column>
-				<el-table-column prop="contractCode" label="合约代码"></el-table-column>
-				<el-table-column prop="contractName" label="合约名称"></el-table-column>
-				<el-table-column label="操作" align="center" fixed="right" width="150">
-					<template slot-scope="scope">
-						<el-select v-model="scope.row.status" placeholder="状态">
-							<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</template>
-				</el-table-column>
-			</el-table>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="modifyFormVisible3 = false">取消</el-button>
-				<el-button type="primary" @click.native="()=>modifyStatus(modifyStatusData[0])" :loading="modifyLoading">提交</el-button>
-			</div>
-		</el-dialog> -->
-
-		<!--新增/配置界面-->
-		<!-- <el-dialog customClass="w80p" title="设置" v-model="modifyFormVisible2" :close-on-click-modal="false" >
-			<el-col :span="24" class="toolbar">
-				<el-button type="primary" v-on:click="() => modifyContract('subAdd')">新增</el-button>
-			</el-col>
-			<el-table stripe border fixed :data="tableData2" highlight-current-row v-loading="listLoading2" @selection-change="" style="width: 100%;">
-				<el-table-column prop="startTime" label="开始时间">
-				</el-table-column>
-				<el-table-column prop="overTime" label="结束时间">
-				</el-table-column>
-				<el-table-column prop="overTimeNextDay" label="结束时间是否跨天">
-				</el-table-column>
-				<el-table-column prop="type" label="类别">
-				</el-table-column>
-				<el-table-column prop="status" label="状态">
-				</el-table-column>
-				<el-table-column prop="remark" label="备注">
-				</el-table-column>
-				<el-table-column label="操作" align="center" fixed="right" width="140">
-					<template slot-scope="scope">
-						<el-dropdown size="small" split-button type="primary" trigger="click" @command="(command)=>tableOptions(command,scope.row)">
-							操作
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="subEdit">编辑</el-dropdown-item>
-								<el-dropdown-item command="subModifyStatus" v-if="scope.row.status !== 'A'">激活</el-dropdown-item>
-								<el-dropdown-item command="subModifyStatus" v-if="scope.row.status === 'A'">作废</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-					</template>
-				</el-table-column>
-			</el-table>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="modifyFormVisible2 = false">取消</el-button>
-				<el-button type="primary" @click.native="update" :loading="modifyLoading">提交</el-button>
-			</div>
-		</el-dialog> -->
-
-		<!--新增/更新界面-->
-		<!-- <el-dialog :title="subModifyType == 'subAdd' ? '新增' : '设置'" v-model="modifyFormVisible4" :close-on-click-modal="false" append-to-body>
-			<el-form :model="subModifyForm" :rules="subModifyFormRules" label-width="100px" ref="subModifyForm" size="medium">
-				<el-row :gutter="20">
-					<el-col :span="12" :xs="24">
-						<el-form-item label="开始时间" prop="startTime">
-							<el-time-picker :editable="false" v-model="subModifyForm.subStartTime" placeholder="开始时间"></el-time-picker>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="结束时间" prop="subOverTime">
-							<el-time-picker :editable="false" v-model="subModifyForm.subOverTime" placeholder="结束时间"></el-time-picker>
-						</el-form-item>
-					</el-col>
-				</el-row>
-				<el-row :gutter="20">
-					<el-col :span="12" :xs="24">
-						<el-form-item>
-							<el-checkbox v-model="subModifyForm.subOverTimeNextDay">结束时间是否跨天</el-checkbox>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="类别" prop="subType">
-							<el-select v-model="subModifyForm.subType" placeholder="类别">
-								<el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-							</el-select>
-						</el-form-item>
-					</el-col>
-				</el-row>
-				<el-row :gutter="20">
-					<el-col :span="24">
-						<el-form-item label="备注" prop="subRemark">
-							<el-input type="textarea" resize="none" v-model="subModifyForm.subRemark"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="modifyFormVisible4 = false">取消</el-button>
-				<el-button type="primary" @click.native="subUpdate" :loading="modifyLoading">提交</el-button>
-			</div>
-		</el-dialog> -->
 	</section>
 </template>
 
 <script>
+	import { formatters } from "../../utils/utils"
 	import { goodsQuest } from "../../api/api"
 	export default {
 		data(){
@@ -458,6 +374,14 @@
 					isForceSend: "",
 					tempDayOpen: [],
 					tempDayClose: [],
+					closeTradeTime: "",
+					tempCloseTradeTime: [{
+						closeTradeTime: ""
+					}],
+					openTradeTime: "",
+					tempOpenTradeTime: [{
+						openTradeTime: ""
+					}],
 				},
 				modifyType: "add",
 				modifyFormRules:{
@@ -469,20 +393,8 @@
 		},
 		methods:{
 			// 表格数据格式化 状态
-			statusFormat(row, col, cellValue){
-				return this.dictionary.CommonStatus[cellValue]
-			},
-			YNFormatter(row, col, cellValue){
-				return this.dictionary.YesOrNoEnum[cellValue]
-			},
-			currencyFormat(row, col, cellValue){
-				return this.dictionary.CurrencyTypeEnu[cellValue]
-			},
-			dayCloseFormat(row, col, cellValue){
-				return cellValue.replace(/\Y/g,"允许隔夜").replace(/\N/g,"不允许隔夜")
-			},
-			commissionTypeFormat(row,col, cellValue){
-				return this.dictionary.DepositType[cellValue]
+			formatter(type,value){
+				return formatters(type,value)
 			},
 			// 获取商品列表
 			getGoods(){
@@ -525,7 +437,15 @@
 							tempDayClose: [{
 								tempDayCloseTime: "",
 								tempDayCloseOvernight: false,
-							}]
+							}],
+							closeTradeTime: "",
+							tempCloseTradeTime: [{
+								closeTradeTime: ""
+							}],
+							openTradeTime: "",
+							tempOpenTradeTime: [{
+								openTradeTime: ""
+							}],
 						};
 						break;
 					case 'modify':
@@ -576,6 +496,14 @@
 						break;
 				}
 			},
+			modifyStatus(id,status){
+				goodsQuest.modifyStatus({
+					id:id,
+					status: status
+				}).then(res => {
+					this.getGoods();
+				}).catch(err=>console.error(err.msg))
+			},
 			/*
 			 *@title 增加每日开盘/强平时间
 			 *@params "dayOpen"/"dayClose"
@@ -623,11 +551,6 @@
 					return temp;
 				})()
 			},
-			tableOptions(type,row){
-				switch(type){
-					case "edit": this.updateGoods("modify",row);break;
-				}
-			},
 			update(){
 				this.modifyLoading = true;
 				this.updateDayOpen();
@@ -638,14 +561,11 @@
 						goodsQuest.addGoods(this.modifyForm).then(res => {
 							this.modifyLoading = false;
 							this.modifyFormVisible = false;
-							this.$message({
-								message: res.msg,
-								type: 'success'
-							});
 							this.getGoods();
-						});
+						}).catch(error => this.modifyLoading = false);
 						break;
 					case "modify": 
+						break;
 				}
 			}
 		}

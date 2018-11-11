@@ -56,18 +56,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" :xs="24">
-              <el-form-item label="密码" prop="password">
-                <el-input v-model="registerForm.password"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" :xs="24">
               <el-form-item label="省/市" prop="provinceAndCity">
                 <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.provinceAndCity" filterable></el-cascader>
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="上传银行卡照片" prop="bankPic">
-                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'bankPic')" list-type="picture-card" :file-list="bankPicList">
+                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'bankPic')" list-type="picture-card" :file-list="bankPicList" accept="jpg">
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -75,7 +70,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="上传身份证正面照片" prop="idFrontPic">
-                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idFrontPic')" list-type="picture-card" :file-list="idFrontPicList">
+                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idFrontPic')" list-type="picture-card" :file-list="idFrontPicList" accept="jpg">
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -83,7 +78,7 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="上传身份证背面照片" prop="idBackPic">
-                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idBackPic')" list-type="picture-card" :file-list="idBackPicList">
+                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idBackPic')" list-type="picture-card" :file-list="idBackPicList" accept="jpg">
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -98,6 +93,16 @@
               <el-form-item>
                 <a href="./static/TradeGuidelines.pdf" class="agreements">《交易须知》</a> | <a href="./static/RiskStatement.pdf" class="agreements">《期货交易风险揭示书》</a> | <a href="./static/CooperativeAgreements.pdf" class="agreements">《投资合作协议书》</a>
                 <el-checkbox v-model="readFlag">我声明：我已阅读并完全理解，接受以及认同以上全部文件。</el-checkbox>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" :xs="24">
+              <el-form-item label="密码" prop="password">
+                <el-input type="password" v-model="registerForm.password"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" :xs="24">
+              <el-form-item label="重复密码" prop="repeatPassword">
+                <el-input type="password" v-model="registerForm.repeatPassword"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -117,6 +122,12 @@
   import { getDictionary,accountQuest } from '../api/api';
   export default {
     data() {
+      let same = (rule,value,callback) => {
+        if(value != this.registerForm.password){
+          return callback(new Error("两次密码不一致！"));
+        }
+        callback();
+      }
       return {
         loading: false,
         dictionary: {},
@@ -144,8 +155,9 @@
           provinceAndCity: [{required:true,message:"请选择省/市"}],
           inviteCode: [{required:true,message:"请填写邀请码"}],
           password: [{required:true,message:"请填写密码"}],
+          repeatPassword: [{required:true,message:"请填写密码"},{validator:same,trigger: "blur"}],
         },
-        hasInvited: Boolean(window.location.href && window.location.href !== "?"),
+        hasInvited: Boolean(window.location.href && window.location.href.indexOf("?") > 0),
         readFlag: false
       }
     },
@@ -188,20 +200,32 @@
     },
     methods: {
       uploadPic(file,fileList,type){
-        this[type+'List'] = fileList.slice(-1)
-        let r = new FileReader();  //本地预览
-        r.onload = () => {
-            // console.log(r.result)
-            accountQuest.uploadPic({
-              content: r.result.split("base64,")[1],
-              ext: file.name.split(".")[file.name.split(".").length - 1]
-            }).then(res => {
-              this[type] = res.content.filePath;
-            }).catch(error => console.error("上传图片失败！"))
+        if(["jpg","jpeg","png"].indexOf(file.raw.type.split("/")[1]) < 0){
+          this.$message.error("图片仅接受jpg/jpeg/png格式")
+          fileList.splice(fileList.length - 1,1)
+          this[type+'List'] = fileList;
+        }else if(file.raw.size > 500000){
+          this.$message.error("图片仅接受小于500kb大小")
+          fileList.splice(fileList.length - 1,1)
+          this[type+'List'] = fileList;
+        }else{
+          let r = new FileReader();  //本地预览
+          r.onload = () => {
+              // console.log(r.result)
+              accountQuest.uploadPic({
+                content: r.result.split("base64,")[1],
+                ext: file.name.split(".")[file.name.split(".").length - 1]
+              }).then(res => {
+                this[type+'List'] = fileList.slice(-1)
+                this[type] = res.content.filePath;
+              }).catch(error => console.error("上传图片失败！"))
+          }
+          r.readAsDataURL(file.raw);
         }
-        r.readAsDataURL(file.raw);
+        // console.log("change",file,fileList)
       },
-      submit(file){
+      submit(file,fileList){
+        // console.log("submit",file,fileList)
         console.log("上传图片ING...")
       },
       resetForm(formName){

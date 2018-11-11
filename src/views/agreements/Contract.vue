@@ -71,7 +71,7 @@
 							<el-dropdown-item command="add">新增</el-dropdown-item>
 							<el-dropdown-item command="edit">编辑</el-dropdown-item>
 							<el-dropdown-item command="modifyStatus">修改状态</el-dropdown-item>
-							<el-dropdown-item command="settings1">配置交易时间</el-dropdown-item>
+							<!-- <el-dropdown-item command="settings1">配置交易时间</el-dropdown-item> -->
 							<el-dropdown-item command="settings2">配置休市时间</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
@@ -188,14 +188,14 @@
 		<!--修改状态界面-->
 		<el-dialog customClass="w70p" title="修改状态" v-model="modifyFormVisible3" :close-on-click-modal="false" >
 			<el-table stripe border fixed :data="modifyStatusData" highlight-current-row style="width: 100%;">
-				<el-table-column prop="marketId" label="市场名称"></el-table-column>
-				<el-table-column prop="goodsId" label="商品名称"></el-table-column>
+				<el-table-column prop="marketName" label="市场名称"></el-table-column>
+				<el-table-column prop="goodsName" label="商品名称"></el-table-column>
 				<el-table-column prop="contractCode" label="合约代码"></el-table-column>
 				<el-table-column prop="contractName" label="合约名称"></el-table-column>
 				<el-table-column label="操作" align="center" fixed="right" width="150">
 					<template slot-scope="scope">
 						<el-select v-model="scope.row.status" placeholder="状态">
-							<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							<el-option v-for="item in ContractStatus" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</template>
 				</el-table-column>
@@ -282,27 +282,6 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="modifyFormVisible4 = false">取消</el-button>
 				<el-button type="primary" @click.native="subUpdate" :loading="modifyLoading">提交</el-button>
-			</div>
-		</el-dialog>
-
-		<!--修改状态界面-->
-		<el-dialog customClass="w70p" title="修改状态" v-model="modifyFormVisible3" :close-on-click-modal="false" >
-			<el-table stripe border fixed :data="modifyStatusData" highlight-current-row style="width: 100%;">
-				<el-table-column prop="marketId" label="市场名称"></el-table-column>
-				<el-table-column prop="goodsId" label="商品名称"></el-table-column>
-				<el-table-column prop="contractCode" label="合约代码"></el-table-column>
-				<el-table-column prop="contractName" label="合约名称"></el-table-column>
-				<el-table-column label="操作" align="center" fixed="right" width="150">
-					<template slot-scope="scope">
-						<el-select v-model="scope.row.status" placeholder="状态">
-							<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</template>
-				</el-table-column>
-			</el-table>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="modifyFormVisible3 = false">取消</el-button>
-				<el-button type="primary" @click.native="()=>modifyStatus(modifyStatusData[0])" :loading="modifyLoading">提交</el-button>
 			</div>
 		</el-dialog>
 
@@ -415,7 +394,7 @@
 					pageNo: ""
 				},
 				filterStatusOptions: buildOptions("ContractStatus",true),
-				statusOptions: buildOptions("CommonStatus"),
+				ContractStatus: buildOptions("ContractStatus"),
 				typeOptions: (() => {
 					let temp = [];
 					for(let key in JSON.parse(localStorage.dictionary).TradeTimeType){
@@ -653,7 +632,7 @@
 						this.modifyType = type;
 						break;
 					case "modifyStatus": 
-						this.modifyStatusData = new Array(row);
+						this.modifyStatusData = new Array({...row});
 						this.modifyFormVisible3 = true;
 						break;
 					case "settings":
@@ -851,8 +830,8 @@
 						this.modifyLoading = true;
 						submitData.can_trade = submitData.can_trade ? 1 : 0;
 						submitData.contractId = this.settingContractId;
-						submitData.beginDate = dateFormat(submitData.beginDate,"yyyy-MM-dd hh-mm-ss");
-						submitData.endDate = dateFormat(submitData.endDate,"yyyy-MM-dd hh-mm-ss");
+						submitData.beginDate = dateFormat(submitData.beginDate,"yyyy-MM-dd hh:mm:ss");
+						submitData.endDate = dateFormat(submitData.endDate,"yyyy-MM-dd hh:mm:ss");
 						switch(this.subModifyType2){
 							case "subAdd2": 
 								contractQuest.addDate(submitData).then(res => {
