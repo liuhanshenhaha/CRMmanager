@@ -8,7 +8,7 @@ import Main from './views/Main.vue'//空框架
 // 合约管理
 import Market from './views/agreements/Market.vue'//市场管理
 import Contract from './views/agreements/Contract.vue'//市场管理
-// import Goods from './views/agreements/Goods.vue'//市场管理
+import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
 import Agent from './views/account/Agent.vue'//代理信息
 import Costgroup from './views/account/Costgroup.vue'//代理信息
@@ -168,7 +168,7 @@ let routes = [
         hidden: false,
         children: [
             { path: 'market', component: Market, name: '交易市场' },
-            // { path: 'goods', component: Goods, name: '交易商品' },
+            { path: 'goods', component: Goods, name: '交易商品' },
             { path: 'contract', component: Contract, name: '合约列表' },
         ]
     },
