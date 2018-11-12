@@ -236,9 +236,14 @@
 					</el-col>
 				</el-row>
 				<el-row :gutter="20"  v-for="(openItem,index) in modifyForm.tempOpenTradeTime" :key="'openTradeTime'+ index">
-					<el-col :span="12" :xs="24">
-						<el-form-item :label="index === 0 ? '开仓时间': ''" :prop="'tempOpenTradeTime.'+index+'.openTradeTime'" :rules="{type:'date',required: index === 0, message: '请设置至少一个开仓时间', trigger: 'blur'}">
-							<el-time-picker is-range range-separator="-" :editable="false" v-model="openItem.openTradeTime" placeholder="开仓时间"></el-time-picker>
+					<el-col :span="6" :xs="24">
+						<el-form-item :label="index === 0 ? '开仓时间': ''" :prop="'tempOpenTradeTime'+index+'openTradeTime1'">
+							<el-time-picker :editable="false" v-model="openItem.openTradeTime[0]" placeholder="开仓时间起"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="6" :xs="24" class="zhi">
+						<el-form-item label="至" :prop="'tempOpenTradeTime'+index+'openTradeTime2'">
+							<el-time-picker :picker-options="{minTime: modifyForm.tempOpenTradeTime[index].openTradeTime[0]}" :editable="false" v-model="openItem.openTradeTime[1]" placeholder="开仓时间止"></el-time-picker>
 						</el-form-item>
 					</el-col>
 					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempOpenTradeTime.length - 1">
@@ -249,23 +254,6 @@
 					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempOpenTradeTime.length - 1">
 						<el-form-item>
 							<el-button type="danger" @click.native="()=>removeDaily('openTime',index)">删除开仓时间</el-button>
-						</el-form-item>
-					</el-col>
-				</el-row>
-				<el-row :gutter="20"  v-for="(closeItem,index) in modifyForm.tempCloseTradeTime" :key="'closeTradeTime'+ index">
-					<el-col :span="12" :xs="24">
-						<el-form-item :label="index === 0 ? '平仓时间': ''" :prop="'tempCloseTradeTime.'+index+'.closeTradeTime'" :rules="{type:'date',required: index === 0, message: '请设置至少一个平仓时间', trigger: 'blur'}">
-							<el-time-picker is-range range-separator="-" :editable="false" v-model="closeItem.closeTradeTime" placeholder="平仓时间"></el-time-picker>
-						</el-form-item>
-					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempCloseTradeTime.length - 1">
-						<el-form-item>
-							<el-button type="primary" @click.native="()=>addDaily('closeTime')">新增平仓时间</el-button>
-						</el-form-item>
-					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempCloseTradeTime.length - 1">
-						<el-form-item>
-							<el-button type="danger" @click.native="()=>removeDaily('closeTime',index)">删除平仓时间</el-button>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -317,7 +305,7 @@
 </template>
 
 <script>
-	import { formatters } from "../../utils/utils"
+	import { formatters,dateFormat } from "../../utils/utils"
 	import { goodsQuest } from "../../api/api"
 	export default {
 		data(){
@@ -423,6 +411,7 @@
 			updateGoods(type,row){
 				this.modifyFormVisible = true;
 				this.modifyType = type;
+				row = {...row};
 				switch(type){
 					case 'add':
 						this.modifyForm = {
@@ -628,3 +617,9 @@
 		}
 	}
 </script>
+
+<style>
+	.zhi label{
+		text-align: center;
+	}
+</style>
