@@ -34,8 +34,10 @@ export const contractQuest = {
 
 //合约管理 - 商品管理
 export const goodsQuest = {
-	getGoods: (params) => { return postData(`/goods/selectByRecord`, params) },//获取商品列表
+	getGoods: (params) => { return postData(`/goods/queryPage`, params) },//获取分页商品列表
+	getAllGoods: (params) => { return postData(`/goods/selectByRecord`, params) },//获取全部商品列表
 	addGoods: (params) => { return postData(`/goods/add`, params) },//新增商品
+	modifyGoods: (params) => { return postData(`/goods/modify`, params) },//修改商品
 	modifyStatus: (params) => { return postData(`/goods/modifyStatus`, params) },//修改状态
 	addMarket: (params) => { return postData(`/contract/add`, params) },//新增市场
 	modifyMarket: (params) => { return postData(`/contract/modify`, params) },//修改市场

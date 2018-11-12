@@ -73,7 +73,7 @@ export function formatters(type,value){
 
 export function buildOptions(type,hasAll){
     let dictionary = localStorage.dictionary && JSON.parse(localStorage.dictionary),
-        options = Object.keys(dictionary[type]).map(item => ({value:Number(item),label:dictionary[type][item]}))
+        options = Object.keys(dictionary[type]).map(item => ({value:isNaN(Number(item)) ? item : Number(item),label:dictionary[type][item]}))
     if(hasAll){
         options.unshift({value:"",label:"全部"})
     }

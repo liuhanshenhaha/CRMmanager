@@ -486,10 +486,10 @@
 			},
 			// 获取商品列表
 			getGoods(){
-				goodsQuest.getGoods({}).then(res=>{
+				goodsQuest.getAllGoods({}).then(res=>{
 					this.goodListOptions = res.content.map((item,index) => {
 						return {
-							value: item.id,
+							value: Number(item.id),
 							label: item.goodsCode
 						}
 					})

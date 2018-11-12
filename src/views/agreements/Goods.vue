@@ -21,7 +21,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getGoods">查询</el-button>
+					<el-button type="primary" v-on:click="()=>getGoods(curPage)">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="()=>updateGoods('add')">新增</el-button>
@@ -31,7 +31,9 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
-			<el-table-column prop="marketId" label="交易市场ID" width="150">
+			<el-table-column prop="orderBy" label="排序" sortable width="100">
+			</el-table-column>
+			<el-table-column prop="marketName" label="交易市场" width="150">
 			</el-table-column>
 			<el-table-column prop="goodsCode" label="商品代码" min-width="100">
 			</el-table-column>
@@ -77,9 +79,13 @@
 			</el-table-column>
 			<el-table-column prop="agentCommissionOver" label="代理佣金区间2" width="150">
 			</el-table-column>
-			<el-table-column prop="openTradeTime" label="开仓时间" width="160">
+			<el-table-column prop="openTradeTime" label="夏季开仓时间" width="160">
 			</el-table-column>
-			<el-table-column prop="closeTradeTime" label="平仓时间" width="160">
+			<el-table-column prop="closeTradeTime" label="夏季平仓时间" width="160">
+			</el-table-column>
+			<el-table-column prop="openTradeTime2" label="冬季开仓时间" width="160">
+			</el-table-column>
+			<el-table-column prop="closeTradeTime2" label="冬季平仓时间" width="160">
 			</el-table-column>
 			<el-table-column prop="isForceSend" label="是否强制报单" width="150" :formatter="(row,col,cellValue) => formatter('YesOrNoEnum',cellValue)">
 			</el-table-column>
@@ -95,55 +101,73 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		
+		<div class="block" style="text-align:right">
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getGoods(currentPage)"></el-pagination>
+		</div>
 
 		<!--新增/更新界面-->
 		<el-dialog customClass="w70p" :title="modifyType == 'add' ? '新增' : '设置'" v-model="modifyFormVisible" :close-on-click-modal="false" >
 			<el-form :model="modifyForm" label-width="120px" :rules="modifyFormRules" ref="modifyForm" size="medium">
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
+						<el-form-item label="排序" prop="orderBy" :rules="[{type:'number',message:'请输入数字',trigger:'blur'},{type:'number',required:true,message:'请填写排序',trigger:'blur'}]">
+							<el-input v-model.number="modifyForm.orderBy" placeholder="排序"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="市场" prop="marketId">
+							<el-select v-model="modifyForm.marketId" placeholder="市场">
+								<el-option v-for="item in marketOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
 						<el-form-item label="商品代码" prop="goodsCode">
-							<el-input v-model="modifyForm.goodsCode"></el-input>
+							<el-input v-model="modifyForm.goodsCode" placeholder="商品代码"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="商品名称" prop="goodsName">
-							<el-input v-model="modifyForm.goodsName"></el-input>
+							<el-input v-model="modifyForm.goodsName" placeholder="商品名称"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label="合约乘数" prop="contractMultiplier">
-							<el-input v-model="modifyForm.contractMultiplier"></el-input>
+							<el-input v-model="modifyForm.contractMultiplier" placeholder="合约乘数"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="最小变动单位" prop="minChange">
-							<el-input v-model="modifyForm.minChange"></el-input>
+							<el-input v-model="modifyForm.minChange" placeholder="最小变动单位"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label="每价位值" prop="priceUnit">
-							<el-input v-model="modifyForm.priceUnit"></el-input>
+							<el-input v-model="modifyForm.priceUnit" placeholder="每价位值"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="每价位基币值" prop="priceUnitBase">
-							<el-input v-model="modifyForm.priceUnitBase"></el-input>
+							<el-input v-model="modifyForm.priceUnitBase" placeholder="每每价位基币值价位值"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label="单手最大可买" prop="maxOneBuy">
-							<el-input v-model="modifyForm.maxOneBuy"></el-input>
+							<el-input v-model="modifyForm.maxOneBuy" placeholder="单手最大可买"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="最大持仓量" prop="maxHold">
-							<el-input v-model="modifyForm.maxHold"></el-input>
+							<el-input v-model="modifyForm.maxHold" placeholder="最大持仓量"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -166,7 +190,7 @@
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="保证金额度" prop="depositValue">
-							<el-input v-model="modifyForm.depositValue"></el-input>
+							<el-input v-model="modifyForm.depositValue" placeholder="保证金额度"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -178,21 +202,16 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="手续费额度" prop="commissionValue">
-							<el-input v-model="modifyForm.commissionValue"></el-input>
-						</el-form-item>
-					</el-col>
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label="维持保证金" prop="keepDeposit">
-							<el-input v-model="modifyForm.keepDeposit"></el-input>
+							<el-input v-model="modifyForm.keepDeposit" placeholder="维持保证金"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
 						<el-form-item label="隔夜保证金" prop="overnightDeposit">
-							<el-input v-model="modifyForm.overnightDeposit"></el-input>
+							<el-input v-model="modifyForm.overnightDeposit" placeholder="隔夜保证金"></el-input>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -235,25 +254,148 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="交易令时" prop="season">
+							<el-select v-model="modifyForm.season" placeholder="交易令时">
+								<el-option v-for="item in TradeTimeTypeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-if="modifyForm.tempOpenTradeTime.length === 0">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="夏季开仓时间">
+							暂无
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :offset="8" :xs="24">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('openTime')">新增夏季开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
 				<el-row :gutter="20"  v-for="(openItem,index) in modifyForm.tempOpenTradeTime" :key="'openTradeTime'+ index">
-					<el-col :span="6" :xs="24">
-						<el-form-item :label="index === 0 ? '开仓时间': ''" :prop="'tempOpenTradeTime'+index+'openTradeTime1'">
-							<el-time-picker :editable="false" v-model="openItem.openTradeTime[0]" placeholder="开仓时间起"></el-time-picker>
+					<el-col :span="8" :xs="24">
+						<el-form-item :label="index === 0 ? '夏季开仓时间': ''" :prop="'tempOpenTradeTime'+index+'openTradeTime1'">
+							<el-time-picker :editable="false" v-model="openItem.openTradeTimeS" placeholder="夏季开仓时间起"></el-time-picker>
 						</el-form-item>
 					</el-col>
-					<el-col :span="6" :xs="24" class="zhi">
+					<el-col :span="8" :xs="24" class="zhi">
 						<el-form-item label="至" :prop="'tempOpenTradeTime'+index+'openTradeTime2'">
-							<el-time-picker :picker-options="{minTime: modifyForm.tempOpenTradeTime[index].openTradeTime[0]}" :editable="false" v-model="openItem.openTradeTime[1]" placeholder="开仓时间止"></el-time-picker>
+							<el-time-picker :editable="false" v-model="openItem.openTradeTimeE" placeholder="夏季开仓时间止"></el-time-picker>
 						</el-form-item>
 					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index === modifyForm.tempOpenTradeTime.length - 1">
+					<el-col :span="4" :xs="24" v-if="index === modifyForm.tempOpenTradeTime.length - 1">
 						<el-form-item>
-							<el-button type="primary" @click.native="()=>addDaily('openTime')">新增开仓时间</el-button>
+							<el-button type="primary" @click.native="()=>addDaily('openTime')">新增夏季开仓时间</el-button>
 						</el-form-item>
 					</el-col>
-					<el-col :span="8" :offset="4" :xs="24" v-if="index !== modifyForm.tempOpenTradeTime.length - 1">
+					<el-col :span="4" :xs="24" v-if="index !== modifyForm.tempOpenTradeTime.length - 1">
 						<el-form-item>
-							<el-button type="danger" @click.native="()=>removeDaily('openTime',index)">删除开仓时间</el-button>
+							<el-button type="danger" @click.native="()=>removeDaily('openTime',index)">删除夏季开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-if="modifyForm.tempCloseTradeTime.length === 0">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="夏季平仓时间">
+							暂无
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :offset="8" :xs="24">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('closeTime')">新增夏季平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-for="(closeItem,index) in modifyForm.tempCloseTradeTime" :key="'closeTradeTime'+ index">
+					<el-col :span="8" :xs="24">
+						<el-form-item :label="index === 0 ? '夏季平仓时间': ''" :prop="'tempCloseTradeTime'+index+'closeTradeTime1'">
+							<el-time-picker :editable="false" v-model="closeItem.closeTradeTimeS" placeholder="夏季平仓时间起"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24" class="zhi">
+						<el-form-item label="至" :prop="'tempCloseTradeTime'+index+'closeTradeTime2'">
+							<el-time-picker :editable="false" v-model="closeItem.closeTradeTimeE" placeholder="夏季平仓时间止"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index === modifyForm.tempCloseTradeTime.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('closeTime')">新增夏季平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index !== modifyForm.tempCloseTradeTime.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDaily('closeTime',index)">删除夏季平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-if="modifyForm.tempOpenTradeTime2.length === 0">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="冬季开仓时间">
+							暂无
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :offset="8" :xs="24">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('openTime2')">新增冬季开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-for="(openItem,index) in modifyForm.tempOpenTradeTime2" :key="'openTradeTime2'+ index">
+					<el-col :span="8" :xs="24">
+						<el-form-item :label="index === 0 ? '冬季开仓时间': ''" :prop="'tempOpenTradeTime2'+index+'openTradeTime1'">
+							<el-time-picker :editable="false" v-model="openItem.openTradeTimeS" placeholder="冬季开仓时间起"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24" class="zhi">
+						<el-form-item label="至" :prop="'tempOpenTradeTime2'+index+'openTradeTime2'">
+							<el-time-picker :editable="false" v-model="openItem.openTradeTimeE" placeholder="冬季开仓时间止"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index === modifyForm.tempOpenTradeTime2.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('openTime2')">新增冬季开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index !== modifyForm.tempOpenTradeTime2.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDaily('openTime2',index)">删除冬季开仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-if="modifyForm.tempCloseTradeTime2.length === 0">
+					<el-col :span="8" :xs="24">
+						<el-form-item label="冬季开仓时间">
+							暂无
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :offset="8" :xs="24">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('closeTime2')">新增冬季平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20"  v-for="(closeItem,index) in modifyForm.tempCloseTradeTime2" :key="'closeTradeTime2'+ index">
+					<el-col :span="8" :xs="24">
+						<el-form-item :label="index === 0 ? '冬季平仓时间': ''" :prop="'tempCloseTradeTime2'+index+'closeTradeTime1'">
+							<el-time-picker :editable="false" v-model="closeItem.closeTradeTimeS" placeholder="冬季平仓时间起"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8" :xs="24" class="zhi">
+						<el-form-item label="至" :prop="'tempCloseTradeTime2'+index+'closeTradeTime2'">
+							<el-time-picker :editable="false" v-model="closeItem.closeTradeTimeE" placeholder="冬季平仓时间止"></el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index === modifyForm.tempCloseTradeTime2.length - 1">
+						<el-form-item>
+							<el-button type="primary" @click.native="()=>addDaily('closeTime2')">新增冬季平仓时间</el-button>
+						</el-form-item>
+					</el-col>
+					<el-col :span="4" :xs="24" v-if="index !== modifyForm.tempCloseTradeTime2.length - 1">
+						<el-form-item>
+							<el-button type="danger" @click.native="()=>removeDaily('closeTime2',index)">删除冬季平仓时间</el-button>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -282,7 +424,7 @@
 					</el-col>
 				</el-row>
 				<el-row :gutter="20">
-					<el-col :span="4" :xs="24">
+					<el-col :span="6" :xs="24">
 						<el-form-item>
 							<el-checkbox v-model="modifyForm.tempIsForceSend">是否强制报单</el-checkbox>
 						</el-form-item>
@@ -305,12 +447,12 @@
 </template>
 
 <script>
-	import { formatters,dateFormat } from "../../utils/utils"
-	import { goodsQuest } from "../../api/api"
+	import { formatters,dateFormat,buildOptions } from "../../utils/utils"
+	import { goodsQuest,marketQuest } from "../../api/api"
 	export default {
 		data(){
 			return {
-				dictionary: JSON.parse(localStorage.dictionary),
+				curPage: 1,
 				filters:{//查询表单数据
 					contractCode: "",
 					contractName: "",
@@ -320,41 +462,17 @@
 					pageSize: 10,//默认查询每页记录数
 					pageNo: ""
 				},
-				statusOptions: [{
-					value: "",
-					label: "全部"
-				},{
-					value: "A",
-					label: "激活"
-				},{
-					value: "C",
-					label: "作废"
-				}],
-				currencyOptions: (()=>{
-					let temp = [];
-					for(let key in JSON.parse(localStorage.dictionary).CurrencyTypeEnu){
-						temp.push({
-							value: key,
-							label: JSON.parse(localStorage.dictionary).CurrencyTypeEnu[key]
-						})
-					}
-					return temp;
-				})(),
-				depositTypeOptions: (()=>{
-					let temp = [];
-					for(let key in JSON.parse(localStorage.dictionary).DepositType){
-						temp.push({
-							value: key,
-							label: JSON.parse(localStorage.dictionary).DepositType[key]
-						})
-					}
-					return temp;
-				})(),
+				statusOptions: buildOptions("CommonStatus",true),
+				currencyOptions: buildOptions("CurrencyTypeEnu"),
+				depositTypeOptions: buildOptions("DepositType"),
+				TradeTimeTypeOptions: buildOptions("TradeTimeType"),
+				marketOptions: [],
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				modifyLoading: false,//增改加载中标识
 				modifyFormVisible: false,//设置弹窗显示标识
 				modifyForm: {//设置弹窗表单数据
+					marketId: "",
 					goodsCode: "",
 					goodsName: "",
 					marketId: "1",
@@ -380,21 +498,31 @@
 					tempDayOpen: [],
 					tempDayClose: [],
 					closeTradeTime: "",
-					tempCloseTradeTime: [{
-						closeTradeTime: ""
-					}],
+					tempCloseTradeTime: [],
 					openTradeTime: "",
-					tempOpenTradeTime: [{
-						openTradeTime: ""
-					}],
+					tempOpenTradeTime: [],
+					closeTradeTime2: "",
+					tempCloseTradeTime2: [],
+					openTradeTime2: "",
+					tempOpenTradeTime2: [],
+					season: ""
 				},
 				modifyType: "add",
 				modifyFormRules:{
 				},
+				tableDataTotal: 1
 			}
 		},
 		created(){
-			this.getGoods()
+			this.getGoods(1);
+			marketQuest.getMarket({status:1}).then(res=>{
+				this.marketOptions = res.content.map(item => {
+					return {
+						label: item.marketName,
+						value: Number(item.id)
+					}
+				})
+			}).catch(error => console.error("获取市场数据失败！"))
 		},
 		methods:{
 			// 表格数据格式化 状态
@@ -402,9 +530,12 @@
 				return formatters(type,value)
 			},
 			// 获取商品列表
-			getGoods(){
-				goodsQuest.getGoods({}).then(res=>{
-					this.tableData = res.content;
+			getGoods(pageNo){
+				this.filters.pageNo = pageNo;
+				goodsQuest.getGoods(this.filters).then(res=>{
+					this.curPage = pageNo;
+					this.tableData = res.content.dataList;
+					this.tableDataTotal = res.content.pageCount;
 				}).catch(err=>console.error(err))
 			},
 			// 新增商品 type add/modify
@@ -415,9 +546,10 @@
 				switch(type){
 					case 'add':
 						this.modifyForm = {
+							orderBy: "",
 							goodsCode: "",
 							goodsName: "",
-							marketId: "1",
+							marketId: "",
 							contractMultiplier: "",
 							minChange: "",
 							priceUnit: "",
@@ -445,17 +577,20 @@
 								tempDayCloseOvernight: false,
 							}],
 							closeTradeTime: "",
-							tempCloseTradeTime: [{
-								closeTradeTime: ""
-							}],
+							tempCloseTradeTime: [],
 							openTradeTime: "",
-							tempOpenTradeTime: [{
-								openTradeTime: ""
-							}],
+							tempOpenTradeTime: [],
+							closeTradeTime2: "",
+							tempCloseTradeTime2: [],
+							openTradeTime2: "",
+							tempOpenTradeTime2: [],
+							season:""
 						};
 						break;
 					case 'modify':
 						this.modifyForm = {
+							orderBy: row.orderBy,
+							marketId: row.marketId,
 							id: row.id,
 							goodsCode: row.goodsCode,
 							goodsName: row.goodsName,
@@ -499,7 +634,7 @@
 								}
 							}),
 							closeTradeTime: row.closeTradeTime,
-							tempCloseTradeTime: row.closeTradeTime.split(";").map(item => {
+							tempCloseTradeTime: row.closeTradeTime?row.closeTradeTime.split(";").map(item => {
 								let tempDate1 = new Date();
 								let tempDate2 = new Date();
 								tempDate1.setHours(item.split("-")[0].split(":")[0])
@@ -509,11 +644,12 @@
 								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
 								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
 								return {
-									closeTradeTime: [tempDate1,tempDate2]
+									closeTradeTimeS: tempDate1,
+									closeTradeTimeE: tempDate2
 								}
-							}),
+							}):[],
 							openTradeTime: row.openTradeTime,
-							tempOpenTradeTime: row.openTradeTime.split(";").map(item => {
+							tempOpenTradeTime: row.openTradeTime?row.openTradeTime.split(";").map(item => {
 								let tempDate1 = new Date();
 								let tempDate2 = new Date();
 								tempDate1.setHours(item.split("-")[0].split(":")[0])
@@ -523,9 +659,41 @@
 								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
 								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
 								return {
-									openTradeTime: [tempDate1,tempDate2]
+									openTradeTimeS: tempDate1,
+									openTradeTimeE: tempDate2
 								}
-							}),
+							}):[],
+							closeTradeTime2: row.closeTradeTime2,
+							tempCloseTradeTime2: row.closeTradeTime2?ow.closeTradeTime2.split(";").map(item => {
+								let tempDate1 = new Date();
+								let tempDate2 = new Date();
+								tempDate1.setHours(item.split("-")[0].split(":")[0])
+								tempDate1.setMinutes(item.split("-")[0].split(":")[1])
+								tempDate1.setSeconds(item.split("-")[0].split(":")[2])
+								tempDate2.setHours(item.split("-")[1].split(":")[0])
+								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
+								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
+								return {
+									closeTradeTimeS: tempDate1,
+									closeTradeTimeE: tempDate2
+								}
+							}):[],
+							openTradeTime2: row.openTradeTime2,
+							tempOpenTradeTime2: row.openTradeTime2?row.openTradeTime2.split(";").map(item => {
+								let tempDate1 = new Date();
+								let tempDate2 = new Date();
+								tempDate1.setHours(item.split("-")[0].split(":")[0])
+								tempDate1.setMinutes(item.split("-")[0].split(":")[1])
+								tempDate1.setSeconds(item.split("-")[0].split(":")[2])
+								tempDate2.setHours(item.split("-")[1].split(":")[0])
+								tempDate2.setMinutes(item.split("-")[1].split(":")[1])
+								tempDate2.setSeconds(item.split("-")[1].split(":")[2])
+								return {
+									openTradeTimeS: tempDate1,
+									openTradeTimeE: tempDate2
+								}
+							}):[],
+							season: row.season
 						};
 						break;
 				}
@@ -554,11 +722,23 @@
 					})
 				}else if(type === "openTime"){
 					this.modifyForm.tempOpenTradeTime.push({
-						openTradeTime: [new Date(),new Date()]
+						openTradeTimeS: new Date(2018,11,12,0,0,0),
+						openTradeTimeE: new Date(2018,11,12,0,0,0)
 					})
 				}else if(type === "closeTime"){
 					this.modifyForm.tempCloseTradeTime.push({
-						closeTradeTime: [new Date(),new Date()]
+						closeTradeTimeS: new Date(2018,11,12,0,0,0),
+						closeTradeTimeE: new Date(2018,11,12,0,0,0)
+					})
+				}else if(type === "openTime2"){
+					this.modifyForm.tempOpenTradeTime2.push({
+						openTradeTimeS: new Date(2018,11,12,0,0,0),
+						openTradeTimeE: new Date(2018,11,12,0,0,0)
+					})
+				}else if(type === "closeTime2"){
+					this.modifyForm.tempCloseTradeTime2.push({
+						closeTradeTimeS: new Date(2018,11,12,0,0,0),
+						closeTradeTimeE: new Date(2018,11,12,0,0,0)
 					})
 				}
 			},
@@ -575,33 +755,50 @@
 					this.modifyForm.tempOpenTradeTime.splice(index,1)
 				}else if(type === "closeTime"){
 					this.modifyForm.tempCloseTradeTime.splice(index,1)
+				}else if(type === "openTime2"){
+					this.modifyForm.tempOpenTradeTime2.splice(index,1)
+				}else if(type === "closeTime2"){
+					this.modifyForm.tempCloseTradeTime2.splice(index,1)
 				}
 			},
 			updateDayClose(){
 				this.modifyForm.dayClose = (()=>{
-					let temp = "";
+					let temp = [];
 					this.modifyForm.tempDayClose.map((item, index) => {
 						let tempDayCloseTime = new Date(item.tempDayCloseTime)
-						temp += tempDayCloseTime.getHours() + ":" + (tempDayCloseTime.getMinutes() < 10 ? "0" + tempDayCloseTime.getMinutes() : tempDayCloseTime.getMinutes()) + ":" + (tempDayCloseTime.getSeconds() < 10 ? "0" + tempDayCloseTime.getSeconds() : tempDayCloseTime.getSeconds()) + "-" + (item.tempDayCloseOvernight ? "Y" : "N") + ";"
+						temp.push(tempDayCloseTime.getHours() + ":" + (tempDayCloseTime.getMinutes() < 10 ? "0" + tempDayCloseTime.getMinutes() : tempDayCloseTime.getMinutes()) + ":" + (tempDayCloseTime.getSeconds() < 10 ? "0" + tempDayCloseTime.getSeconds() : tempDayCloseTime.getSeconds()) + "-" + (item.tempDayCloseOvernight ? "Y" : "N"))
 					})
-					return temp;
+					return temp.join(";");
 				})()
 			},
 			updateDayOpen(){
 				this.modifyForm.dayOpen = (()=>{
-					let temp = "";
+					let temp = [];
 					this.modifyForm.tempDayOpen.map((item, index) => {
 						let tempDayOpenTime = new Date(item.tempDayOpenTime)
-						temp += tempDayOpenTime.getHours() + ":" + (tempDayOpenTime.getMinutes() < 10 ? "0" + tempDayOpenTime.getMinutes() : tempDayOpenTime.getMinutes()) + ":" + (tempDayOpenTime.getSeconds() < 10 ? "0" + tempDayOpenTime.getSeconds() : tempDayOpenTime.getSeconds()) + ";"
+						temp.push(tempDayOpenTime.getHours() + ":" + (tempDayOpenTime.getMinutes() < 10 ? "0" + tempDayOpenTime.getMinutes() : tempDayOpenTime.getMinutes()) + ":" + (tempDayOpenTime.getSeconds() < 10 ? "0" + tempDayOpenTime.getSeconds() : tempDayOpenTime.getSeconds()))
 					})
-					return temp;
+					return temp.join(";");
 				})()
+			},
+			updateTradeTime(list,type){
+				let temp = [];
+				list.map(item => {
+					if(dateFormat(item[type + "TradeTimeS"],"hh:mm:ss") !== dateFormat(item[type + "TradeTimeE"],"hh:mm:ss") && dateFormat(item[type + "TradeTimeE"],"hh:mm:ss") !== "00:00:00"){
+						temp.push(dateFormat(item[type + "TradeTimeS"],"hh:mm:ss") + "-" + dateFormat(item[type + "TradeTimeE"],"hh:mm:ss"));
+					}
+				})
+				return temp.join(";");
 			},
 			update(){
 				this.modifyLoading = true;
 				this.updateDayOpen();
 				this.updateDayClose();
-				this.modifyForm.isForceSend = this.modifyForm.tempIsForceSend ? "Y" : "N";
+				this.modifyForm.isForceSend = this.modifyForm.tempIsForceSend ? "1" : "0";
+				this.modifyForm.openTradeTime = this.updateTradeTime(this.modifyForm.tempOpenTradeTime,"open");
+				this.modifyForm.closeTradeTime = this.updateTradeTime(this.modifyForm.tempCloseTradeTime,"close");
+				this.modifyForm.openTradeTime2 = this.updateTradeTime(this.modifyForm.tempOpenTradeTime2,"open");
+				this.modifyForm.closeTradeTime2 = this.updateTradeTime(this.modifyForm.tempCloseTradeTime2,"close");
 				switch(this.modifyType){
 					case "add":
 						goodsQuest.addGoods(this.modifyForm).then(res => {
@@ -611,6 +808,11 @@
 						}).catch(error => this.modifyLoading = false);
 						break;
 					case "modify": 
+						goodsQuest.modifyGoods(this.modifyForm).then(res => {
+							this.modifyLoading = false;
+							this.modifyFormVisible = false;
+							this.getGoods();
+						}).catch(error => this.modifyLoading = false);
 						break;
 				}
 			}
