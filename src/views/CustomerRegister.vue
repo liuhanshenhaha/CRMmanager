@@ -5,27 +5,17 @@
         <h1 class="logo-text">{{sysName}}</h1>
       </el-col>
       <el-col :span="20">
-        <p class="top-title" style="text-align:left;padding-left:1em;">客户开户</p>
+        <p class="top-title" style="text-align:left;padding-left:1em;">开户注册</p>
       </el-col>
     </el-col>
     <el-col :span="24">
       <el-card class="register-card">
-        <h3 style="margin-top:0;">客户开户</h3>
+        <h3 style="margin-top:0;text-align:center;font-size:18px">开户注册</h3>
         <el-form label-position="right" label-width="80px" :model="registerForm" ref="registerForm" :rules="rules">
           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
-              <el-form-item label="账号" prop="userAccountNo">
-                <el-input v-model="registerForm.userAccountNo"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" :xs="24">
               <el-form-item label="姓名" prop="name">
                 <el-input v-model="registerForm.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" :xs="24">
-              <el-form-item label="身份证号" prop="idCard">
-                <el-input v-model="registerForm.idCard"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12" :xs="24">
@@ -39,15 +29,25 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" :xs="24">
+              <el-form-item label="身份证号" prop="idCard">
+                <el-input v-model="registerForm.idCard"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" :xs="24">
+              <el-form-item label="住址省市" prop="provinceAndCity">
+                <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.provinceAndCity" filterable></el-cascader>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" :xs="24">
+              <el-form-item prop="idCard" label="详细地址">
+                <el-input v-model="registerForm.addressDetail" placeholder="详细地址"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" :xs="24">
               <el-form-item label="银行" prop="bankCode">
                 <el-select v-model.number="registerForm.bankCode" placeholder="请选择银行">
                   <el-option v-for="item in bankOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" :xs="24">
-              <el-form-item label="支行" prop="bankBranch">
-                <el-input v-model="registerForm.bankBranch"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12" :xs="24">
@@ -56,30 +56,43 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" :xs="24">
-              <el-form-item label="省/市" prop="provinceAndCity">
-                <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.provinceAndCity" filterable></el-cascader>
+              <el-form-item label="支行省市" prop="provinceAndCity">
+                <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.bankProvinceAndCity" filterable></el-cascader>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
-              <el-form-item label="上传银行卡照片" prop="bankPic">
-                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'bankPic')" list-type="picture-card" :file-list="bankPicList" accept="jpg">
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
+            <el-col :span="12" :xs="24">
+              <el-form-item label="支行名称" prop="bankBranch">
+                <el-input v-model="registerForm.bankBranch" placeholder="支行名称"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
-              <el-form-item label="上传身份证正面照片" prop="idFrontPic">
+            <el-col :span="12">
+              <el-form-item prop="idFrontPic">
                 <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idFrontPic')" list-type="picture-card" :file-list="idFrontPicList" accept="jpg">
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <el-button size="small" type="primary">上传身份证正面照片</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
-              <el-form-item label="上传身份证背面照片" prop="idBackPic">
+            <el-col :span="12">
+              <el-form-item prop="idBackPic">
                 <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idBackPic')" list-type="picture-card" :file-list="idBackPicList" accept="jpg">
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <el-button size="small" type="primary">上传身份证背面照片</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="bankPic">
+                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'bankPic')" list-type="picture-card" :file-list="bankPicList" accept="jpg">
+                  <el-button size="small" type="primary">上传银行卡照片</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="riskPic">
+                <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'riskPic')" list-type="picture-card" :file-list="riskPicList" accept="jpg">
+                  <el-button size="small" type="primary">上传风险确认书照片</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
               </el-form-item>
@@ -105,9 +118,9 @@
                 <el-input type="password" v-model="registerForm.repeatPassword"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="8" :offset="7">
               <el-form-item>
-                <el-button type="primary" @click="register" :loading="loading">立即创建</el-button>
+                <el-button type="primary" @click="register" :loading="loading">提交</el-button>
                 <el-button @click="resetForm('registerForm')">重置</el-button>
               </el-form-item>
             </el-col>
@@ -143,8 +156,9 @@
         idFrontPic: "",
         idBackPicList: [],
         idBackPic: "",
+        riskPic: "",
+        riskPicList: [],
         rules: {
-          userAccountNo: [{required:true,message:"请填写账号"}],
           name: [{required:true,message:"请填写姓名"}],
           idCard: [{required:true,message:"请填写身份证号"}],
           phoneNo: [{required:true,message:"请填写手机号"}],
@@ -231,6 +245,7 @@
       resetForm(formName){
         this.$refs[formName].resetFields();
         this.bankPicList = [];
+        this.riskPicList = [];
         this.idFrontPicList = [];
         this.idBackPicList = [];
       },
@@ -244,8 +259,10 @@
                 submitData.idCardFrontPicture = this.idFrontPic;
                 submitData.idCardBackPicture = this.idBackPic;
                 submitData.bankCardPicture = this.bankPic;
-                submitData.province = this.registerForm.provinceAndCity[0];
-                submitData.city = this.registerForm.provinceAndCity[1];
+                submitData.addressProvince = this.registerForm.provinceAndCity[0];
+                submitData.addressCity = this.registerForm.provinceAndCity[1];
+                submitData.province = this.registerForm.bankProvinceAndCity[0];
+                submitData.city = this.registerForm.bankProvinceAndCity[1];
                 accountQuest.customerRegister(submitData).then(res => {
                   this.loading = false;
                 }).catch(error => {console.error("客户开户失败！");this.loading = false;})
@@ -263,6 +280,9 @@
                 }
                 if(!this.idBackPic){
                   temp.push("身份证背面");
+                }
+                if(!this.riskPic){
+                  temp.push("风险确认书");
                 }
                 return temp.join("、")
               })()

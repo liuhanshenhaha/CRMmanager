@@ -16,7 +16,10 @@
 					<el-checkbox v-model="filters.cascadeType">备选项</el-checkbox>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="()=>getCustomers(1)">查询</el-button>
+					<el-button type="primary" v-on:click="()=>getAgents(1)">查询</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="addNewAgent">新增</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -113,7 +116,7 @@
 			}
 		},
 		created(){
-			this.getCustomers(1)
+			this.getAgents(1)
 			this.getGroups();
 			this.getAgentOptions(2);
 		},
@@ -122,10 +125,10 @@
 				return formatters(type,value)
 			},
 			// 获取市场列表
-			getCustomers(pageNo){
+			getAgents(pageNo){
 				this.listLoading = true;
 				this.curPage = pageNo;
-				accountQuest.selectCustomerByParent({"userAccountNo":"","userName":"","superiorUserId":"","cascadeType":""}).then(res => {
+				accountQuest.selectAgentByParent({"userAccountNo":"","userName":"","superiorUserId":"","cascadeType":""}).then(res => {
 					this.tableData = res.content.dataList;
 					this.tableDataTotal = res.content.pageCount;
 					this.listLoading = false;
@@ -206,6 +209,9 @@
 				}).catch(err => {
 					console.error("重置密码失败")
 				})
+			},
+			addNewAgent(){
+				this.$router.push({ path: '/account/agent-register' });
 			}
 		}
 	}

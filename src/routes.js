@@ -11,11 +11,14 @@ import Contract from './views/agreements/Contract.vue'//市场管理
 import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
 import Agent from './views/account/Agent.vue'//代理信息
+import AgentRegister from './views/account/AgentRegister.vue'//代理开户
 import Costgroup from './views/account/Costgroup.vue'//代理信息
 import CustomerList from './views/account/CustomerList.vue'//客户信息
 import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
+import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
 // 审核
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
+import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -56,10 +59,11 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'agent-list', component: Agent, name: '代理信息' },
-            { path: 'customer-list', component: CustomerList, name: '客户信息' },
-            { path: 'contract', component: Contract, name: '代理设置列表' },
-            { path: 'customer-config-list', component: CustomerConfigList, name: '客户设置列表' },
+            // { path: 'agent-list', component: Agent, name: '代理信息' },
+            // { path: 'customer-list', component: CustomerList, name: '客户信息' },
+            { path: 'agent-config-list', component: AgentConfigList, name: '代理信息' },
+            { path: 'agent-register', component: AgentRegister, name: '代理开户', hidden: true },
+            { path: 'customer-config-list', component: CustomerConfigList, name: '客户信息' },
             { path: '2', component: Form, name: '账户配置' },
             { path: 'costgroup', component: Costgroup, name: '佣金组设置' },
         ]
@@ -86,7 +90,7 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '代理审核' },
+            { path: 'agent', component: AgentAudit, name: '代理审核' },
             { path: 'customer', component: CustomerAudit, name: '客户审核' },
             { path: 'contract', component: Contract, name: '换绑银行卡审核' },
             { path: '1', component: Form, name: '切换IB关系审核' },

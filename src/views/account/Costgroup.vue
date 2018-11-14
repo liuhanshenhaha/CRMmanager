@@ -62,7 +62,7 @@
 				</el-table-column>
 				<el-table-column prop="goodsName" label="商品名称">
 				</el-table-column>
-				<el-table-column prop="myCost" label="我的成本" :formatter="myCostFormatter">
+				<el-table-column prop="commissionValue" label="我的成本" :formatter="myCostFormatter">
 				</el-table-column>
 			</el-table>
 			<br/>
@@ -94,8 +94,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
-						<el-form-item label="用户类型" prop="userType" :rules="[{required:true,message:'请选择用户类型'}]">
-							<el-select v-model="addGoodsGroupForm.userType" placeholder="用户类型">
+						<el-form-item label="佣金组类型" prop="userType" :rules="[{required:true,message:'请选择佣金组类型'}]">
+							<el-select v-model="addGoodsGroupForm.userType" placeholder="佣金组类型">
 								<el-option v-for="item in userTypeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
@@ -160,18 +160,23 @@
 					goodsGroupName: "",
 					userType: ""
 				},
-				userTypeOptions: buildOptions("UserType")
+				userTypeOptions: buildOptions("TradeAccountType")
 			}
 		},
 		created(){
 			this.getGroup()
 		},
 		methods:{
+			resetForm(formName) {
+                this.$nextTick(()=>{
+                    this.$refs[formName].resetFields();
+                })                
+            },
 			statusFormat(row, col, cellValue){
 				return formatters('CommonStatus',cellValue)
 			},
 			userTypeFormat(row, col, cellValue){
-				return formatters('UserType',cellValue)
+				return formatters('TradeAccountType',cellValue)
 			},
 			commissionTypeFormat(cellValue){
 				return formatters('CommissionTypeEnu',cellValue)
@@ -196,16 +201,17 @@
 					this.goodsData = res.content;
 					this.listLoading2 = false;
 					this.editingRow = -1;
-					this.commissionType = res.content[0].commissionType;
 				}).catch(err=>{this.listLoading2 = false;});
 			},
 			// 获取未添加的商品列表
 			showNotAddedGoodsTable(){
 				this.addGoodsVisible = true;
 				this.listLoading3 = true;
+				this.resetForm("commissionForm")
 				accountQuest.getNotAddedGoods({goodsGroupId:this.currentGroupId}).then(res => {
 					this.notAddedGoodsData = res.content;
 					this.listLoading3 = false;
+					this.commissionType = res.content[0].commissionType;
 				}).catch(err=>{this.listLoading3 = false;});
 			},
 			editCurrentRow(index){
@@ -260,6 +266,7 @@
 				})
 			},
 			showGoodsGroup(type,row){
+				this.resetForm("addGoodsGroupForm")
 				switch(type){
 					case 'add':
 						this.addGoodsGroupVisible = true;

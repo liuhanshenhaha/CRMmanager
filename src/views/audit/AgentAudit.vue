@@ -4,8 +4,6 @@
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" style="width: 100%;">
 			<el-table-column type="index" label="序号" width="80">
 			</el-table-column>
-			<el-table-column prop="userAccountNo" label="账户" width="100">
-			</el-table-column>
 			<el-table-column prop="name" label="姓名" min-width="150">
 			</el-table-column>
 			<el-table-column prop="sex" label="性别" width="100" :formatter="(row, col, cellValue) => format('UserSex',cellValue)">
@@ -14,31 +12,31 @@
 			</el-table-column>
 			<el-table-column prop="superiorUserName" label="归属" width="150">
 			</el-table-column>
-			<el-table-column prop="inviteCode" label="邀请码" width="150">
-			</el-table-column>
 			<el-table-column prop="phoneNo" label="电话" width="150">
 			</el-table-column>
 			<el-table-column prop="email" label="邮箱" width="200">
 			</el-table-column>
 			<el-table-column prop="idCard" label="身份证信息" width="200">
 			</el-table-column>
+			<el-table-column label="住址" width="150">
+				<template slot-scope="scope">
+					{{(format('ProvinceEnu',scope.row.addressProvince) || "") + " " + (format('CityEnu',scope.row.addressCity)||"") + " " + (scope.row.addressDetail||"")}}
+				</template>
+			</el-table-column>
 			<el-table-column prop="bankCode" label="银行" width="160" :formatter="(row, col, cellValue) => format('Bank',cellValue)">
 			</el-table-column>
 			<el-table-column prop="bankCardNo" label="银行卡号" width="200">
 			</el-table-column>
-			<el-table-column prop="bankBranch" label="开户行地址" width="150">
+			<el-table-column label="开户行地址" width="150">
+				<template slot-scope="scope">
+					{{(format('ProvinceEnu',scope.row.province) || "") + " " + (format('CityEnu',scope.row.city)||"") + " " + (scope.row.bankBranch||"")}}
+				</template>
 			</el-table-column>
 			<el-table-column prop="applyTime" label="申请时间" width="200">
 			</el-table-column>
-			<el-table-column label="附件" align="center" fixed="right" >
+			<el-table-column label="操作" align="center" fixed="right" width="100">
 				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="viewPics(scope.row.id)">查看</el-button>
-				</template>
-			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="160">
-				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="()=>pass(scope.row)">通过</el-button>
-					<el-button type="danger" size="small" @click="()=>reject(scope.row)">拒绝</el-button>
+					<el-button type="primary" size="small" @click="()=>pass(scope.row)">审核</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -127,22 +125,6 @@
 				<el-button type="primary" :loading="loading" @click.native="passSubmit">提交</el-button>
 			</div>
 		</el-dialog>
-
-		<el-dialog title="审核拒绝" v-model="rejectVisible" :close-on-click-modal="false">
-			<el-form :model="rejectForm" :rules="{remark:[{required:true,message:'请填写拒绝原因'}]}" label-width="80px" ref="rejectForm">
-				<el-row :gutter="20">
-					<el-col :span="24">
-						<el-form-item label="拒绝原因" prop="remark">
-							<el-input type="textarea" resize="none" v-model="rejectForm.remark" placeholder="拒绝原因"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="rejectVisible = false">关闭</el-button>
-				<el-button type="primary" :loading="loading" @click.native="rejectSubmit">提交</el-button>
-			</div>
-		</el-dialog>
 	</section>
 </template>
 
@@ -152,11 +134,6 @@
 	export default {
 		data(){
 			return {
-				filters:{//查询表单数据
-					marketCode: "",
-					marketName: "",
-					status: "",
-				},
 				statusOptions: [],
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
@@ -176,8 +153,6 @@
 				},
 				tradeChannelIdOptions: [],
 				roleIdOptions: [],
-				rejectVisible: false,
-				rejectForm: {}
 			}
 		},
 		created(){
@@ -199,7 +174,7 @@
 				accountQuest.auditList({
 					pageNo: pageNo,
 					pageSize: "10",
-					customerType: "4"
+					customerType: "3"
 				}).then(res => {
 					this.tableData = res.content.dataList;
 					this.tableDataTotal = res.content.pageCount;
@@ -263,14 +238,6 @@
 						}).catch(error => this.loading = false)
 					}
 				})
-			},
-			reject(row){
-				this.rejectVisible = true;
-				this.rejectForm = {
-					customerStatus: 3,//1通过3拒绝
-					id: row.id,
-					remark: ""
-				}
 			},
 			rejectSubmit(row){
 				this.$refs.rejectForm.validate(valid => {

@@ -64,4 +64,8 @@ export const accountQuest = {
 	customerAudit: (params) => { return postData(`/customer/audit`, params) },//客户审核通过
 	selectCustomerByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//客户配置列表
 	selectAgentOptionByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//获取代理级联信息
+	selectTradeAccountByUserId: (params) => { return postData(`/agent/selectTradeAccountByUserId`, params) },//根据用户查询账户
+	resetPassword: (params) => { return postData(`/user/resetPassword`, params) },//重置密码
+	selectAgentOptionByParent: (params) => { return postData(`/agent/selectAgentOptionByParent`, params) },//查询代理级联关系信息
+	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//根据父代理查询子代理
 };
