@@ -12,6 +12,8 @@ import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
 import Agent from './views/account/Agent.vue'//代理信息
 import Costgroup from './views/account/Costgroup.vue'//代理信息
+import CustomerList from './views/account/CustomerList.vue'//客户信息
+import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
 // 审核
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 
@@ -54,10 +56,10 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'agent', component: Agent, name: '代理信息' },
-            { path: 'form', component: Form, name: '客户信息' },
+            { path: 'agent-list', component: Agent, name: '代理信息' },
+            { path: 'customer-list', component: CustomerList, name: '客户信息' },
             { path: 'contract', component: Contract, name: '代理设置列表' },
-            { path: '1', component: Form, name: '客户设置列表' },
+            { path: 'customer-config-list', component: CustomerConfigList, name: '客户设置列表' },
             { path: '2', component: Form, name: '账户配置' },
             { path: 'costgroup', component: Costgroup, name: '佣金组设置' },
         ]

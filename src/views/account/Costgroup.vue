@@ -40,10 +40,11 @@
 								<input type="text" v-if="editingRow === scope.$index" v-model="scope.row.commissionValue" :ref="'input'+scope.$index"></input>
 							</template>
 						</el-table-column>
-						<el-table-column label="操作" align="center" fixed="right" width="100">
+						<el-table-column label="操作" align="center" fixed="right" width="150">
 							<template slot-scope="scope">
-								<el-button v-if="editingRow !== scope.$index" type="primary" size="small" @click="editCurrentRow(scope.$index)">编辑</el-button>
-								<el-button v-if="editingRow === scope.$index" type="primary" size="small" @click="saveRow()">保存</el-button>
+								<el-button v-if="editingRow !== scope.$index" type="primary" size="small" @click="()=>editCurrentRow(scope.$index)">编辑</el-button>
+								<el-button v-if="editingRow === scope.$index" type="primary" size="small" @click="saveRow">保存</el-button>
+								<el-button type="danger" size="small" @click="()=>deleteRow(scope.row.id)">删除</el-button>
 							</template>
 						</el-table-column>
 					</el-table-column>
@@ -223,6 +224,11 @@
 					this.errorRow = this.editingRow;
 					console.error("修改客户成本失败！");
 				})
+			},
+			deleteRow(id){
+				accountQuest.deleteGoods({id: id}).then(res => {
+					this.getGoods(this.currentGroupId);
+				}).catch(err => console.error("删除商品失败！"))
 			},
 			tableRowClassName(row,rowIndex){
 				if(rowIndex === this.errorRow){

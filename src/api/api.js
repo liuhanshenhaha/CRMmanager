@@ -48,7 +48,9 @@ export const accountQuest = {
 	getGroup: (params) => { return postData(`/goods/group/selectByOwner`, params) },//获取佣金组列表
 	addGroup: (params) => { return postData(`/goods/group/add`, params) },//新增佣金组
 	modifyGroup: (params) => { return postData(`/goods/group/modify`, params) },//修改佣金组
+	configureGoodsGroup: (params) => { return postData(`/agent/configureGoodsGroup`, params) },//配置佣金组
 	modifyStatusGroup: (params) => { return postData(`/goods/group/modifyStatus`, params) },//删除佣金组
+	deleteGoods: (params) => { return postData(`/goods/group/detail/delete`, params) },//删除佣金组商品
 	getGoods: (params) => { return postData(`/goods/group/detail/selectMyCostByGoodsGroupId`, params) },//获取佣金组商品列表
 	modifyGoods: (params) => { return postData(`/goods/group/detail/modify`, params) },//修改客户成本
 	getNotAddedGoods: (params) => { return postData(`/goods/group/detail/selectNoConfigByGoodsGroupId`, params) },//查看未添加的商品
@@ -60,4 +62,6 @@ export const accountQuest = {
 	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
 	getRoleId: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
 	customerAudit: (params) => { return postData(`/customer/audit`, params) },//客户审核通过
+	selectCustomerByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//客户配置列表
+	selectAgentOptionByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//获取代理级联信息
 };
