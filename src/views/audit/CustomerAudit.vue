@@ -265,7 +265,7 @@
 				this.settingForm.customerStatus = 3;
 				accountQuest.customerAudit(this.settingForm).then(res => {
 					this.loading = false;
-					this.rejectVisible = false;
+					this.settingVisible = false;
 					this.getList(this.curPage);
 				}).catch(error => this.loading = false)
 			}

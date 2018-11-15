@@ -23,6 +23,8 @@
                 <el-input v-model="registerForm.phoneNo"></el-input>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
               <el-form-item label="邮箱" prop="email">
                 <el-input v-model="registerForm.email"></el-input>
@@ -33,6 +35,8 @@
                 <el-input v-model="registerForm.idCard"></el-input>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
               <el-form-item label="住址省市" prop="provinceAndCity">
                 <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.provinceAndCity" filterable></el-cascader>
@@ -43,6 +47,8 @@
                 <el-input v-model="registerForm.addressDetail" placeholder="详细地址"></el-input>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
               <el-form-item label="银行" prop="bankCode">
                 <el-select v-model.number="registerForm.bankCode" placeholder="请选择银行">
@@ -55,6 +61,8 @@
                 <el-input v-model="registerForm.bankCardNo"></el-input>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
               <el-form-item label="支行省市" prop="provinceAndCity">
                 <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.bankProvinceAndCity" filterable></el-cascader>
@@ -65,6 +73,8 @@
                 <el-input v-model="registerForm.bankBranch" placeholder="支行名称"></el-input>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item prop="idFrontPic">
                 <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'idFrontPic')" list-type="picture-card" :file-list="idFrontPicList" accept="jpg">
@@ -81,6 +91,8 @@
                 </el-upload>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item prop="bankPic">
                 <el-upload action="./" :http-request="submit" :on-change="(file,fileList)=>uploadPic(file,fileList,'bankPic')" list-type="picture-card" :file-list="bankPicList" accept="jpg">
@@ -97,6 +109,8 @@
                 </el-upload>
               </el-form-item>
             </el-col>
+           </el-row>
+           <el-row :gutter="20">
             <el-col :span="12" :xs="24">
               <el-form-item label="邀请码" prop="inviteCode">
                 <el-input v-model="registerForm.inviteCode" :disabled="hasInvited"></el-input>
@@ -259,6 +273,7 @@
                 submitData.idCardFrontPicture = this.idFrontPic;
                 submitData.idCardBackPicture = this.idBackPic;
                 submitData.bankCardPicture = this.bankPic;
+                submitData.agreeRiskPicture = this.riskPic;
                 submitData.addressProvince = this.registerForm.provinceAndCity[0];
                 submitData.addressCity = this.registerForm.provinceAndCity[1];
                 submitData.province = this.registerForm.bankProvinceAndCity[0];
