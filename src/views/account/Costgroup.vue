@@ -53,7 +53,7 @@
 		</el-row>
 
 		<!--新增商品界面-->
-		<el-dialog title="新增商品" customClass="w80p" v-model="addGoodsVisible" :close-on-click-modal="false">
+		<el-dialog title="新增商品" customClass="w80p" v-model="addGoodsVisible" :close-on-click-modal="false" @close="()=>resetForm('commissionForm')">
 			<!--待添加商品列表-->
 			<el-table stripe border fixed :data="notAddedGoodsData" highlight-current-row v-loading="listLoading3" max-height="400" @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55">
@@ -84,7 +84,7 @@
 		</el-dialog>
 
 		<!--新增佣金组界面-->
-		<el-dialog :title="type === 'add' ? '新增佣金组' : '编辑佣金组'" v-model="addGoodsGroupVisible" :close-on-click-modal="false">
+		<el-dialog :title="type === 'add' ? '新增佣金组' : '编辑佣金组'" v-model="addGoodsGroupVisible" :close-on-click-modal="false" @close="()=>resetForm('addGoodsGroupForm')">
 			<el-form :model="addGoodsGroupForm" ref="addGoodsGroupForm" label-width="100px">
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
@@ -167,9 +167,11 @@
 			this.getGroup()
 		},
 		methods:{
-			resetForm(formName) {
+			resetForm(formname) {
                 this.$nextTick(()=>{
-                    this.$refs[formName].resetFields();
+                    if(this.$refs[formname]){
+					    this.$refs[formname].resetFields();
+					}
                 })                
             },
 			statusFormat(row, col, cellValue){
@@ -207,7 +209,6 @@
 			showNotAddedGoodsTable(){
 				this.addGoodsVisible = true;
 				this.listLoading3 = true;
-				this.resetForm("commissionForm")
 				accountQuest.getNotAddedGoods({goodsGroupId:this.currentGroupId}).then(res => {
 					this.notAddedGoodsData = res.content;
 					this.listLoading3 = false;
@@ -266,7 +267,6 @@
 				})
 			},
 			showGoodsGroup(type,row){
-				this.resetForm("addGoodsGroupForm")
 				switch(type){
 					case 'add':
 						this.addGoodsGroupVisible = true;

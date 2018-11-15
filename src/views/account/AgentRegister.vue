@@ -30,7 +30,7 @@
 		              </el-form-item>
 		            </el-col>
 		            <el-col :span="12" :xs="24">
-		              <el-form-item prop="idCard" label="详细地址">
+		              <el-form-item prop="addressDetail" label="详细地址">
 		                <el-input v-model="registerForm.addressDetail" placeholder="详细地址"></el-input>
 		              </el-form-item>
 		            </el-col>
@@ -239,6 +239,7 @@
                 submitData.idCardFrontPicture = this.idFrontPic;
                 submitData.idCardBackPicture = this.idBackPic;
                 submitData.bankCardPicture = this.bankPic;
+                submitData.agreeRiskPicture = this.riskPic;
                 submitData.addressProvince = this.registerForm.provinceAndCity[0];
                 submitData.addressCity = this.registerForm.provinceAndCity[1];
                 submitData.province = this.registerForm.bankProvinceAndCity[0];

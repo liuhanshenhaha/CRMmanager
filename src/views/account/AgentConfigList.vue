@@ -13,9 +13,6 @@
 					<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
 				</el-form-item>
 				<el-form-item>
-					<el-checkbox v-model="filters.cascadeType">备选项</el-checkbox>
-				</el-form-item>
-				<el-form-item>
 					<el-button type="primary" v-on:click="()=>getAgents(1)">查询</el-button>
 				</el-form-item>
 				<el-form-item>
@@ -96,12 +93,17 @@
 	export default {
 		data(){
 			return {
-				filters:{},
+				filters:{
+					userAccountNo: "",
+					userName: "",
+					superiorUserId: [],
+				},
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				listLoading2: false,//表格加载中标识
 				curPage: 1,
 				tableDataTotal: 1,
+				cascade: [],
 				options: [{
 					label: "直属",
 					value: "straight"
@@ -128,7 +130,12 @@
 			getAgents(pageNo){
 				this.listLoading = true;
 				this.curPage = pageNo;
-				accountQuest.selectAgentByParent({"userAccountNo":"","userName":"","superiorUserId":"","cascadeType":""}).then(res => {
+				accountQuest.selectAgentByParent({
+					"userAccountNo":this.filters.userAccountNo,
+					"userName":this.filters.userName,
+					"superiorUserId":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "",
+					"cascadeType":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? 1 : 2) : ""//1是直属 2是级联
+				}).then(res => {
 					this.tableData = res.content.dataList;
 					this.tableDataTotal = res.content.pageCount;
 					this.listLoading = false;
@@ -149,28 +156,50 @@
 			getAgentOptions(id,value){
 				id = id ? id : id === 0 ? id : ""
 				value = value || []
+				value.map((item,index) => {
+					this.options.map((itm,idx) => {
+						if(item === itm.value){
+							this.cascade[index] = idx;
+						}
+					})
+				})
+				let pushChild = (oldOptions,newOptions) => {
+					for(let i = 0;i < oldOptions.length;i++){
+						if(value[value.length - 1] === oldOptions[i].value){
+							oldOptions[i].children = newOptions;
+							break;
+						}
+						if(oldOptions[i].children && oldOptions[i].children.length > 1){
+							pushChild(newOptions)
+						}
+					}
+				}
 				accountQuest.selectAgentOptionByParent({
 					superiorUserId: id
 				}).then(res => {
 					let tempOptions = [];
-					res.content.map(item => {
-						tempOptions.push({
+					tempOptions = res.content.map(item => {
+						return {
 							label: item.name,
 							value: item.id,
 							children: [{
 								label: "直属",
 								value: "straight"
 							}]
-						})
+						}
 					})
-					value.map(item => {
-						this.options.map(it => {
-							if(it.value === item){
-								item.children
-							}
-						})
+					tempOptions.unshift({
+						label: "直属",
+						value: "straight"
 					})
-				}).catch(error => console.error("获取代理级联信息失败"))
+					if(this.cascade.length === 0){
+						this.options = tempOptions
+					}else{
+						pushChild(this.options,tempOptions)
+					}
+				}).catch(error => 
+					console.error("获取代理级联信息失败",error)
+				)
 			},
 			modify(row){
 				this.modifyVisible = true; 

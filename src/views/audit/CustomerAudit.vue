@@ -32,13 +32,7 @@
 			</el-table-column>
 			<el-table-column label="附件" align="center" fixed="right" >
 				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="viewPics(scope.row.id)">查看</el-button>
-				</template>
-			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="160">
-				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="()=>pass(scope.row)">通过</el-button>
-					<el-button type="danger" size="small" @click="()=>reject(scope.row)">拒绝</el-button>
+					<el-button type="primary" size="small" @click="()=>open(scope.row)">审核</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -47,43 +41,57 @@
 		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
 		</div>
 
-		<el-dialog title="查看附件" v-model="attachmentVisible" :close-on-click-modal="false">
+		<el-dialog title="审核" v-model="settingVisible" :close-on-click-modal="false" @close="resetForm">
+			<el-table stripe border fixed :data="info" highlight-current-row v-loading="listLoading2" style="width: 100%;">
+				<el-table-column prop="name" label="姓名">
+				</el-table-column>
+				<el-table-column prop="phoneNo" label="电话">
+				</el-table-column>
+				<el-table-column prop="email" label="邮箱">
+				</el-table-column>
+				<el-table-column prop="idCard" label="身份证号">
+				</el-table-column>
+				<el-table-column label="详细地址">
+					<template slot-scope="scope">
+						{{(format('ProvinceEnu',scope.row.addressProvince) || "") + " " + (format('CityEnu',scope.row.addressCity)||"") + " " + (scope.row.addressDetail||"")}}
+					</template>
+				</el-table-column>
+				<el-table-column prop="bankCode" label="银行">
+				</el-table-column>
+				<el-table-column prop="bankCardNo" label="银行卡">
+				</el-table-column>
+				<el-table-column label="支行地址">
+					<template slot-scope="scope">
+						{{(format('ProvinceEnu',scope.row.province) || "") + " " + (format('CityEnu',scope.row.city)||"") + " " + (scope.row.bankBranch||"")}}
+					</template>
+				</el-table-column>
+			</el-table>
+			<br/>
 			<el-row>
 				<el-col :span="24">
-					<label>银行卡照片</label>
+					<label>身份证正面照片</label>
 					<br/>
 					<img :src="attachments[0]" style="width:50%;border: 2px solid #000;"/>
 				</el-col>
 				<el-col :span="24">
-					<label>身份证正面照片</label>
+					<label>身份证背面照片</label>
 					<br/>
 					<img :src="attachments[1]" style="width:50%;border: 2px solid #000;"/>
 				</el-col>
 				<el-col :span="24">
-					<label>身份证背面照片</label>
+					<label>银行卡照片</label>
 					<br/>
 					<img :src="attachments[2]" style="width:50%;border: 2px solid #000;"/>
 				</el-col>
+				<el-col :span="24">
+					<label>风险确认书照片</label>
+					<br/>
+					<img :src="attachments[3]" style="width:50%;border: 2px solid #000;"/>
+				</el-col>
 			</el-row>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="attachmentVisible = false">关闭</el-button>
-			</div>
-		</el-dialog>
-
-		<el-dialog title="审核通过" v-model="settingVisible" :close-on-click-modal="false">
+			<br/>
+			<p>以下星号标记的项为审核通过时必填</p>
 			<el-form :model="settingForm" :rules="settingFormRules" label-width="80px" ref="settingForm">
-				<el-row :gutter="20">
-					<el-col :span="12" :xs="24">
-						<el-form-item label="平仓线" prop="forceLine">
-							<el-input v-model.number="settingForm.forceLine" placeholder="平仓线"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12" :xs="24">
-						<el-form-item label="告警线" prop="warningLine">
-							<el-input v-model.number="settingForm.warningLine" placeholder="告警线"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12" :xs="24">
 						<el-form-item label="交易通道" prop="tradeChannelId">
@@ -123,24 +131,8 @@
 				</el-row>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="settingVisible = false">关闭</el-button>
-				<el-button type="primary" :loading="loading" @click.native="passSubmit">提交</el-button>
-			</div>
-		</el-dialog>
-
-		<el-dialog title="审核拒绝" v-model="rejectVisible" :close-on-click-modal="false">
-			<el-form :model="rejectForm" :rules="{remark:[{required:true,message:'请填写拒绝原因'}]}" label-width="80px" ref="rejectForm">
-				<el-row :gutter="20">
-					<el-col :span="24">
-						<el-form-item label="拒绝原因" prop="remark">
-							<el-input type="textarea" resize="none" v-model="rejectForm.remark" placeholder="拒绝原因"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="rejectVisible = false">关闭</el-button>
-				<el-button type="primary" :loading="loading" @click.native="rejectSubmit">提交</el-button>
+				<el-button type="primary" :loading="loading" @click.native="passSubmit">通过</el-button>
+				<el-button type="danger" :loading="loading" @click.native="rejectSubmit">拒绝</el-button>
 			</div>
 		</el-dialog>
 	</section>
@@ -152,32 +144,25 @@
 	export default {
 		data(){
 			return {
-				filters:{//查询表单数据
-					marketCode: "",
-					marketName: "",
-					status: "",
-				},
 				statusOptions: [],
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
+				listLoading2: false,//表格加载中标识
 				tableDataTotal: 0,//总页数
 				attachmentVisible: false,//附件弹窗
+				info: [],
 				attachments: [],//附件
 				curPage: 1,//当前页
 				loading: false,//提交loading标识
 				settingVisible: false,//审核通过弹窗
 				settingForm: {},
 				settingFormRules: {
-					forceLine: [{required: true, message: "请输入平仓线"},{type:"number",message: "平仓线只能是数字",trigger: "blur"}],
-					warningLine: [{required: true, message: "请输入告警线"},{type:"number",message: "告警线只能是数字",trigger: "blur"}],
 					tradeChannelId: [{required: true, message: "请选择交易通道"}],
 					roleId: [{required: true, message: "请选择角色"}],
 					commissionType: [{required: true, message: "请选择返佣类型"}],
 				},
 				tradeChannelIdOptions: [],
 				roleIdOptions: [],
-				rejectVisible: false,
-				rejectForm: {}
 			}
 		},
 		created(){
@@ -186,6 +171,13 @@
 			this.getRoleId();
 		},
 		methods:{
+			resetForm() {
+                this.$nextTick(()=>{
+                    if(this.$refs["settingForm"]){
+					    this.$refs["settingForm"].resetFields();
+					}
+                })                
+            },
 			format(type,value){
 				return formatters(type,value)
 			},
@@ -228,34 +220,38 @@
 					})
 				}).catch(err=>console.error("获取角色失败！"));
 			},
-			// 查看附件
-			viewPics(id){
-				accountQuest.getAuditInfo({id:id}).then(res => {
-					this.attachmentVisible = true;
-					this.attachments.push("data:image/png;base64,"+res.content.bankCardPicture);
+			// 审核通过配置客户
+			open(row){
+				this.listLoading2 = true;
+				this.settingVisible = true;
+				accountQuest.getAuditInfo({id:row.id}).then(res => {
+					this.listLoading2 = false;
+					this.info = {
+						name: res.content.name,
+						phoneNo: res.content.phoneNo,
+						email: res.content.email,
+						idCard: res.content.idCard,
+						address: res.content.addressProvince + res.content.addressCity + res.content.addressDetail,
+						bankCode: res.content.bankCode,
+						bankCardNo: res.content.bankCardNo,
+						bankAddress: res.content.province + res.content.city + res.content.addressDetail,
+					};
+					this.attachments = [];
 					this.attachments.push("data:image/png;base64,"+res.content.idCardFrontPicture);
 					this.attachments.push("data:image/png;base64,"+res.content.idCardBackPicture);
-				})
-			},
-			// 审核通过配置客户
-			pass(row){
-				this.settingVisible = true;
-				this.settingForm = {
-					id: row.id,
-					customerStatus: 1,//1通过3拒绝
-					forceLine: "",
-					warningLine: "",
-					tradeChannelId: "",
-					roleId: "",
-					rate: "",
-					commissionType: "",
-					remark: ""
-				};
+					this.attachments.push("data:image/png;base64,"+res.content.bankCardPicture);
+					this.attachments.push("data:image/png;base64,"+res.content.agreeRiskPicture);
+					this.info = new Array(this.info);
+					this.settingForm = {
+						id: row.id
+					};
+				}).catch(err => console.error("获取详细信息失败"))
 			},
 			passSubmit(){
 				this.$refs.settingForm.validate(valid => {
 					if(valid){
 						this.loading = true;
+						this.settingForm.customerStatus = 1;
 						accountQuest.customerAudit(this.settingForm).then(res => {
 							this.loading = false;
 							this.settingVisible = false;
@@ -264,25 +260,14 @@
 					}
 				})
 			},
-			reject(row){
-				this.rejectVisible = true;
-				this.rejectForm = {
-					customerStatus: 3,//1通过3拒绝
-					id: row.id,
-					remark: ""
-				}
-			},
-			rejectSubmit(row){
-				this.$refs.rejectForm.validate(valid => {
-					if(valid){
-						this.loading = true;
-						accountQuest.customerAudit(this.rejectForm).then(res => {
-							this.loading = false;
-							this.rejectVisible = false;
-							this.getList(this.curPage);
-						}).catch(error => this.loading = false)
-					}
-				})
+			rejectSubmit(){
+				this.loading = true;
+				this.settingForm.customerStatus = 3;
+				accountQuest.customerAudit(this.settingForm).then(res => {
+					this.loading = false;
+					this.rejectVisible = false;
+					this.getList(this.curPage);
+				}).catch(error => this.loading = false)
 			}
 		}
 	}

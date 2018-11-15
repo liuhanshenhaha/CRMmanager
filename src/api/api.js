@@ -62,6 +62,7 @@ export const accountQuest = {
 	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
 	getRoleId: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
 	customerAudit: (params) => { return postData(`/customer/audit`, params) },//客户审核通过
+	agentAudit: (params) => { return postData(`/agent/auditAgent`, params) },//代理审核通过
 	selectCustomerByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//客户配置列表
 	selectAgentOptionByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//获取代理级联信息
 	selectTradeAccountByUserId: (params) => { return postData(`/agent/selectTradeAccountByUserId`, params) },//根据用户查询账户

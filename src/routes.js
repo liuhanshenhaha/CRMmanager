@@ -10,10 +10,8 @@ import Market from './views/agreements/Market.vue'//市场管理
 import Contract from './views/agreements/Contract.vue'//市场管理
 import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
-import Agent from './views/account/Agent.vue'//代理信息
 import AgentRegister from './views/account/AgentRegister.vue'//代理开户
 import Costgroup from './views/account/Costgroup.vue'//代理信息
-import CustomerList from './views/account/CustomerList.vue'//客户信息
 import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
 import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
 // 审核
