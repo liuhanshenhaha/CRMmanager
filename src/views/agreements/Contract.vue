@@ -501,7 +501,7 @@
 				this.filters.pageNo = pageNo;
 				contractQuest.getContract(this.filters).then(res => {
 					this.tableData = res.content.dataList;
-					this.tableDataTotal = res.content.pageCount;
+					this.tableDataTotal = res.content.count;
 					// console.log(this.tableData)
 					this.listLoading = false;
 				}).catch(err=>{this.listLoading = false;});

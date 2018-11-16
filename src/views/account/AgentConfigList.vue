@@ -137,7 +137,7 @@
 					"cascadeType":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? 1 : 2) : ""//1是直属 2是级联
 				}).then(res => {
 					this.tableData = res.content.dataList;
-					this.tableDataTotal = res.content.pageCount;
+					this.tableDataTotal = res.content.count;
 					this.listLoading = false;
 				}).catch(err=>{this.listLoading = false;});
 			},

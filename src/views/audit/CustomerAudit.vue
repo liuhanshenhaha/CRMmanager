@@ -194,7 +194,7 @@
 					customerType: "4"
 				}).then(res => {
 					this.tableData = res.content.dataList;
-					this.tableDataTotal = res.content.pageCount;
+					this.tableDataTotal = res.content.count;
 					this.listLoading = false;
 				}).catch(err=>{this.listLoading = false;});
 			},

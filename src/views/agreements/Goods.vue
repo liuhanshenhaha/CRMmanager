@@ -535,7 +535,7 @@
 				goodsQuest.getGoods(this.filters).then(res=>{
 					this.curPage = pageNo;
 					this.tableData = res.content.dataList;
-					this.tableDataTotal = res.content.pageCount;
+					this.tableDataTotal = res.content.count;
 				}).catch(err=>console.error(err))
 			},
 			// 新增商品 type add/modify

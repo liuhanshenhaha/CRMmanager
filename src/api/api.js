@@ -57,6 +57,7 @@ export const accountQuest = {
 	addBatch: (params) => { return postData(`/goods/group/detail/addBatch`, params) },//批量添加商品
 	uploadPic: (params) => { return postData(`/agent/uploadPic`, params) },//上传图片
 	customerRegister: (params) => { return postData(`/customer/register`, params) },//客户开户
+	agentRegister: (params) => { return postData(`/agent/add`, params) },//客户开户
 	auditList: (params) => { return postData(`/agent/audit/list`, params) },//客户/代理待审核列表
 	getAuditInfo: (params) => { return postData(`/agent/get`, params) },//获取客户/代理信息
 	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
