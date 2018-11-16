@@ -47,7 +47,7 @@
 		              </el-form-item>
 		            </el-col>
 		            <el-col :span="12" :xs="24">
-		              <el-form-item label="支行省市" prop="provinceAndCity">
+		              <el-form-item label="支行省市" prop="bankProvinceAndCity">
 		                <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.bankProvinceAndCity" filterable></el-cascader>
 		              </el-form-item>
 		            </el-col>
@@ -232,24 +232,20 @@
       register(){
         this.$refs.registerForm.validate(valid => {
           if(valid){
-            if(this.bankPic && this.idFrontPic && this.idBackPic){
-              if(this.readFlag){
-                this.loading = true;
-                let submitData = {...this.registerForm};
-                submitData.idCardFrontPicture = this.idFrontPic;
-                submitData.idCardBackPicture = this.idBackPic;
-                submitData.bankCardPicture = this.bankPic;
-                submitData.agreeRiskPicture = this.riskPic;
-                submitData.addressProvince = this.registerForm.provinceAndCity[0];
-                submitData.addressCity = this.registerForm.provinceAndCity[1];
-                submitData.province = this.registerForm.bankProvinceAndCity[0];
-                submitData.city = this.registerForm.bankProvinceAndCity[1];
-                accountQuest.customerRegister(submitData).then(res => {
-                  this.loading = false;
-                }).catch(error => {console.error("客户开户失败！");this.loading = false;})
-              }else{
-                this.$message.error("请勾选阅读并同意选项！")
-              }
+            if(this.bankPic && this.idFrontPic && this.idBackPic && this.riskPic){
+              this.loading = true;
+              let submitData = {...this.registerForm};
+              submitData.idCardFrontPicture = this.idFrontPic;
+              submitData.idCardBackPicture = this.idBackPic;
+              submitData.bankCardPicture = this.bankPic;
+              submitData.agreeRiskPicture = this.riskPic;
+              submitData.addressProvince = this.registerForm.provinceAndCity[0];
+              submitData.addressCity = this.registerForm.provinceAndCity[1];
+              submitData.province = this.registerForm.bankProvinceAndCity[0];
+              submitData.city = this.registerForm.bankProvinceAndCity[1];
+              accountQuest.customerRegister(submitData).then(res => {
+                this.loading = false;
+              }).catch(error => {console.error("客户开户失败！");this.loading = false;})
             }else{
               let text = (()=>{
                 let temp = [];

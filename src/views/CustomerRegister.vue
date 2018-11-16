@@ -64,7 +64,7 @@
            </el-row>
            <el-row :gutter="20">
             <el-col :span="12" :xs="24">
-              <el-form-item label="支行省市" prop="provinceAndCity">
+              <el-form-item label="支行省市" prop="bankProvinceAndCity">
                 <el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.bankProvinceAndCity" filterable></el-cascader>
               </el-form-item>
             </el-col>
@@ -266,7 +266,7 @@
       register(){
         this.$refs.registerForm.validate(valid => {
           if(valid){
-            if(this.bankPic && this.idFrontPic && this.idBackPic){
+            if(this.bankPic && this.idFrontPic && this.idBackPic && this.riskPic){
               if(this.readFlag){
                 this.loading = true;
                 let submitData = {...this.registerForm};
