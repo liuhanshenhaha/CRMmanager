@@ -88,7 +88,7 @@
 </template>
 
 <script>
-	import { buildOptions,formatters } from "../../utils/utils"
+	import { buildOptions,formatters,getAgentOptions } from "../../utils/utils"
 	import { accountQuest } from "../../api/api"
 	export default {
 		data(){
@@ -120,7 +120,7 @@
 		created(){
 			this.getAgents(1)
 			this.getGroups();
-			this.getAgentOptions(2);
+			getAgentOptions(this);
 		},
 		methods:{
 			formatter(type,value){
@@ -142,7 +142,7 @@
 				}).catch(err=>{this.listLoading = false;});
 			},
 			getGroups(){
-				accountQuest.getGroup({}).then(res => {
+				accountQuest.selectValidByOwner({}).then(res => {
 					let temp = [];
 					res.content.map(item => {
 						temp.push({
@@ -152,54 +152,6 @@
 					})
 					this.groupOptions = temp;
 				})
-			},
-			getAgentOptions(id,value){
-				id = id ? id : id === 0 ? id : ""
-				value = value || []
-				value.map((item,index) => {
-					this.options.map((itm,idx) => {
-						if(item === itm.value){
-							this.cascade[index] = idx;
-						}
-					})
-				})
-				let pushChild = (oldOptions,newOptions) => {
-					for(let i = 0;i < oldOptions.length;i++){
-						if(value[value.length - 1] === oldOptions[i].value){
-							oldOptions[i].children = newOptions;
-							break;
-						}
-						if(oldOptions[i].children && oldOptions[i].children.length > 1){
-							pushChild(newOptions)
-						}
-					}
-				}
-				accountQuest.selectAgentOptionByParent({
-					superiorUserId: id
-				}).then(res => {
-					let tempOptions = [];
-					tempOptions = res.content.map(item => {
-						return {
-							label: item.name,
-							value: item.id,
-							children: [{
-								label: "直属",
-								value: "straight"
-							}]
-						}
-					})
-					tempOptions.unshift({
-						label: "直属",
-						value: "straight"
-					})
-					if(this.cascade.length === 0){
-						this.options = tempOptions
-					}else{
-						pushChild(this.options,tempOptions)
-					}
-				}).catch(error => 
-					console.error("获取代理级联信息失败",error)
-				)
 			},
 			modify(row){
 				this.modifyVisible = true; 
@@ -221,7 +173,7 @@
 			},
 			//动态生成代理下拉框
 			makeCascader(value){
-				this.getAgentOptions(value[value.length - 1],value)
+				getAgentOptions(this,value[value.length - 1],value)
 			},
 			edit(rowNo){
 				if(this.editRow !== -1){

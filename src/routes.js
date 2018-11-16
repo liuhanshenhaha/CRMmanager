@@ -17,6 +17,9 @@ import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
 // 审核
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
+// 交易管理
+import TradeList from './views/trade/TradeList.vue'//成交订单
+import HoldingList from './views/trade/HoldingList.vue'//持仓订单
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -67,15 +70,15 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/trade',
         component: Home,
         name: '交易管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '持仓订单' },
+            { path: 'trade-list', component: TradeList, name: '成交记录' },
+            { path: 'holding-list', component: HoldingList, name: '持仓订单' },
             { path: 'form', component: Form, name: '委托订单' },
-            { path: 'contract', component: Contract, name: '成交记录' },
             { path: '1', component: Form, name: '平仓订单' },
             { path: '2', component: Form, name: '排行榜' },
             { path: '3', component: Form, name: '跟单' },

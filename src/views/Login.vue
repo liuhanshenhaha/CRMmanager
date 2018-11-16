@@ -9,7 +9,7 @@
     </el-form-item>
     <el-form-item :error="loginForm.captchaError">
       <el-input type="text" v-model="loginForm.captcha" auto-complete="off" placeholder="验证码" class="custome-captcha">
-        <template slot="prepend"><img :src="'/xtjichu/login/getAuthImage?deviceId=gyk?' + captchaSrc" alt=""></template>
+        <template slot="prepend"><img :src="'/xtjichu/login/getAuthImage?deviceId=gyk?' + captchaSrc" alt="验证码" style="cursor:pointer" @click="changeCaptcha"></template>
       </el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
@@ -27,7 +27,7 @@
     data() {
       return {
         logining: false,
-        captchaSrc: 0,
+        captchaSrc: Math.random() * 10,
         loginForm: {
           account: 'admin',
           accountError: '',
@@ -51,6 +51,9 @@
       };
     },
     methods: {
+      changeCaptcha(){
+        this.captchaSrc = Math.random() * 10;
+      },
       loginSubmit(ev) {
         var _this = this;
         this.$refs.loginForm.validate((valid) => {

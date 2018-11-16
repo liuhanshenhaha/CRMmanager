@@ -7,6 +7,7 @@
  *	getQueryStringByName(name)	name: String 需要获取的url参数名
  *	dateFormat(date, pattern) 格式化日期 date:日期对象，pattern:格式化模板 默认 yyyy-MM-dd
  */
+import {accountQuest} from "../api/api"
 
 export function getCookie(name) {
 	var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
@@ -78,4 +79,53 @@ export function buildOptions(type,hasAll){
         options.unshift({value:"",label:"全部"})
     }
     return options;
+}
+
+export function getAgentOptions(_this,id,value){
+    id = id ? id : id === 0 ? id : ""
+    value = value || []
+    value.map((item,index) => {
+        _this.options.map((itm,idx) => {
+            if(item === itm.value){
+                _this.cascade[index] = idx;
+            }
+        })
+    })
+    let pushChild = (oldOptions,newOptions) => {
+        for(let i = 0;i < oldOptions.length;i++){
+            if(value[value.length - 1] === oldOptions[i].value){
+                oldOptions[i].children = newOptions;
+                break;
+            }
+            if(oldOptions[i].children && oldOptions[i].children.length > 1){
+                pushChild(newOptions)
+            }
+        }
+    }
+    accountQuest.selectAgentOptionByParent({
+        superiorUserId: id
+    }).then(res => {
+        let tempOptions = [];
+        tempOptions = res.content.map(item => {
+            return {
+                label: item.name,
+                value: item.id,
+                children: [{
+                    label: "直属",
+                    value: "straight"
+                }]
+            }
+        })
+        tempOptions.unshift({
+            label: "直属",
+            value: "straight"
+        })
+        if(_this.cascade.length === 0){
+            _this.options = tempOptions
+        }else{
+            pushChild(_this.options,tempOptions)
+        }
+    }).catch(error => 
+        console.error("获取代理级联信息失败",error)
+    )
 }

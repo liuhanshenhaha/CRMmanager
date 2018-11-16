@@ -46,6 +46,7 @@ export const goodsQuest = {
 //账户管理
 export const accountQuest = {
 	getGroup: (params) => { return postData(`/goods/group/selectByOwner`, params) },//获取佣金组列表
+	selectValidByOwner: (params) => { return postData(`/goods/group/selectValidByOwner`, params) },//获取佣金组列表
 	addGroup: (params) => { return postData(`/goods/group/add`, params) },//新增佣金组
 	modifyGroup: (params) => { return postData(`/goods/group/modify`, params) },//修改佣金组
 	configureGoodsGroup: (params) => { return postData(`/agent/configureGoodsGroup`, params) },//配置佣金组
@@ -71,3 +72,9 @@ export const accountQuest = {
 	selectAgentOptionByParent: (params) => { return postData(`/agent/selectAgentOptionByParent`, params) },//查询代理级联关系信息
 	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//根据父代理查询子代理
 };
+
+//交易管理
+export const tradeQuest = {
+	getTradeList: (params) => { return postData(`/trade/query`, params) },//查询成交记录
+	getHoldingList: (params) => { return postData(`/holding/query`, params) },//查询持仓订单
+}

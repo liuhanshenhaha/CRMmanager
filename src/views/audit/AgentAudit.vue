@@ -145,7 +145,7 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" :xs="24">
-						<el-form-item label="允许下级推荐" prop="roleId">
+						<el-form-item label="下级推荐" prop="roleId">
 							<el-select v-model="settingForm.allowNextInvite" placeholder="允许下级推荐">
 								<el-option v-for="item in buildOption('YesOrNoEnum')" :key="item.value" :label="item.label" :value="item.value"></el-option>
 							</el-select>
