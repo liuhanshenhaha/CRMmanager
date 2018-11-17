@@ -10,6 +10,7 @@ import Vuex from 'vuex'
 //import NProgress from 'nprogress'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
+import VueClipboard from 'vue-clipboard2'
 import 'font-awesome/css/font-awesome.min.css'
 import './styles/custome.scss'
 import {getCookie,delCookie} from './utils/utils';
@@ -17,6 +18,7 @@ import {getCookie,delCookie} from './utils/utils';
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
+Vue.use(VueClipboard)
 
 //NProgress.configure({ showSpinner: false });
 

@@ -75,6 +75,16 @@ export const accountQuest = {
 
 //交易管理
 export const tradeQuest = {
-	getTradeList: (params) => { return postData(`/trade/query`, params) },//查询成交记录
-	getHoldingList: (params) => { return postData(`/holding/query`, params) },//查询持仓订单
+	getTradeList: (params) => { return postData(`/trade/query`, params) },//查询代理管理员成交记录
+	getUserTradeList: (params) => { return postData(`/trade/queryUser`, params) },//查询客户成交记录
+	queryClosePosition: (params) => { return postData(`/trade/queryClosePosition`, params) },//查询代理管理员平仓记录
+	queryUserClosePosition: (params) => { return postData(`/trade/queryUserClosePosition`, params) },//查询客户平仓记录
+	queryWTList: (params) => { return postData(`/weituo/query`, params) },//查询代理管理员委托记录
+	queryUserWTList: (params) => { return postData(`/weituo/queryUser`, params) },//查询客户委托记录
+	queryHolding: (params) => { return postData(`/holding/query`, params) },//查询代理管理员持仓记录
+	queryUserHolding: (params) => { return postData(`/holding/queryUser`, params) },//查询客户持仓记录
+	queryHoldingDetail: (params) => { return postData(`/holding/detail`, params) },//查询持仓明细
 }
+
+// 推广链接
+export const getReferralLink = (params) => { return postData(`/agent/getReferralLink`, params)};

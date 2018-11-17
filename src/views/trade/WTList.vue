@@ -4,27 +4,44 @@
 		<!-- 非客户账号登陆 -->
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;" v-if="customerType !== 'customer'">
 			<el-form :inline="true" :model="filters">
-				<el-col :span="5" :xs="24">
+				<el-col :span="3" :xs="24">
 					<el-form-item>
 						<el-input v-model="filters.userAccountNo" placeholder="账户"></el-input>
 					</el-form-item>
 				</el-col>
-				<el-col :span="5" :xs="24">
+				<el-col :span="3" :xs="24">
 					<el-form-item>
 						<el-input v-model="filters.userName" placeholder="姓名"></el-input>
 					</el-form-item>
 				</el-col>
-				<el-col :span="5" :xs="24">
+				<el-col :span="3" :xs="24">
+					<el-form-item>
+						<el-select v-model="filters.openClose" placeholder="开平状态" >
+							<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="3" :xs="24">
 					<el-form-item>
 						<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
 					</el-form-item>
 				</el-col>
-				<el-col :span="5" :xs="24">
+				<el-col :span="3" :xs="24">
 					<el-form-item>
 						<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
 					</el-form-item>
 				</el-col>
-				<el-col :span="4" :xs="24">
+				<el-col :span="3" :xs="24">
+					<el-form-item class="w90p">
+						<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
+					</el-form-item>
+				</el-col>
+				<el-col :span="3" :xs="24">
+					<el-form-item class="w90p">
+						<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
+					</el-form-item>
+				</el-col>
+				<el-col :span="3" :xs="24">
 					<el-form-item>
 						<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
 					</el-form-item>
@@ -36,7 +53,24 @@
 			<el-form :inline="true" :model="filters">
 				<el-col :span="5" :xs="24">
 					<el-form-item>
+						<el-select v-model="filters.openClose" placeholder="开平状态" >
+							<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="5" :xs="24">
+					<el-form-item>
 						<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="5" :xs="24">
+					<el-form-item class="w90p">
+						<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
+					</el-form-item>
+				</el-col>
+				<el-col :span="5" :xs="24">
+					<el-form-item class="w90p">
+						<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
 					</el-form-item>
 				</el-col>
 				<el-col :span="4" :xs="24">
@@ -49,6 +83,8 @@
 
 		<!--列表-->
 		<el-table class="restyle-table" show-summary :summary-method="getSummaries" stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
+			<el-table-column prop="idName" label="订单号" min-width="100">
+			</el-table-column>
 			<el-table-column prop="tradeAccountNo" label="账户" min-width="150">
 			</el-table-column>
 			<el-table-column prop="userName" label="姓名" width="100">
@@ -57,46 +93,33 @@
 			</el-table-column>
 			<el-table-column prop="side" label="买卖" width="100" :formatter="(row,col,cellValue)=>formatter('SideEnu',cellValue)">
 			</el-table-column>
-			<el-table-column prop="futureNum" label="持仓手数" width="100">
+			<el-table-column prop="openclose" label="开平状态" width="100" :formatter="(row,col,cellValue)=>formatter('OpencloseEnu',cellValue)">
 			</el-table-column>
-			<el-table-column prop="frozenNum" label="锁定手数" width="100">
+			<el-table-column prop="status" label="状态" width="100" :formatter="(row,col,cellValue)=>formatter('OpencloseEnu',cellValue)">
 			</el-table-column>
-			<el-table-column prop="futurePrice" label="开仓价格" width="100">
+			<el-table-column prop="sxf" label="手续费" width="100">
 			</el-table-column>
-			<el-table-column prop="jyyk" label="交易盈亏" width="100">
+			<el-table-column prop="orderNum" label="报单手数" width="100">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="150">
-				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="()=>detail(scope.row.id)">查看明细</el-button>
-				</template>
+			<el-table-column prop="tradeNum" label="成交手数" width="100">
+			</el-table-column>
+			<el-table-column prop="currency" label="货币类型" width="100" :formatter="(row,col,cellValue)=>formatter('CurrencyTypeEnu',cellValue)">
+			</el-table-column>
+			<el-table-column prop="orderPrice" label="报单价格" width="150" :formatter="(row,col,cellValue)=>{if(cellValue==0){return '市价'}else{return cellValue}}">
+			</el-table-column>
+			<el-table-column prop="tradePrice" label="成交价格" width="100">
+			</el-table-column>
+			<el-table-column prop="source" label="委托状态" width="100" :formatter="(row,col,cellValue)=>formatter('SourceEnu',cellValue)">
+			</el-table-column>
+			<el-table-column prop="orderTime" label="委托时间" width="200">
+			</el-table-column>
+			<el-table-column prop="tradeTime" label="成交时间" width="200">
 			</el-table-column>
 		</el-table>
 
 		<div class="block" style="text-align:right">
 		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
 		</div>
-
-		<el-dialog title="持仓明细" customClass="w80p" v-model="subTableVisible" :close-on-click-modal="false">
-			<el-table stripe border fixed :data="subTableData" highlight-current-row v-loading="subListLoading" @selection-change="" style="width: 100%;" max-height="400">
-				<el-table-column prop="idName" label="订单号" min-width="100">
-				</el-table-column>
-				<el-table-column prop="futureName" label="交易品种" width="200">
-				</el-table-column>
-				<el-table-column prop="side" label="买卖" width="100" :formatter="(row,col,cellValue)=>formatter('SideEnu',cellValue)">
-				</el-table-column>
-				<el-table-column prop="futureNum" label="持仓手数" width="100">
-				</el-table-column>
-				<el-table-column prop="frozenNum" label="锁定手数" width="100">
-				</el-table-column>
-				<el-table-column prop="futurePrice" label="开仓价格" width="100">
-				</el-table-column>
-				<el-table-column prop="jyyk" label="交易盈亏" width="100">
-				</el-table-column>
-			</el-table>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="subTableVisible = false">关闭</el-button>
-			</div>
-		</el-dialog>
 	</section>
 </template>
 
@@ -111,6 +134,8 @@
 					userName: "",
 					contractCode: "",
 					superiorUserId: [],
+					startDate: "",
+					endDate: ""
 				},
 				tableData: [],//表格数据
 				tableDataSummary: {},
@@ -126,11 +151,7 @@
 				        case 4: return "customer";break;
 				        default: return "admin";
 				    }
-				})(),
-				subTableData: [],
-				subListLoading: false,
-				subTableVisible: false,
-
+				})()
 			}
 		},
 		created(){
@@ -165,14 +186,14 @@
 				submitData.superiorUserId = this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "";
 				submitData.cascadeType = this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? 1 : 2) : "";
 				if(this.customerType !== "customer"){
-					tradeQuest.queryHolding(submitData).then(res => {
+					tradeQuest.queryWTList(submitData).then(res => {
 						this.tableData = res.content.dataList;
 						this.tableDataSummary = res.content.statisticsData;
 						this.tableDataTotal = res.content.count;
 						this.listLoading = false;
 					}).catch(err=>{this.listLoading = false;});
 				}else{
-					tradeQuest.queryUserHolding(submitData).then(res => {
+					tradeQuest.queryUserWTList(submitData).then(res => {
 						this.tableData = res.content.dataList;
 						this.tableDataSummary = res.content.statisticsData;
 						this.tableDataTotal = res.content.count;
@@ -193,17 +214,6 @@
 					}
 				});
 				return sums;
-			},
-			detail(id){
-				this.subTableVisible = true;
-				this.subListLoading = true;
-				tradeQuest.queryHoldingDetail({id:id}).then(res => {
-					this.subTableData = res.content;
-					this.subListLoading = false;
-				}).catch(error => {
-					this.subListLoading = false;
-					console.error("查询详细失败")
-				})
 			}
 		}
 	}

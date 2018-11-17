@@ -20,6 +20,10 @@ import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
 // 交易管理
 import TradeList from './views/trade/TradeList.vue'//成交订单
 import HoldingList from './views/trade/HoldingList.vue'//持仓订单
+import ClosePosition from './views/trade/ClosePosition.vue'//持仓订单
+import WTList from './views/trade/WTList.vue'//持仓订单
+// 推广链接
+import ReferralLink from './views/ReferralLink.vue'//推广链接
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -78,8 +82,8 @@ let routes = [
         children: [
             { path: 'trade-list', component: TradeList, name: '成交记录' },
             { path: 'holding-list', component: HoldingList, name: '持仓订单' },
-            { path: 'form', component: Form, name: '委托订单' },
-            { path: '1', component: Form, name: '平仓订单' },
+            { path: 'wt-list', component: WTList, name: '委托订单' },
+            { path: 'close-position', component: ClosePosition, name: '平仓订单' },
             { path: '2', component: Form, name: '排行榜' },
             { path: '3', component: Form, name: '跟单' },
         ]
@@ -137,14 +141,13 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/referral-link',
         component: Home,
-        name: '推广链接 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         leaf: true,
         children: [
-            { path: 'market', component: Market, name: '推广链接' },
+            { path: '', component: ReferralLink, name: '推广链接' },
         ]
     },
     {
