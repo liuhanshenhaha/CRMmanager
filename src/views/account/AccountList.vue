@@ -79,7 +79,7 @@
 					<template slot-scope="scope">
 						<el-button type="primary" v-if="editRow !== scope.$index" size="small" @click.native="() => edit(scope.$index)" :loading="addLoading">修改商品组</el-button>
 						<el-button type="primary" v-if="editRow === scope.$index" size="small" @click.native="() => modifySubmit(scope.row)" :loading="addLoading">保存</el-button>
-						<el-button type="danger" size="small" @click.native="() => resetTradePassword(scope.row)" :loading="addLoading">重置密码</el-button>
+						<el-button type="danger" size="small" @click.native="() => resetPassword(scope.row)" :loading="addLoading">重置密码</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -187,15 +187,6 @@
 			},
 			resetPassword(row){
 				accountQuest.resetPassword({
-					id: row.id
-				}).then(res => {
-					console.log("重置密码成功")
-				}).catch(err => {
-					console.error("重置密码失败")
-				})
-			},
-			resetTradePassword(row){
-				accountQuest.resetTradePassword({
 					id: row.id
 				}).then(res => {
 					console.log("重置密码成功")

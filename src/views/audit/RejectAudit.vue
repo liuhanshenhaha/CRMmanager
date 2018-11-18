@@ -1,5 +1,22 @@
 <template>
 	<section>
+		<!--工具条-->
+		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+			<el-form :inline="true" :model="filters">
+				<el-form-item>
+					<el-input v-model="filters.userName" placeholder="姓名"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-select v-model="filters.customerType" placeholder="选择类型">
+						<el-option v-for="item in buildOption('UserType',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
+				</el-form-item>
+			</el-form>
+		</el-col>
+
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" style="width: 100%;">
 			<el-table-column type="index" label="序号" width="80">
@@ -32,7 +49,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" >
 				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="()=>open(scope.row)">审核</el-button>
+					<el-button type="primary" size="small" @click="()=>open(scope.row)">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -41,7 +58,7 @@
 		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
 		</div>
 
-		<el-dialog title="审核" v-model="settingVisible" :close-on-click-modal="false" @close="resetForm">
+		<el-dialog title="审核" v-model="settingVisible" :close-on-click-modal="false">
 			<el-form label-position="right" label-width="80px" :model="registerForm" ref="registerForm">
 	          <el-row :gutter="20">
 	            <el-col :span="12" :xs="24">
@@ -129,19 +146,8 @@
 					<img :src="attachments[3]" style="width:50%;border: 2px solid #000;"/>
 				</el-col>
 			</el-row>
-			<br/>
-			<el-form :model="settingForm" label-width="80px" ref="settingForm">
-				<el-row :gutter="20">
-					<el-col :span="24">
-						<el-form-item label="备注" prop="remark">
-							<el-input type="textarea" resize="none" v-model="settingForm.remark" placeholder="备注"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
-			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" :loading="loading" @click.native="passSubmit">通过</el-button>
-				<el-button type="danger" :loading="loading" @click.native="rejectSubmit">拒绝</el-button>
+				<el-button @click.native="settingVisible = false">关闭</el-button>
 			</div>
 		</el-dialog>
 	</section>
@@ -153,25 +159,25 @@
 	export default {
 		data(){
 			return {
+				filters: {
+					userName: "",
+					pageSize: "10",
+					customerType: ""
+				},
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
-				listLoading2: false,//表格加载中标识
 				tableDataTotal: 0,//总页数
 				attachmentVisible: false,//附件弹窗
-				registerForm: {},
 				attachments: [],//附件
 				curPage: 1,//当前页
-				loading: false,//提交loading标识
-				settingVisible: false,//审核通过弹窗
-				settingForm: {},
+				settingVisible: false,//查看详细弹窗
+				registerForm: {},
 				provinceOptions:[],
 				bankOptions: []
 			}
 		},
 		created(){
 			this.getList(1);
-			this.getTradeChannelId();
-			this.getRoleId();
 			getDictionary().then((res) => {
 		        this.dictionary = res.content;
 		        this.provinceOptions = (()=>{
@@ -209,54 +215,23 @@
 		    })
 		},
 		methods:{
-			resetForm() {
-                this.$nextTick(()=>{
-                    if(this.$refs["settingForm"]){
-					    this.$refs["settingForm"].resetFields();
-					}
-                })                
-            },
+			buildOption(type,all){
+				return buildOptions(type,all)
+			},
 			format(type,value){
 				return formatters(type,value)
-			},
-			buildOption(type){
-				return buildOptions(type)
 			},
 			// 获取市场列表
 			getList(pageNo){
 				this.listLoading = true;
 				this.curPage = pageNo;
-				accountQuest.auditList({
+				accountQuest.selectFailList(Object.assign({
 					pageNo: pageNo,
-					pageSize: "10",
-					customerType: "4"
-				}).then(res => {
+				},this.filters)).then(res => {
 					this.tableData = res.content.dataList;
 					this.tableDataTotal = res.content.count;
 					this.listLoading = false;
 				}).catch(err=>{this.listLoading = false;});
-			},
-			// 获取交易通道
-			getTradeChannelId(){
-				accountQuest.getTradeChannelId().then(res => {
-					this.tradeChannelIdOptions = res.content.map(item => {
-						return {
-							value: item.id,
-							label: item.tradeChannelName
-						}
-					})
-				}).catch(err=>console.error("获取交易通道失败！"));
-			},
-			// 获取角色
-			getRoleId(){
-				accountQuest.getRoleId().then(res => {
-					this.roleIdOptions = res.content.map(item => {
-						return {
-							value: item.id,
-							label: item.name
-						}
-					})
-				}).catch(err=>console.error("获取角色失败！"));
 			},
 			// 审核通过配置客户
 			open(row){
@@ -285,28 +260,6 @@
 						id: row.id
 					};
 				}).catch(err => console.error("获取详细信息失败"))
-			},
-			passSubmit(){
-				this.$refs.settingForm.validate(valid => {
-					if(valid){
-						this.loading = true;
-						this.settingForm.customerStatus = 1;
-						accountQuest.customerAudit(this.settingForm).then(res => {
-							this.loading = false;
-							this.settingVisible = false;
-							this.getList(this.curPage);
-						}).catch(error => this.loading = false)
-					}
-				})
-			},
-			rejectSubmit(){
-				this.loading = true;
-				this.settingForm.customerStatus = 3;
-				accountQuest.customerAudit(this.settingForm).then(res => {
-					this.loading = false;
-					this.settingVisible = false;
-					this.getList(this.curPage);
-				}).catch(error => this.loading = false)
 			}
 		}
 	}

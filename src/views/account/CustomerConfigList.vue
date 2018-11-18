@@ -43,7 +43,10 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="200">
 				<template slot-scope="scope">
+					<el-button type="primary" size="small" @click="()=>modify(scope.row)">编辑</el-button>
 					<el-button type="primary" size="small" @click="()=>modify(scope.row)">配置</el-button>
+					<el-button type="success" v-if="scope.row.customerStatus == 4" size="small" @click="()=>modify(scope.row)">激活</el-button>
+					<el-button type="danger" v-if="scope.row.customerStatus == 1" size="small" @click="()=>modify(scope.row)">冻结</el-button>
 					<el-button type="danger" size="small" @click="()=>resetPassword(scope.row)">重置密码</el-button>
 				</template>
 			</el-table-column>

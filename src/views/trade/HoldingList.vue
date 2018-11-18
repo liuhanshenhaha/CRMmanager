@@ -92,6 +92,8 @@
 				</el-table-column>
 				<el-table-column prop="jyyk" label="交易盈亏" width="100">
 				</el-table-column>
+				<el-table-column prop="updateTime" label="更新时间" width="100">
+				</el-table-column>
 			</el-table>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="subTableVisible = false">关闭</el-button>

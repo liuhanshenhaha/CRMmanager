@@ -14,9 +14,11 @@ import AgentRegister from './views/account/AgentRegister.vue'//代理开户
 import Costgroup from './views/account/Costgroup.vue'//代理信息
 import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
 import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
+import AccountList from './views/account/AccountList.vue'//客户信息
 // 审核
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
+import RejectAudit from './views/audit/RejectAudit.vue'//审核失败列表
 // 交易管理
 import TradeList from './views/trade/TradeList.vue'//成交订单
 import HoldingList from './views/trade/HoldingList.vue'//持仓订单
@@ -69,7 +71,7 @@ let routes = [
             { path: 'agent-config-list', component: AgentConfigList, name: '代理信息' },
             { path: 'agent-register', component: AgentRegister, name: '代理开户', hidden: true },
             { path: 'customer-config-list', component: CustomerConfigList, name: '客户信息' },
-            { path: '2', component: Form, name: '账户配置' },
+            { path: 'account-list', component: AccountList, name: '账户信息' },
             { path: 'costgroup', component: Costgroup, name: '佣金组设置' },
         ]
     },
@@ -97,6 +99,7 @@ let routes = [
         children: [
             { path: 'agent', component: AgentAudit, name: '代理审核' },
             { path: 'customer', component: CustomerAudit, name: '客户审核' },
+            { path: 'reject', component: RejectAudit, name: '审核失败列表' },
             { path: 'contract', component: Contract, name: '换绑银行卡审核' },
             { path: '1', component: Form, name: '切换IB关系审核' },
         ]

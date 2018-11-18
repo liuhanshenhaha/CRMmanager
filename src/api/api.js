@@ -69,8 +69,11 @@ export const accountQuest = {
 	selectAgentOptionByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//获取代理级联信息
 	selectTradeAccountByUserId: (params) => { return postData(`/agent/selectTradeAccountByUserId`, params) },//根据用户查询账户
 	resetPassword: (params) => { return postData(`/user/resetPassword`, params) },//重置密码
+	resetTradePassword: (params) => { return postData(`/trade/account/resetPassword`, params) },//重置交易密码
 	selectAgentOptionByParent: (params) => { return postData(`/agent/selectAgentOptionByParent`, params) },//查询代理级联关系信息
 	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//根据父代理查询子代理
+	selectTradeAccount: (params) => { return postData(`/trade/account/selectTradeAccount`, params) },//根据父代理查询子代理
+	selectFailList: (params) => { return postData(`/agent/audit/fail/list`, params) },//审核失败列表
 };
 
 //交易管理
