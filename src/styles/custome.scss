@@ -1,4 +1,11 @@
 @import "vars.scss";
+.loginBG{
+	background: url("/static/bg.jpg") no-repeat;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+}
+
 .logo-text{
 	font-size:32px;
 	margin: 0;

@@ -58,7 +58,10 @@ export const accountQuest = {
 	addBatch: (params) => { return postData(`/goods/group/detail/addBatch`, params) },//批量添加商品
 	uploadPic: (params) => { return postData(`/agent/uploadPic`, params) },//上传图片
 	customerRegister: (params) => { return postData(`/customer/register`, params) },//客户开户
-	agentRegister: (params) => { return postData(`/agent/add`, params) },//客户开户
+	agentRegister: (params) => { return postData(`/agent/add`, params) },//代理开户
+	agentModify: (params) => { return postData(`/agent/modify`, params) },//代理修改信息
+	agentFreezing: (params) => { return postData(`/agent/freezing`, params) },//冻结代理
+	agentActivated: (params) => { return postData(`/agent/activated`, params) },//激活代理
 	auditList: (params) => { return postData(`/agent/audit/list`, params) },//客户/代理待审核列表
 	getAuditInfo: (params) => { return postData(`/agent/get`, params) },//获取客户/代理信息
 	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
@@ -74,6 +77,7 @@ export const accountQuest = {
 	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//根据父代理查询子代理
 	selectTradeAccount: (params) => { return postData(`/trade/account/selectTradeAccount`, params) },//根据父代理查询子代理
 	selectFailList: (params) => { return postData(`/agent/audit/fail/list`, params) },//审核失败列表
+	delByStatus: (params) => { return postData(`/agent/delByStatus`, params) },//删除审核列表
 };
 
 //交易管理

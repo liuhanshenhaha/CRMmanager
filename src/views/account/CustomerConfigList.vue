@@ -41,12 +41,12 @@
 			</el-table-column>
 			<el-table-column prop="bankCode" label="银行" width="150" :formatter="(row,col,value)=>formatter('Bank',value)">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="200">
+			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click="()=>modify(scope.row)">编辑</el-button>
+					<el-button type="primary" size="small" @click="()=>editCustomer(scope.row)">编辑</el-button>
 					<el-button type="primary" size="small" @click="()=>modify(scope.row)">配置</el-button>
-					<el-button type="success" v-if="scope.row.customerStatus == 4" size="small" @click="()=>modify(scope.row)">激活</el-button>
-					<el-button type="danger" v-if="scope.row.customerStatus == 1" size="small" @click="()=>modify(scope.row)">冻结</el-button>
+					<el-button type="success" v-if="scope.row.customerStatus == 4" size="small" @click="()=>customerActivated(scope.row)">激活</el-button>
+					<el-button type="danger" v-if="scope.row.customerStatus == 1" size="small" @click="()=>customerFreezing(scope.row)">冻结</el-button>
 					<el-button type="danger" size="small" @click="()=>resetPassword(scope.row)">重置密码</el-button>
 				</template>
 			</el-table-column>
@@ -84,12 +84,122 @@
 				<el-button @click.native="modifyVisible = false;">关闭</el-button>
 			</div>
 		</el-dialog>
+
+		<el-dialog title="编辑" v-model="settingVisible" :close-on-click-modal="false">
+			<el-form label-position="right" label-width="80px" :model="registerForm" ref="registerForm" :rules="rules">
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="姓名" prop="name">
+							<el-input v-model="registerForm.name" placeholder="姓名"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="电话" prop="phoneNo">
+							<el-input v-model="registerForm.phoneNo" placeholder="电话"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="邮箱" prop="email">
+							<el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="身份证号" prop="idCard">
+							<el-input v-model="registerForm.idCard" placeholder="身份证号"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="住址省市" prop="provinceAndCity">
+							<el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.provinceAndCity" filterable></el-cascader>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item prop="addressDetail" label="详细地址">
+							<el-input v-model="registerForm.addressDetail" placeholder="详细地址"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="银行" prop="bankCode">
+							<el-select v-model.number="registerForm.bankCode" placeholder="请选择银行">
+								<el-option v-for="item in bankOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="银行卡" prop="bankCardNo">
+							<el-input v-model="registerForm.bankCardNo" placeholder="银行卡"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="支行省市" prop="bankProvinceAndCity">
+							<el-cascader placeholder="省/市" :options="provinceOptions" v-model="registerForm.bankProvinceAndCity" filterable></el-cascader>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="支行名称" prop="bankBranch">
+							<el-input v-model="registerForm.bankBranch" placeholder="支行名称"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="角色" prop="roleId">
+							<el-select v-model="registerForm.roleId" placeholder="角色">
+								<el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="下级推荐" prop="allowNextInvite">
+							<el-select v-model="registerForm.allowNextInvite" placeholder="允许下级推荐">
+								<el-option v-for="item in buildOption('YesOrNoEnum')" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="12" :xs="24">
+						<el-form-item label="返佣类型" prop="commissionType">
+							<el-select v-model="registerForm.commissionType" placeholder="返佣类型">
+								<el-option v-for="item in buildOption('UserCommissionTypeEnu')" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12" :xs="24">
+						<el-form-item label="允许交易" prop="isAllowTrade">
+							<el-select v-model="registerForm.isAllowTrade" placeholder="允许交易">
+								<el-option v-for="item in buildOption('YesOrNoEnum')" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row :gutter="20">
+					<el-col :span="24">
+						<el-form-item label="备注" prop="remark">
+							<el-input type="textarea" resize="none" v-model="registerForm.remark" placeholder="备注"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="settingVisible = false">取消</el-button>
+				<el-button type="primary" :loading="loading" @click.native="editCustomerSubmit">提交</el-button>
+			</div>
+		</el-dialog>
 	</section>
 </template>
 
 <script>
 	import { buildOptions,formatters,getAgentOptions } from "../../utils/utils"
-	import { accountQuest } from "../../api/api"
+	import { accountQuest, getDictionary } from "../../api/api"
 	export default {
 		data(){
 			return {
@@ -101,6 +211,7 @@
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				listLoading2: false,//表格加载中标识
+				loading: false,
 				curPage: 1,
 				cascade: [],
 				tableDataTotal: 1,
@@ -115,16 +226,87 @@
 				groupOptions: [],
 				subTableData: [],
 				editRow: -1,
+				registerForm: {},
+        		provinceOptions: [],
+        		bankOptions: [],
+        		roleOptions: [],
+        		settingVisible: false,
+        		rules: {
+        			name: [{required: true,message: "请输入姓名"}],
+        			phoneNo: [{required: true,message: "请输入电话"}],
+        			email: [{required: true,message: "请输入邮箱"}],
+        			idCard: [{required: true,message: "请输入身份证号"}],
+        			provinceAndCity: [{required: true,message: "请选择省市"}],
+        			addressDetail: [{required: true,message: "请输入详细地址"}],
+        			bankCode: [{required: true,message: "请选择银行"}],
+        			bankCardNo: [{required: true,message: "请输入银行卡"}],
+        			bankProvinceAndCity: [{required: true,message: "请选择省市"}],
+        			bankBranch: [{required: true,message: "请输入支行名称"}],
+        			roleId: [{required: true,message: "请选择角色"}],
+        			allowNextInvite: [{required: true}],
+        			commissionType: [{required: true}],
+        			isAllowTrade: [{required: true}],
+        		}
 			}
 		},
 		created(){
 			this.getCustomers(1)
 			this.getGroups();
 			getAgentOptions(this);
+			this.getRole();
+			getDictionary().then((res) => {
+		        this.dictionary = res.content;
+		        this.provinceOptions = (()=>{
+		          let tempOptions = [];
+		          Object.keys(this.dictionary.ProvinceEnu).map(key => {
+		            tempOptions.push({
+		              value: key,
+		              label: this.dictionary.ProvinceEnu[key],
+		              children: (()=>{
+		                let tempChildren = [];
+		                Object.keys(this.dictionary.CityEnu).map(item => {
+		                  if(item.indexOf(key) === 0){
+		                    tempChildren.push({
+		                      value: item,
+		                      label: this.dictionary.CityEnu[item],
+		                    })
+		                  }
+		                })
+		                return tempChildren;
+		              })()
+		            })
+		          })
+		          return tempOptions;
+		        })()
+		        this.bankOptions = (()=>{
+		          let tempOptions = [];
+		          Object.keys(this.dictionary.Bank).map(bank => {
+		            tempOptions.push({
+		              value: bank,
+		              label: this.dictionary.Bank[bank]
+		            })
+		          })
+		          return tempOptions;
+		        })()
+		      })
 		},
 		methods:{
 			formatter(type,value){
 				return formatters(type,value)
+			},
+			buildOption(type){
+				return buildOptions(type)
+			},
+			// 获取交易通道
+			getRole(){
+				accountQuest.getRoleId().then(res => {
+					this.roleOptions = res.content.map(item => {
+						return {
+							value: item.id,
+							label: item.name
+						}
+					})
+				}).catch(err=>console.error("获取角色失败！"));
 			},
 			getCustomers(pageNo){
 				this.listLoading = true;
@@ -162,6 +344,16 @@
 					this.listLoading2 = false;
 				}).catch(err => this.listLoading2 = false)
 			},
+			// 编辑
+			editCustomer(row){
+				this.settingVisible = true; 
+				this.curId = row.id;
+				accountQuest.getAuditInfo({id:row.id}).then(res => {
+					this.registerForm = res.content;
+					this.registerForm.provinceAndCity = [this.registerForm.addressProvince,this.registerForm.addressCity];
+					this.registerForm.bankProvinceAndCity = [this.registerForm.province,this.registerForm.city];
+				}).catch(err => this.listLoading2 = false)
+			},
 			modifySubmit(row){
 				accountQuest.configureGoodsGroup({
 					id: row.id,
@@ -189,7 +381,37 @@
 				}).catch(err => {
 					console.error("重置密码失败")
 				})
-			}
+			},
+			editCustomerSubmit(){
+				this.loading = true;
+				accountQuest.agentModify(Object.assign(this.registerForm,{
+					id: this.curId,
+					addressProvince: this.registerForm.provinceAndCity[0],
+					addressCity: this.registerForm.provinceAndCity[1],
+					province: this.registerForm.bankProvinceAndCity[0],
+					city: this.registerForm.bankProvinceAndCity[1],
+					idCardFrontPictureImage: "",
+					idCardBackPictureImage: "",
+					bankCardPictureImage: "",
+					agreeRiskPictureImage: "",
+				})).then(res => {
+					this.loading = false;
+					this.settingVisible = false;
+				}).catch(error => {
+					this.loading = false;
+					console.error("修改代理信息失败")
+				})
+			},
+			customerFreezing(row){
+				accountQuest.agentFreezing({id:row.id}).then(res => {
+					this.getCustomers(this.curPage)
+				}).catch(error => console.error("冻结代理失败"))
+			},
+			customerActivated(row){
+				accountQuest.agentActivated({id:row.id}).then(res => {
+					this.getCustomers(this.curPage)
+				}).catch(error => console.error("激活代理失败"))
+			},
 		}
 	}
 </script>

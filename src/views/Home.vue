@@ -10,7 +10,7 @@
 				</div>
 			</el-col>
 			<el-col :span="9">
-				<p class="top-title">WELCOME TO LEBUT+</p>
+				<p class="top-title">天德星管理后台</p>
 			</el-col>
 			<el-col :span="4" class="userinfo">
 				<p style="margin: 0;">{{sysUserName}}<a href="javascript:;" style="color:white;margin-left: 10px;text-decoration:none;" @click="logout">退出登录</a></p>
@@ -137,7 +137,12 @@
 
 <style scoped lang="scss">
 	@import '~scss_vars';
-	
+	.logo-text{
+		background: url("/static/logo.png") no-repeat;
+		padding-left: 20px;
+		text-align: right;
+   		background-size: contain;
+	}
 	.container {
 		position: absolute;
 		top: 0px;

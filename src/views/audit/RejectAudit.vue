@@ -19,8 +19,6 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" style="width: 100%;">
-			<el-table-column type="index" label="序号" width="80">
-			</el-table-column>
 			<el-table-column prop="userAccountNo" label="账户" width="100">
 			</el-table-column>
 			<el-table-column prop="name" label="姓名" min-width="150">
@@ -252,10 +250,10 @@
 						bankBranch: res.content.bankBranch
 					};
 					this.attachments = [];
-					this.attachments.push("data:image/png;base64,"+res.content.idCardFrontPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.idCardBackPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.bankCardPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.agreeRiskPicture);
+					this.attachments.push("data:image/png;base64,"+res.content.idCardFrontPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.idCardBackPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.bankCardPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.agreeRiskPictureImage);
 					this.settingForm = {
 						id: row.id
 					};

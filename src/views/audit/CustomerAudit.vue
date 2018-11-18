@@ -2,8 +2,6 @@
 	<section>
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" style="width: 100%;">
-			<el-table-column type="index" label="序号" width="80">
-			</el-table-column>
 			<el-table-column prop="userAccountNo" label="账户" width="100">
 			</el-table-column>
 			<el-table-column prop="name" label="姓名" min-width="150">
@@ -30,9 +28,10 @@
 			</el-table-column>
 			<el-table-column prop="applyTime" label="申请时间" width="200">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" >
+			<el-table-column label="操作" align="center" fixed="right" width="160">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click="()=>open(scope.row)">审核</el-button>
+					<el-button type="danger" size="small" @click="()=>deleteRow(scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -277,10 +276,10 @@
 						bankBranch: res.content.bankBranch
 					};
 					this.attachments = [];
-					this.attachments.push("data:image/png;base64,"+res.content.idCardFrontPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.idCardBackPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.bankCardPicture);
-					this.attachments.push("data:image/png;base64,"+res.content.agreeRiskPicture);
+					this.attachments.push("data:image/png;base64,"+res.content.idCardFrontPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.idCardBackPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.bankCardPictureImage);
+					this.attachments.push("data:image/png;base64,"+res.content.agreeRiskPictureImage);
 					this.settingForm = {
 						id: row.id
 					};
@@ -307,6 +306,13 @@
 					this.settingVisible = false;
 					this.getList(this.curPage);
 				}).catch(error => this.loading = false)
+			},
+			deleteRow(row){
+				accountQuest.delByStatus({
+					id: row.id
+				}).then(res => {
+					this.getList(this.curPage);
+				}).catch(error => console.error("删除记录失败"))
 			}
 		}
 	}
