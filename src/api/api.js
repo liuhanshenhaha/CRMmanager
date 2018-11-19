@@ -95,3 +95,10 @@ export const tradeQuest = {
 
 // 推广链接
 export const getReferralLink = (params) => { return postData(`/agent/getReferralLink`, params)};
+
+// 佣金管理
+export const commQuest = {
+	getComms: (params) => { return postData(`/comm/getComms`, params) },//佣金汇总
+	getCommDetails: (params) => { return postData(`/comm/getCommDetails`, params) },//佣金详细
+	examineComms: (params) => { return postData(`/comm/examineComms`, params) },//佣金审核
+}

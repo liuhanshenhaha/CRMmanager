@@ -26,6 +26,9 @@ import ClosePosition from './views/trade/ClosePosition.vue'//持仓订单
 import WTList from './views/trade/WTList.vue'//持仓订单
 // 推广链接
 import ReferralLink from './views/ReferralLink.vue'//推广链接
+// 佣金管理
+import CommList from './views/comm/CommList.vue'//佣金汇总
+import CommDetail from './views/comm/CommDetail.vue'//佣金详细
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -132,15 +135,15 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/comm',
         component: Home,
         name: '佣金管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '佣金汇总' },
-            { path: '1', component: Form, name: '佣金审核' },
-            { path: 'form', component: Form, name: '佣金明细' },
+            { path: 'comm-list', component: CommList, name: '佣金汇总' },
+            { path: 'comm-detail', component: CommDetail, name: '佣金明细' },
+            // { path: 'form', component: Form, name: '佣金审核' },
         ]
     },
     {

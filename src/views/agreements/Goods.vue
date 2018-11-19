@@ -458,7 +458,7 @@
 					contractName: "",
 					goodsName: "",
 					marketName: "",
-					status: "",
+					status: 1,
 					pageSize: 10,//默认查询每页记录数
 					pageNo: ""
 				},

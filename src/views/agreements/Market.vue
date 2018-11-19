@@ -80,7 +80,7 @@
 				filters:{//查询表单数据
 					marketCode: "",
 					marketName: "",
-					status: "",
+					status: 1,
 				},
 				statusOptions: buildOptions("CommonStatus",true),
 				tableData: [],//表格数据
