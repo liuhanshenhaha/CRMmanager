@@ -4,48 +4,32 @@
 		<!-- 非客户账号登陆 -->
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;" v-if="customerType !== 'customer'">
 			<el-form :inline="true" :model="filters">
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.userAccountNo" placeholder="账户"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.userName" placeholder="姓名"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-select v-model="filters.openClose" placeholder="开平状态" >
-							<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
-					</el-form-item>
-				</el-col>
+				<el-form-item>
+					<el-input v-model="filters.userAccountNo" placeholder="账户"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.userName" placeholder="姓名"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-select v-model="filters.openClose" placeholder="开平状态" >
+						<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
+				</el-form-item>
+				<el-form-item class="w90p">
+					<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
+				</el-form-item>
+				<el-form-item class="w90p">
+					<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
+				</el-form-item>
 			</el-form>
 		</el-col>
 		<!-- 客户账号登陆 -->
@@ -114,7 +98,7 @@
 		</el-table>
 
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
 		</div>
 	</section>
 </template>
@@ -131,7 +115,8 @@
 					contractCode: "",
 					superiorUserId: [],
 					startDate: "",
-					endDate: ""
+					endDate: "",
+					pageSize: 20
 				},
 				tableData: [],//表格数据
 				tableDataSummary: {},
@@ -177,6 +162,7 @@
 				this.listLoading = true;
 				this.curPage = pageNo;
 				let submitData = {...this.filters};
+				submitData.pageNo = pageNo;
 				submitData.startDate = this.filters.startDate ? dateFormat(this.filters.startDate,"yyyy-MM-dd hh:mm:ss") : "";
 				submitData.endDate = this.filters.endDate ? dateFormat(this.filters.endDate,"yyyy-MM-dd hh:mm:ss") : "";
 				submitData.superiorUserId = this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "";

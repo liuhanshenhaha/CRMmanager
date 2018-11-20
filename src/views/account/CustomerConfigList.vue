@@ -53,7 +53,7 @@
 		</el-table>
 
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getCustomers(currentPage)"></el-pagination>
 		</div>
 
 		<!--新增/更新界面-->
@@ -312,6 +312,8 @@
 				this.listLoading = true;
 				this.curPage = pageNo;
 				accountQuest.selectCustomerByParent({
+					"pageSize": 20,
+					"pageNo": pageNo,
 					"userAccountNo":this.filters.userAccountNo,
 					"userName":this.filters.userName,
 					"superiorUserId":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "",

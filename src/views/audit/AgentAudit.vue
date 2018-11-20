@@ -41,7 +41,7 @@
 		</el-table>
 		
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
 		</div>
 
 		<el-dialog title="审核" v-model="settingVisible" :close-on-click-modal="false" @close="resetForm">
@@ -271,7 +271,7 @@
 				this.curPage = pageNo;
 				accountQuest.auditList({
 					pageNo: pageNo,
-					pageSize: "10",
+					pageSize: 20,
 					customerType: "3"
 				}).then(res => {
 					this.tableData = res.content.dataList;

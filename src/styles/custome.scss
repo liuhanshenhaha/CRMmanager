@@ -49,10 +49,16 @@
 		}
 	}
 }
+.el-table{
+	font-size: 12px;
+}
 .el-table__fixed-right{
 	overflow-y: hidden;
 }
 
+.w40p{
+	width: 40%!important; 
+}
 .w70p{
 	width: 70%!important; 
 }

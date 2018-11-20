@@ -29,6 +29,8 @@ import ReferralLink from './views/ReferralLink.vue'//推广链接
 // 佣金管理
 import CommList from './views/comm/CommList.vue'//佣金汇总
 import CommDetail from './views/comm/CommDetail.vue'//佣金详细
+// 财务管理
+import FlowInOut from './views/money/FlowInOut.vue'//出入金流水
 
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -108,14 +110,14 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/money',
         component: Home,
         name: '财务管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '资金流水' },
-            { path: 'market2', component: Market, name: '出入金流水' },
+            { path: 'flow', component: FlowInOut, name: '资金流水' },
+            { path: 'flow-in-out', component: FlowInOut, name: '出入金流水' },
             { path: 'market3', component: Market, name: '资金划转' },
             { path: 'form', component: Form, name: '转账审核' },
             { path: 'contract', component: Contract, name: '出金审核' },

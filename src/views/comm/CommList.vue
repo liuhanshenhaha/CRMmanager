@@ -1,122 +1,30 @@
 <template>
 	<section>
 		<!--工具条-->
-		<!-- 非客户账号登陆 -->
-		<!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;" v-if="customerType !== 'customer'">
-			<el-form :inline="true" :model="filters">
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.userAccountNo" placeholder="账户"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.userName" placeholder="姓名"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-select v-model="filters.openClose" placeholder="开平状态" >
-							<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="3" :xs="24">
-					<el-form-item>
-						<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
-					</el-form-item>
-				</el-col>
-			</el-form>
-		</el-col> -->
-		<!-- 客户账号登陆 -->
-		<!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;" v-if="customerType === 'customer'">
-			<el-form :inline="true" :model="filters">
-				<el-col :span="5" :xs="24">
-					<el-form-item>
-						<el-select v-model="filters.openClose" placeholder="开平状态" >
-							<el-option v-for="item in buildOptions('OpencloseEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="5" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="5" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker v-model="filters.startDate" type="datetime" placeholder="选择开始日期时间" @change="changeEnd"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="5" :xs="24">
-					<el-form-item class="w90p">
-						<el-date-picker :picker-options="pickerOptionsEnd" v-model="filters.endDate" type="datetime" placeholder="选择结束日期时间"></el-date-picker>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
-					</el-form-item>
-				</el-col>
-			</el-form>
-		</el-col> -->
-
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-select v-model="filters.commType" placeholder="佣金周期" >
-							<el-option v-for="item in buildOptions('CommissionTypeEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-select v-model="filters.status" placeholder="状态" >
-							<el-option v-for="item in buildOptions('CommissionStatusEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
-						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.userAccount" placeholder="管理账号"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-input v-model="filters.taName" placeholder="用户名"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
-					</el-form-item>
-				</el-col>
-				<el-col :span="4" :xs="24">
-					<el-form-item>
-						<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
-					</el-form-item>
-				</el-col>
+				<el-form-item>
+					<el-select v-model="filters.commType" placeholder="佣金周期" >
+						<el-option v-for="item in buildOption('CommissionTypeEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-select v-model="filters.status" placeholder="状态" >
+						<el-option v-for="item in buildOption('CommissionStatusEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.userAccount" placeholder="管理账号"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.taName" placeholder="用户名"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="()=>getList(1)">查询</el-button>
+				</el-form-item>
 			</el-form>
 		</el-col>
 
@@ -151,14 +59,22 @@
 		</el-table>
 
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getList(currentPage)"></el-pagination>
 		</div>
+
+		<el-dialog title="佣金详细" customClass="w70p" v-model="detailVisible" :close-on-click-modal="false">
+			<CommDetail :id="curId"/>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="detailVisible = false;">关闭</el-button>
+			</div>
+		</el-dialog>
 	</section>
 </template>
 
 <script>
 	import { formatters, buildOptions, getAgentOptions } from "../../utils/utils"
 	import { commQuest } from "../../api/api"
+	import CommDetail from "./CommDetail"
 	export default {
 		data(){
 			return {
@@ -168,6 +84,7 @@
 					userAccount: "",
 					superiorUserId: [],
 					taName: "",
+					pageSize: 20
 				},
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
@@ -181,9 +98,12 @@
 				        case 4: return "customer";break;
 				        default: return "admin";
 				    }
-				})()
+				})(),
+				detailVisible: false,
+				curId: ""
 			}
 		},
+		components:{CommDetail},
 		created(){
 			this.getList(1);
 			getAgentOptions(this);
@@ -195,9 +115,6 @@
 			buildOption(type,all){
 				return buildOptions(type,all)
 			},
-			buildOptions(type,boolean){
-				return buildOptions(type,boolean);
-			},
 			//动态生成代理下拉框
 			makeCascader(value){
 				getAgentOptions(this,value[value.length - 1],value)
@@ -207,6 +124,7 @@
 				this.listLoading = true;
 				this.curPage = pageNo;
 				let submitData = {...this.filters};
+				submitData.pageNo = pageNo;
 				submitData.superiorUserId = this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "";
 				submitData.cascadeType = this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? 1 : 2) : "";
 				commQuest.getComms(submitData).then(res => {
@@ -219,6 +137,10 @@
 				commQuest.examineComms({id:row.id}).then(res => {
 					console.log("审核成功");
 				}).catch(err => console.error("审核失败"))
+			},
+			openDetail(row){
+				this.detailVisible = true;
+				this.curId = row.id;
 			}
 		}
 	}

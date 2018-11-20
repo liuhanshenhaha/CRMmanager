@@ -102,3 +102,12 @@ export const commQuest = {
 	getCommDetails: (params) => { return postData(`/comm/getCommDetails`, params) },//佣金详细
 	examineComms: (params) => { return postData(`/comm/examineComms`, params) },//佣金审核
 }
+
+// 资金管理
+export const moneyQuest = {
+	getUserCashFlow: (params) => { return postData(`/moneyInOut/userCashFlow`, params) },//用户出入金流水界面查询
+	getCashFlow: (params) => { return postData(`/moneyInOut/cashFlow`, params) },//代理,管理出入金流水界面查询
+	drawalExamine: (params) => { return postData(`/moneyInOut/drawalExamine`, params) },//出金审核
+	drawalPay: (params) => { return postData(`/moneyInOut/drawalPay`, params) },//打款审批
+	examineMoveMoney: (params) => { return postData(`/moneyInOut/examineMoveMoney`, params) },//资金划转审核
+}

@@ -3,43 +3,29 @@
 		<!--工具条-->
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
-				<el-row>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-input v-model="filters.contractName" placeholder="合约名称"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-input v-model="filters.goodsName" placeholder="商品名称"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-input v-model="filters.marketName" placeholder="市场名称"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-select v-model="filters.status" placeholder="状态">
-								<el-option v-for="item in filterStatusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-							</el-select>
-						</el-form-item>
-					</el-col>
-					<el-col :span="4" :xs="24">
-						<el-form-item>
-							<el-button type="primary" v-on:click="() => getContract(1)">查询</el-button>
-						</el-form-item>
-						<el-form-item>
-							<el-button type="primary" v-on:click="() => modifyContract('add')">新增</el-button>
-						</el-form-item>
-					</el-col>
-				</el-row>
+				<el-form-item>
+					<el-input v-model="filters.contractCode" placeholder="合约代码"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.contractName" placeholder="合约名称"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.goodsName" placeholder="商品名称"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="filters.marketName" placeholder="市场名称"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-select v-model="filters.status" placeholder="状态">
+						<el-option v-for="item in filterStatusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="() => getContract(1)">查询</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="() => modifyContract('add')">新增</el-button>
+				</el-form-item>
 			</el-form>
 		</el-col>
 
@@ -79,7 +65,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getContract(currentPage)"></el-pagination>
 		</div>
 
 		<!--新增/更新界面-->
@@ -390,7 +376,7 @@
 					goodsName: "",
 					marketName: "",
 					status: 1,
-					pageSize: 10,//默认查询每页记录数
+					pageSize: 20,//默认查询每页记录数
 					pageNo: ""
 				},
 				filterStatusOptions: buildOptions("ContractStatus",true),

@@ -103,7 +103,7 @@
 		</el-table>
 		
 		<div class="block" style="text-align:right">
-		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" @current-change="(currentPage)=>getGoods(currentPage)"></el-pagination>
+		  <el-pagination background layout="prev, pager, next" :total="tableDataTotal" :page-size="20" @current-change="(currentPage)=>getGoods(currentPage)"></el-pagination>
 		</div>
 
 		<!--新增/更新界面-->
@@ -459,7 +459,7 @@
 					goodsName: "",
 					marketName: "",
 					status: 1,
-					pageSize: 10,//默认查询每页记录数
+					pageSize: 20,//默认查询每页记录数
 					pageNo: ""
 				},
 				statusOptions: buildOptions("CommonStatus",true),
