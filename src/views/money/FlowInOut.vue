@@ -19,7 +19,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item>
-					<el-select v-model="filters.status" placeholder="类型" >
+					<el-select v-model="filters.status" placeholder="状态" >
 						<el-option v-for="item in buildOption('MoneyInOutStatusEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
 					</el-select>
 				</el-form-item>
@@ -45,7 +45,7 @@
 				</el-col>
 				<el-col :span="3" :xs="24">
 					<el-form-item>
-						<el-select v-model="filters.status" placeholder="类型" >
+						<el-select v-model="filters.status" placeholder="状态" >
 							<el-option v-for="item in buildOption('MoneyInOutStatusEnu',true)" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</el-form-item>
@@ -66,17 +66,13 @@
 			</el-table-column>
 			<el-table-column prop="userAgentName" label="交易用户归属代理" v-if="customerType !== 'customer'">
 			</el-table-column>
-			<el-table-column prop="type" label="资金流水类型" width="120" :formatter="(row,col,cellValue) => formatter('MoneyFlowTypeEnu',cellValue)">
+			<el-table-column prop="type" label="资金流水类型" width="120" :formatter="(row,col,cellValue) => formatter('MoneyInOutTypeEnu',cellValue)">
 			</el-table-column>
 			<el-table-column prop="moneyFlowNo" label="现金流水号">
 			</el-table-column>
-			<el-table-column prop="sourceCurrency" label="原币种" :formatter="(row,col,cellValue) => formatter('CurrencyTypeEnu',cellValue)">
+			<el-table-column prop="sourceCurrency" label="币种" :formatter="(row,col,cellValue) => formatter('CurrencyTypeEnu',cellValue)">
 			</el-table-column>
-			<el-table-column prop="sourceMoney" label="原金额">
-			</el-table-column>
-			<el-table-column prop="targetCurrency" label="目标币种" :formatter="(row,col,cellValue) => formatter('CurrencyTypeEnu',cellValue)">
-			</el-table-column>
-			<el-table-column prop="targetMoney" label="目标金额">
+			<el-table-column prop="sourceMoney" label="金额">
 			</el-table-column>
 			<el-table-column prop="bankCode" label="银行代码">
 			</el-table-column>

@@ -96,7 +96,7 @@
 				filters:{//查询表单数据
 					tradeChannelCode: "",
 					tradeChannelName: "",
-					status: "",
+					status: 1,
 				},
 				statusOptions: buildOptions("CommonStatus",true),
 				tableData: [],//表格数据
@@ -187,13 +187,13 @@
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getChannel();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}else{
 							channelQuest.modifyChannel(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.getChannel();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}
 					}else{
 						return false;

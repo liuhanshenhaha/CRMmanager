@@ -20,7 +20,7 @@
 					<el-button type="primary" v-on:click="select">查询</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="add">新增</el-button>
+					<el-button type="primary" v-if="false" @click="add">新增</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -48,8 +48,8 @@
 			<el-table-column label="操作" align="center" fixed="right" width="150">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click="modify(scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" v-if="Boolean(scope.row.status)" @click="modifyStatus(scope.row)">作废</el-button>
-					<el-button type="success" size="small" v-if="!Boolean(scope.row.status)" @click="modifyStatus(scope.row)">激活</el-button>
+					<el-button type="danger" size="small" v-if="false && Boolean(scope.row.status)" @click="modifyStatus(scope.row)">作废</el-button>
+					<el-button type="success" size="small" v-if="false && !Boolean(scope.row.status)" @click="modifyStatus(scope.row)">激活</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -131,7 +131,7 @@
 				filters:{//查询表单数据
 					type: "",
 					name: "",
-					status: "",
+					status: 1,
 				},
 				statusOptions: buildOptions("CommonStatus",true),
 				typeOptions: buildOptions("ExchangeRateTypeEnu",true),
@@ -255,13 +255,13 @@
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}else{
 							rateQuest.modify(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}
 					}else{
 						return false;

@@ -124,6 +124,12 @@
         </el-form>
 			</el-col>
 		</el-row>
+    <el-dialog title="开户结果" :visible.sync="dialogVisible" width="30%">
+      <span>开户成功！</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
 	</section>
 </template>
 
@@ -142,7 +148,6 @@
         dictionary: {},
         sysName:'LEBUT+',
         registerForm: {
-          inviteCode: Boolean(window.location.href.split("?")[1]) ? window.location.href.split("?")[1] : ""
         },
         provinceOptions: [],
         bankOptions: [],
@@ -163,12 +168,10 @@
           bankBranch: [{required:true,message:"请填写银行支行"}],
           bankCardNo: [{required:true,message:"请填写银行卡号"}],
           provinceAndCity: [{required:true,message:"请选择省/市"}],
-          inviteCode: [{required:true,message:"请填写邀请码"}],
           password: [{required:true,message:"请填写密码"}],
           repeatPassword: [{required:true,message:"请填写密码"},{validator:same,trigger: "blur"}],
         },
-        hasInvited: Boolean(window.location.href && window.location.href.indexOf("?") > 0),
-        readFlag: false
+        dialogVisible: false
       }
     },
     created(){
@@ -261,6 +264,7 @@
               submitData.city = this.registerForm.bankProvinceAndCity[1];
               accountQuest.agentRegister(submitData).then(res => {
                 this.loading = false;
+                this.dialogVisible = true;
                 this.resetForm('registerForm');
               }).catch(error => {console.error("客户开户失败！");this.loading = false;})
             }else{

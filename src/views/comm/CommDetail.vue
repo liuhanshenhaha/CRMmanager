@@ -55,11 +55,6 @@
 			</el-table-column>
 			<el-table-column prop="tradeAccountNo" label="交易账户号">
 			</el-table-column>
-			<el-table-column label="操作" align="center" width="100" v-if="!id">
-				<template slot-scope="scope">
-					<el-button type="primary" size="small" @click.native="()=>aduit(scope.row)">审核</el-button>
-				</template>
-			</el-table-column>
 		</el-table>
 
 		<div class="block" style="text-align:right">

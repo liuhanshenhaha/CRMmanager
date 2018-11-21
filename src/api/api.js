@@ -102,6 +102,9 @@ export const channelQuest = {
 	modifyStatus: (params) => { return postData(`/channel/modifyStatus`, params) },//修改状态
 	addChannel: (params) => { return postData(`/channel/add`, params) },//新增通道
 	modifyChannel: (params) => { return postData(`/channel/modify`, params) },//修改通道
+	selectValid: (params) => { return postData(`/channel/selectValid`, params) },//获取有效通道列表
+	switchChannel: (params) => { return postData(`/trade/account/switchChannel`, params) },//切换通道
+	selectCustomerByChannel: (params) => { return postData(`/risk/selectCustomerByChannel`, params) },//根据通道查询代理	
 };
 
 //系统管理 - 用户管理
@@ -133,4 +136,23 @@ export const moneyQuest = {
 	drawalExamine: (params) => { return postData(`/moneyInOut/drawalExamine`, params) },//出金审核
 	drawalPay: (params) => { return postData(`/moneyInOut/drawalPay`, params) },//打款审批
 	examineMoveMoney: (params) => { return postData(`/moneyInOut/examineMoveMoney`, params) },//资金划转审核
+	getMoneyFlows: (params) => { return postData(`/money/getMoneyFlows`, params) },//资金流水
+}
+
+// 公告管理
+export const noticeQuest = {
+	select: (params) => { return postData(`/notice/selectByRecord`, params) },//获取列表
+	modifyStatus: (params) => { return postData(`/notice/modifyStatus`, params) },//修改状态
+	add: (params) => { return postData(`/notice/add`, params) },//新增
+	modify: (params) => { return postData(`/notice/modify`, params) },//修改
+}
+
+// 消息通知
+export const notifyQuest = {
+	select: (params) => { return postData(`/notify/selectByRecord`, params) },//获取列表
+	modifyStatus: (params) => { return postData(`/notify/modifyStatus`, params) },//修改状态
+	add: (params) => { return postData(`/notify/add`, params) },//新增
+	modify: (params) => { return postData(`/notify/modify`, params) },//修改
+	selectMyByRecord: (params) => { return postData(`/notify/selectMyByRecord`, params) },//查询我的消息
+	modifyStatusMy: (params) => { return postData(`/notify/link/modifyStatus`, params) },//设置已读未读
 }

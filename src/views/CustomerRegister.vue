@@ -58,7 +58,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12" :xs="24">
-                <el-form-item label="银行卡" prop="bankCardNo">
+                <el-form-item label="银行卡号" prop="bankCardNo">
                   <el-input v-model="registerForm.bankCardNo"></el-input>
                 </el-form-item>
               </el-col>
@@ -119,8 +119,8 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item>
-                  <a href="./static/TradeGuidelines.pdf" class="agreements">《交易须知》</a> | <a href="./static/RiskStatement.pdf" class="agreements">《期货交易风险揭示书》</a> | <a href="./static/CooperativeAgreements.pdf" class="agreements">《投资合作协议书》</a>
                   <el-checkbox v-model="readFlag">我声明：我已阅读并完全理解，接受以及认同以上全部文件。</el-checkbox>
+                  <a href="./static/TradeGuidelines.pdf" class="agreements">《交易须知》</a> | <a href="./static/RiskStatement.pdf" class="agreements">《期货交易风险揭示书》</a> | <a href="./static/CooperativeAgreements.pdf" class="agreements">《投资合作协议书》</a>                  
                 </el-form-item>
               </el-col>
               <el-col :span="12" :xs="24">
@@ -129,7 +129,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12" :xs="24">
-                <el-form-item label="重复密码" prop="repeatPassword">
+                <el-form-item label="确认密码" prop="repeatPassword">
                   <el-input type="password" v-model="registerForm.repeatPassword"></el-input>
                 </el-form-item>
               </el-col>

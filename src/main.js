@@ -2,7 +2,7 @@ import babelpolyfill from 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-customer/index.css'
 //import './assets/theme/theme-green/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
     delCookie('token');
   }
   let token = getCookie('token');
-  if (!token && to.path != '/login' && to.path != "/customer-register") {
+  if (!token && to.path != '/login' && to.path != "/customer-register" && to.path != "/agent-register") {
     next({ path: '/login' })
   } else {
     next()

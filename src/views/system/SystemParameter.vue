@@ -10,7 +10,7 @@
 					<el-input v-model="filters.name" placeholder="名称"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-select v-model="filters.customerStatus" placeholder="状态">
+					<el-select v-model="filters.status" placeholder="状态">
 						<el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 					</el-select>
 				</el-form-item>
@@ -119,7 +119,7 @@
 				filters:{//查询表单数据
 					code: "",
 					name: "",
-					status: "",
+					status: 1,
 				},				
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
@@ -149,7 +149,7 @@
 		methods:{
 			// 表格数据格式化 状态
 			statusFormat(row, col, cellValue){
-				return formatters("UserStatus",cellValue)
+				return formatters("CommonStatus",cellValue)
 			},
 
 			// 获取列表
@@ -193,13 +193,13 @@
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}else{
 							systemParameterQuest.modify(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}
 					}else{
 						return false;

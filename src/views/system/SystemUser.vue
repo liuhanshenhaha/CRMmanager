@@ -135,7 +135,7 @@
 				filters:{//查询表单数据
 					userAccountNo: "",
 					name: "",
-					customerStatus: "",
+					customerStatus: 1,
 				},				
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
@@ -266,13 +266,13 @@
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}else{
 							systemUserQuest.modify(this.addForm).then(res => {
 								this.addLoading = false;
 								this.addFormVisible = false;
 								this.select();
-							}).catch(err=>{this.listLoading = false;});
+							}).catch(err=>{this.addLoading = false;});
 						}
 					}else{
 						return false;

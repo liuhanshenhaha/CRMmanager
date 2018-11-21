@@ -11,6 +11,7 @@ import Contract from './views/agreements/Contract.vue'//市场管理
 import Goods from './views/agreements/Goods.vue'//市场管理
 // 账户管理
 import AgentRegister from './views/account/AgentRegister.vue'//代理开户
+import AgentRegisterNonLogin from './views/AgentRegisterNonLogin.vue'//代理开户
 import Costgroup from './views/account/Costgroup.vue'//代理信息
 import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
 import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
@@ -31,9 +32,11 @@ import CustomerService from './views/CustomerService.vue'//下载中心
 
 //风控管理
 import Channel from './views/risk/Channel.vue'//通道管理
+import SwitchChannel from './views/risk/SwitchChannel.vue'//通过通道切换
 
 //财务管理
 import Rate from './views/finance/Rate.vue'//汇率管理
+import FlowInOut from './views/money/FlowInOut.vue'//出入金流水
 
 //系统管理
 import SystemUser from './views/system/SystemUser.vue'//系统用户管理
@@ -42,8 +45,13 @@ import SystemParameter from './views/system/SystemParameter.vue'//系统参数
 // 佣金管理
 import CommList from './views/comm/CommList.vue'//佣金汇总
 import CommDetail from './views/comm/CommDetail.vue'//佣金详细
-// 财务管理
-import FlowInOut from './views/money/FlowInOut.vue'//出入金流水
+
+// 消息通知
+import Notice from './views/information/Notice.vue'//公告
+import Notify from './views/information/Notify.vue'//消息管理
+import MyNotify from './views/information/MyNotify.vue'//消息通知
+
+import MoneyFlows from './views/money/MoneyFlows.vue'//资金流水
 //其他
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
@@ -62,6 +70,12 @@ let routes = [
     {
         path: '/customer-register',
         component: CustomerRegister,
+        name: '',
+        hidden: true
+    },
+    {
+        path: '/agent-register',
+        component: AgentRegisterNonLogin,
         name: '',
         hidden: true
     },
@@ -100,7 +114,6 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'trade-list', component: TradeList, name: '成交记录' },
             { path: 'holding-list', component: HoldingList, name: '持仓订单' },
             { path: 'wt-list', component: WTList, name: '委托订单' },
             { path: 'trade-list', component: TradeList, name: '条件单记录' },
@@ -131,7 +144,7 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'flow', component: FlowInOut, name: '资金流水' },
+            { path: 'money-flows', component: MoneyFlows, name: '资金流水' },
             { path: 'flow-in-out', component: FlowInOut, name: '出入金流水' },
             { path: 'market3', component: Market, name: '资金划转' },
             { path: 'form', component: Form, name: '转账审核' },
@@ -146,9 +159,7 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '交易通道' },
-            { path: 'form', component: Form, name: '账户风控' },
-            { path: 'contract', component: Contract, name: '强平记录' },
+            { path: 'switchChannel', component: SwitchChannel, name: '交易通道' },
             { path: 'channel', component: Channel, name: '通道管理' },
         ]
     },
@@ -186,14 +197,15 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/information',
         component: Home,
         name: '通知中心 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '期货公告' },
-            { path: 'form', component: Form, name: '消息通知' },
+            { path: 'notice', component: Notice, name: '期货公告' },
+            { path: 'notify', component: Notify, name: '消息管理' },
+            { path: 'myNotify', component: MyNotify, name: '消息通知' },
         ]
     },
     {
@@ -218,7 +230,7 @@ let routes = [
         children: [
             { path: 'user', component: SystemUser,  name: '用户管理' },
             { path: 'parameter', component: SystemParameter,  name: '系统参数' },
-            { path: 'role', component: SystemUser,  name: '用户管理' }
+            { path: 'role', component: SystemUser,  name: '角色管理' }
         ]
     }
 ];
