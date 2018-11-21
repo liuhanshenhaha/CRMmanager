@@ -96,6 +96,29 @@ export const tradeQuest = {
 // 推广链接
 export const getReferralLink = (params) => { return postData(`/agent/getReferralLink`, params)};
 
+//风控管理 - 通道管理
+export const channelQuest = {
+	getChannel: (params) => { return postData(`/channel/selectByRecord`, params) },//获取通道列表
+	modifyStatus: (params) => { return postData(`/channel/modifyStatus`, params) },//修改状态
+	addChannel: (params) => { return postData(`/channel/add`, params) },//新增通道
+	modifyChannel: (params) => { return postData(`/channel/modify`, params) },//修改通道
+};
+
+//系统管理 - 用户管理
+export const systemUserQuest = {
+	select: (params) => { return postData(`/user/selectSystemUser`, params) },//获取系统用户列表
+	modifyStatus: (params) => { return postData(`/user/modifyStatus`, params) },//修改状态
+	add: (params) => { return postData(`/user/addAdmin`, params) },//新增系统用户
+	modify: (params) => { return postData(`/user/modify`, params) },//修改系统用户
+	getRole: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
+};
+
+//系统管理 - 系统参数
+export const systemParameterQuest = {
+	select: (params) => { return postData(`/parameter/selectByRecord`, params) },//获取系统用户列表
+	modify: (params) => { return postData(`/parameter/modify`, params) },//修改系统用户
+}
+
 // 佣金管理
 export const commQuest = {
 	getComms: (params) => { return postData(`/comm/getComms`, params) },//佣金汇总

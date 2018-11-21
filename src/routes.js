@@ -26,12 +26,25 @@ import ClosePosition from './views/trade/ClosePosition.vue'//持仓订单
 import WTList from './views/trade/WTList.vue'//持仓订单
 // 推广链接
 import ReferralLink from './views/ReferralLink.vue'//推广链接
+import Download from './views/Download.vue'//下载中心
+import CustomerService from './views/CustomerService.vue'//下载中心
+
+//风控管理
+import Channel from './views/risk/Channel.vue'//通道管理
+
+//财务管理
+import Rate from './views/finance/Rate.vue'//汇率管理
+
+//系统管理
+import SystemUser from './views/system/SystemUser.vue'//系统用户管理
+import SystemParameter from './views/system/SystemParameter.vue'//系统参数
+
 // 佣金管理
 import CommList from './views/comm/CommList.vue'//佣金汇总
 import CommDetail from './views/comm/CommDetail.vue'//佣金详细
 // 财务管理
 import FlowInOut from './views/money/FlowInOut.vue'//出入金流水
-
+//其他
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
 import Page4 from './views/nav2/Page4.vue'
@@ -90,6 +103,8 @@ let routes = [
             { path: 'trade-list', component: TradeList, name: '成交记录' },
             { path: 'holding-list', component: HoldingList, name: '持仓订单' },
             { path: 'wt-list', component: WTList, name: '委托订单' },
+            { path: 'trade-list', component: TradeList, name: '条件单记录' },
+            { path: 'trade-list', component: TradeList, name: '成交记录' },
             { path: 'close-position', component: ClosePosition, name: '平仓订单' },
             { path: '2', component: Form, name: '排行榜' },
             { path: '3', component: Form, name: '跟单' },
@@ -110,7 +125,7 @@ let routes = [
         ]
     },
     {
-        path: '/money',
+        path: '/finance',
         component: Home,
         name: '财务管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
@@ -121,11 +136,11 @@ let routes = [
             { path: 'market3', component: Market, name: '资金划转' },
             { path: 'form', component: Form, name: '转账审核' },
             { path: 'contract', component: Contract, name: '出金审核' },
-            { path: '2', component: Form, name: '汇率列表' },
+            { path: 'rate', component: Rate, name: '汇率列表' },
         ]
     },
     {
-        path: '/',
+        path: '/risk',
         component: Home,
         name: '风控管理 ',
         iconCls: 'fa el-icon-document',//图标样式class
@@ -134,6 +149,7 @@ let routes = [
             { path: 'market', component: Market, name: '交易通道' },
             { path: 'form', component: Form, name: '账户风控' },
             { path: 'contract', component: Contract, name: '强平记录' },
+            { path: 'channel', component: Channel, name: '通道管理' },
         ]
     },
     {
@@ -159,14 +175,14 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/service',
         component: Home,
         name: '客户服务 ',
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            { path: 'market', component: Market, name: '客服信息' },
-            { path: 'form', component: Form, name: '下载中心' },
+            { path: 'info', component: CustomerService, name: '客服信息' },
+            { path: 'download', component: Download, name: '下载中心' },
         ]
     },
     {
@@ -193,15 +209,16 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/system',
         component: Home,
         name: '系统管理',
         code: 'system',
         iconCls: 'fa el-icon-setting',
         hidden: true,
         children: [
-            { path: 'page4', component: Page4, code: 'user', name: '用户管理',hidden: true },
-            { path: 'page5', component: Page5, code: 'role', name: '角色管理',hidden: true }
+            { path: 'user', component: SystemUser,  name: '用户管理' },
+            { path: 'parameter', component: SystemParameter,  name: '系统参数' },
+            { path: 'role', component: SystemUser,  name: '用户管理' }
         ]
     }
 ];
