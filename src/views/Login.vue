@@ -77,7 +77,7 @@
                   this.logining = false;
                   localStorage.setItem("dictionary",JSON.stringify(re.content))
                   localStorage.setItem("allows",JSON.stringify(res.content))
-                  this.$router.push({ path: '/form' });
+                  this.$router.push({ path: '/account/agent-config-list' });
                 })
               }).catch(err=>{this.listLoading = false;})   
             }).catch(err => {

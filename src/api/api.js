@@ -78,6 +78,10 @@ export const accountQuest = {
 	selectTradeAccount: (params) => { return postData(`/trade/account/selectTradeAccount`, params) },//根据父代理查询子代理
 	selectFailList: (params) => { return postData(`/agent/audit/fail/list`, params) },//审核失败列表
 	delByStatus: (params) => { return postData(`/agent/delByStatus`, params) },//删除审核列表
+	switchBankCard: (params) => { return postData(`/user/bank/selectAudit`, params) },//查询待审核换绑银行卡
+	auditSwitchBankCard: (params) => { return postData(`/user/bank/auditSwitchBankCard`, params) },//审核换绑银行卡
+	switchBankCardHistory: (params) => { return postData(`/user/bank/selectByRecord`, params) },//查询换绑银行卡记录
+	switchBankCardApplication: (params) => { return postData(`/user/bank/switchBankCard`, params) },//换绑银行卡申请
 };
 
 //交易管理

@@ -314,7 +314,7 @@
     .header {
       height: 60px;
       line-height: 60px;
-      background: $color-primary;
+      background: $brand-deep-blue;
       color:#fff;
       .logo {
         //width:230px;

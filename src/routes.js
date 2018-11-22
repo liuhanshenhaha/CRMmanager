@@ -20,6 +20,7 @@ import AccountList from './views/account/AccountList.vue'//客户信息
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
 import RejectAudit from './views/audit/RejectAudit.vue'//审核失败列表
+import ChangeBankCard from './views/audit/ChangeBankCard.vue'//审核失败列表
 // 交易管理
 import TradeList from './views/trade/TradeList.vue'//成交订单
 import HoldingList from './views/trade/HoldingList.vue'//持仓订单
@@ -133,7 +134,7 @@ let routes = [
             { path: 'agent', component: AgentAudit, name: '代理审核' },
             { path: 'customer', component: CustomerAudit, name: '客户审核' },
             { path: 'reject', component: RejectAudit, name: '审核失败列表' },
-            { path: 'contract', component: Contract, name: '换绑银行卡审核' },
+            { path: 'change-bank-card', component: ChangeBankCard, name: '换绑银行卡审核' },
             { path: '1', component: Form, name: '切换IB关系审核' },
         ]
     },
