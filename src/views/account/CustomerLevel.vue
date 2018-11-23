@@ -16,7 +16,7 @@
       </el-form>
     </el-col>    
   <div>
-    <!-- <tree-grid :columns="columns" :tree-structure="true" :data-source="dataSource"></tree-grid> -->
+    <tree-grid :columns="columns" :tree-structure="true" :data-source="dataSource"></tree-grid>
   </div>
   </section>
 </template>
@@ -24,7 +24,7 @@
 <script>
 import { buildOptions,formatters,getAgentOptions } from "../../utils/utils"
 import { accountQuest, getDictionary } from "../../api/api"
-// import {TreeGrid} from '../../components/treeTable/vue'
+import {TreeGrid} from '../../components/treeTable/vue'
 
 export default {
   data () {
@@ -72,7 +72,7 @@ export default {
       },
     },
   components: {
-    // TreeGrid
+    TreeGrid
   }
 }
 
