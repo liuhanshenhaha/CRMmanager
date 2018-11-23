@@ -16,16 +16,25 @@ import Costgroup from './views/account/Costgroup.vue'//代理信息
 import CustomerConfigList from './views/account/CustomerConfigList.vue'//客户信息
 import AgentConfigList from './views/account/AgentConfigList.vue'//客户信息
 import AccountList from './views/account/AccountList.vue'//客户信息
+import CustomerLevel from './views/account/CustomerLevel.vue'//客户层级
+import AgentList from './views/account/AgentList.vue'//客户信息
+import CustomerList from './views/account/CustomerList.vue'//客户信息
+
 // 审核
 import CustomerAudit from './views/audit/CustomerAudit.vue'//客户审核列表
 import AgentAudit from './views/audit/AgentAudit.vue'//代理审核列表
 import RejectAudit from './views/audit/RejectAudit.vue'//审核失败列表
-import ChangeBankCard from './views/audit/ChangeBankCard.vue'//审核失败列表
+import ChangeBankCard from './views/audit/ChangeBankCard.vue'//查询待审核换绑银行卡
+import ChangeBankCardHistory from './views/audit/ChangeBankCardHistory.vue'//查询换绑银行卡记录
 // 交易管理
 import TradeList from './views/trade/TradeList.vue'//成交订单
 import HoldingList from './views/trade/HoldingList.vue'//持仓订单
 import ClosePosition from './views/trade/ClosePosition.vue'//持仓订单
 import WTList from './views/trade/WTList.vue'//持仓订单
+import TradeListHis from './views/tradeHis/TradeList.vue'//成交订单
+import ClosePositionHis from './views/tradeHis/ClosePosition.vue'//持仓订单
+import WTListHis from './views/tradeHis/WTList.vue'//持仓订单
+
 // 推广链接
 import ReferralLink from './views/ReferralLink.vue'//推广链接
 import Download from './views/Download.vue'//下载中心
@@ -54,6 +63,8 @@ import MyNotify from './views/information/MyNotify.vue'//消息通知
 
 import MoneyFlows from './views/money/MoneyFlows.vue'//资金流水
 //其他
+import Index from './views/index/Index.vue' //主界面
+
 import Form from './views/nav1/Form.vue'
 import user from './views/nav1/user.vue'
 import Page4 from './views/nav2/Page4.vue'
@@ -91,6 +102,16 @@ let routes = [
         hidden: true,
         redirect: { path: '/404' }
     },
+    {
+        path: '/',
+        component: Home,
+        name: '主页 ',
+        iconCls: 'fa el-icon-document',//图标样式class
+        hidden: true,
+        children: [
+            { path: 'index', component: Index, name: '主页' }
+        ]
+    },
     // 从此往下均是菜单相关 默认hidden均是true
     {
         path: '/account',
@@ -99,11 +120,12 @@ let routes = [
         iconCls: 'fa el-icon-document',//图标样式class
         hidden: false,
         children: [
-            // { path: 'agent-list', component: Agent, name: '代理信息' },
-            // { path: 'customer-list', component: CustomerList, name: '客户信息' },
-            { path: 'agent-config-list', component: AgentConfigList, name: '代理信息' },
+            { path: 'agent-list', component: AgentList, name: '代理信息' },
+            { path: 'customer-list', component: CustomerList, name: '客户信息' },
+            { path: 'customer-level', component: CustomerLevel, name: '客户层级' },
+            { path: 'agent-config-list', component: AgentConfigList, name: '代理配置' },
             { path: 'agent-register', component: AgentRegister, name: '代理开户', hidden: true },
-            { path: 'customer-config-list', component: CustomerConfigList, name: '客户信息' },
+            { path: 'customer-config-list', component: CustomerConfigList, name: '客户配置' },
             { path: 'account-list', component: AccountList, name: '账户信息' },
             { path: 'costgroup', component: Costgroup, name: '佣金组设置' },
         ]
@@ -117,13 +139,35 @@ let routes = [
         children: [
             { path: 'holding-list', component: HoldingList, name: '持仓订单' },
             { path: 'wt-list', component: WTList, name: '委托订单' },
-            { path: 'trade-list', component: TradeList, name: '条件单记录' },
+            { path: 'tj-list', component: TradeList, name: '条件单记录' },
             { path: 'trade-list', component: TradeList, name: '成交记录' },
             { path: 'close-position', component: ClosePosition, name: '平仓订单' },
-            { path: '2', component: Form, name: '排行榜' },
-            { path: '3', component: Form, name: '跟单' },
         ]
     },
+    {
+        path: '/trade/his',
+        component: Home,
+        name: '历史交易 ',
+        iconCls: 'fa el-icon-document',//图标样式class
+        hidden: false,
+        children: [
+            { path: 'wt-list', component: WTListHis, name: '历史委托' },
+            { path: 'trade-his-list', component: TradeListHis, name: '历史成交' },
+            { path: 'close-his-position', component: ClosePositionHis, name: '历史平仓' },
+        ]
+    },  
+    {
+        path: '/follow',
+        component: Home,
+        name: '跟单管理 ',
+        iconCls: 'fa el-icon-document',//图标样式class
+        hidden: false,
+        children: [
+            { path: 'set', component: HoldingList, name: '设置排行显示' },
+            { path: '3', component: Form, name: '设置跟单' },            
+            { path: '2', component: Form, name: '排行榜' },            
+        ]
+    },      
     {
         path: '/audit',
         component: Home,
@@ -135,6 +179,7 @@ let routes = [
             { path: 'customer', component: CustomerAudit, name: '客户审核' },
             { path: 'reject', component: RejectAudit, name: '审核失败列表' },
             { path: 'change-bank-card', component: ChangeBankCard, name: '换绑银行卡审核' },
+            { path: 'change-bank-card-history', component: ChangeBankCardHistory, name: '换绑银行卡历史' },
             { path: '1', component: Form, name: '切换IB关系审核' },
         ]
     },

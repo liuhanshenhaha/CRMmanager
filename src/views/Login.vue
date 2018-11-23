@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import { requestLogin, selectTree, getDictionary } from '../api/api';
+  import { requestLogin, selectTree, getDictionary, accountQuest } from '../api/api';
   import { setCookie } from '../utils/utils';
   //import NProgress from 'nprogress'
   export default {
@@ -74,10 +74,16 @@
               localStorage.setItem("userInfo",JSON.stringify(response.content));
               selectTree().then((res) => {
                 getDictionary().then((re) => {
-                  this.logining = false;
-                  localStorage.setItem("dictionary",JSON.stringify(re.content))
-                  localStorage.setItem("allows",JSON.stringify(res.content))
-                  this.$router.push({ path: '/account/agent-config-list' });
+                  re.content.roleTypeEnu = {};
+                  accountQuest.getRoleId().then(r => {
+                    r.content.map(item => {
+                      re.content.roleTypeEnu[item.id] = item.name;
+                    })
+                    this.logining = false;
+                    localStorage.setItem("dictionary",JSON.stringify(re.content))
+                    localStorage.setItem("allows",JSON.stringify(res.content))
+                    this.$router.push({ path: '/index' });
+                  }).catch(err=>console.error(err));
                 })
               }).catch(err=>{this.listLoading = false;})   
             }).catch(err => {

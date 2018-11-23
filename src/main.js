@@ -23,7 +23,8 @@ Vue.use(VueClipboard)
 //NProgress.configure({ showSpinner: false });
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history',
 })
 
 // 登录限制 -- 必须登录才能访问其他页面

@@ -30,39 +30,36 @@
 
 		<!--列表-->
 		<el-table stripe border fixed :data="tableData" highlight-current-row v-loading="listLoading" @selection-change="" style="width: 100%;">
-			<el-table-column prop="commMoney" label="账户" >
+			<el-table-column prop="name" label="姓名">
 			</el-table-column>
-			<el-table-column prop="status" label="姓名">
+			<el-table-column prop="level" label="层级">
 			</el-table-column>
-			<el-table-column prop="tradeNum" label="层级">
+			<el-table-column prop="superiorUserName" label="归属">
 			</el-table-column>
-			<el-table-column prop="status" label="归属">
+			<el-table-column prop="oldBankCode" label="原开户银行" width="140" :formatter="(row,col,cellValue) => formatter('Bank',cellValue)">
 			</el-table-column>
-			<el-table-column prop="createTime" label="原开户银行">
+			<el-table-column prop="oldBankBranch" label="原开户支行" width="140">
 			</el-table-column>
-			<el-table-column prop="beginTime" label="原银行卡号">
+			<el-table-column prop="oldBankCardNo" label="原银行卡号" width="140">
 			</el-table-column>
-			<el-table-column prop="endTime" label="原开户支行">
+			<el-table-column prop="bankCode" label="新开户银行" width="140" :formatter="(row,col,cellValue) => formatter('Bank',cellValue)">
 			</el-table-column>
-			<el-table-column prop="userName" label="新开户银行">
+			<el-table-column prop="bankBranch" label="新开户支行" width="140"> 
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="新银行卡号">
+			<el-table-column prop="bankCardNo" label="新银行卡号" width="140">
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="新开户支行">
+			<el-table-column prop="applyTime" label="提交时间" width="180">
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="提交时间">
+			<el-table-column prop="auditPassTime" label="审核时间" width="180">
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="审核时间">
+			<el-table-column prop="auditStatus" label="审核状态" width="140" :formatter="(row,col,cellValue) => formatter('ApplyStatus',cellValue)">
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="审核状态">
+			<el-table-column prop="remark" label="备注">
 			</el-table-column>
-			<el-table-column prop="userAgentName" label="备注">
-			</el-table-column>
-			<el-table-column label="操作" align="center" width="200">
+			<el-table-column label="操作" align="center" width="160" fixed="right">
 				<template slot-scope="scope">
 					<el-button type="primary" size="small" @click.native="()=>aduit('pass',scope.row)">通过</el-button>
 					<el-button type="primary" size="small" @click.native="()=>aduit('reject',scope.row)">拒绝</el-button>
-					<el-button type="primary" size="small" @click.native="()=>aduit('delete',scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -113,15 +110,16 @@
 					this.listLoading = false;
 				}).catch(err=>{this.listLoading = false;});
 			},
-			aduit(row){
-				accountQuest.auditSwitchBankCard({id:row.id,status:1}).then(res => {
+			aduit(type,row){
+				let status;
+				switch(type){
+					case "pass": status = 2;
+					case "reject": status = 3;
+				}
+				accountQuest.auditSwitchBankCard({id:row.id,status:status}).then(res => {
 					console.log("审核成功");
 				}).catch(err => console.error("审核失败"))
 			},
-			openDetail(row){
-				this.detailVisible = true;
-				this.curId = row.id;
-			}
 		}
 	}
 </script>

@@ -62,19 +62,22 @@ export const accountQuest = {
 	agentModify: (params) => { return postData(`/agent/modify`, params) },//代理修改信息
 	agentFreezing: (params) => { return postData(`/agent/freezing`, params) },//冻结代理
 	agentActivated: (params) => { return postData(`/agent/activated`, params) },//激活代理
-	auditList: (params) => { return postData(`/agent/audit/list`, params) },//客户/代理待审核列表
+	auditList: (params) => { return postData(`/agent/audit/list`, params) },//客户/代理待审核列表	
+	agentTree: (params) => { return postData(`/agent/selectUserTreeByName`, params) },//客户/代理层级
 	getAuditInfo: (params) => { return postData(`/agent/get`, params) },//获取客户/代理信息
 	getTradeChannelId: (params) => { return postData(`/channel/selectValid`, params) },//获取交易通道
 	getRoleId: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
 	customerAudit: (params) => { return postData(`/customer/audit`, params) },//客户审核通过
 	agentAudit: (params) => { return postData(`/agent/auditAgent`, params) },//代理审核通过
-	selectCustomerByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//客户配置列表
+	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//代理列表
+	selectCustomerByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//客户列表
+	selectCustomerConfigByParent: (params) => { return postData(`/customer/selectCustomerConfigByParent`, params) },//客户配置列表
 	selectAgentOptionByParent: (params) => { return postData(`/customer/selectCustomerByParent`, params) },//获取代理级联信息
 	selectTradeAccountByUserId: (params) => { return postData(`/agent/selectTradeAccountByUserId`, params) },//根据用户查询账户
 	resetPassword: (params) => { return postData(`/user/resetPassword`, params) },//重置密码
 	resetTradePassword: (params) => { return postData(`/trade/account/resetPassword`, params) },//重置交易密码
 	selectAgentOptionByParent: (params) => { return postData(`/agent/selectAgentOptionByParent`, params) },//查询代理级联关系信息
-	selectAgentByParent: (params) => { return postData(`/agent/selectAgentByParent`, params) },//根据父代理查询子代理
+	selectAgentConfigByParent: (params) => { return postData(`/agent/selectAgentConfigByParent`, params) },//根据父代理查询子代理
 	selectTradeAccount: (params) => { return postData(`/trade/account/selectTradeAccount`, params) },//根据父代理查询子代理
 	selectFailList: (params) => { return postData(`/agent/audit/fail/list`, params) },//审核失败列表
 	delByStatus: (params) => { return postData(`/agent/delByStatus`, params) },//删除审核列表
@@ -82,6 +85,9 @@ export const accountQuest = {
 	auditSwitchBankCard: (params) => { return postData(`/user/bank/auditSwitchBankCard`, params) },//审核换绑银行卡
 	switchBankCardHistory: (params) => { return postData(`/user/bank/selectByRecord`, params) },//查询换绑银行卡记录
 	switchBankCardApplication: (params) => { return postData(`/user/bank/switchBankCard`, params) },//换绑银行卡申请
+	agentInformations: (params) => { return postData(`/home/agent`, params) },//代理主页
+	customerInformations: (params) => { return postData(`/home/customer`, params) },//客户主页
+	manageInformations: (params) => { return postData(`/home/manage`, params) },//管理员主页
 };
 
 //交易管理
@@ -95,7 +101,17 @@ export const tradeQuest = {
 	queryHolding: (params) => { return postData(`/holding/query`, params) },//查询代理管理员持仓记录
 	queryUserHolding: (params) => { return postData(`/holding/queryUser`, params) },//查询客户持仓记录
 	queryHoldingDetail: (params) => { return postData(`/holding/detail`, params) },//查询持仓明细
-}
+};
+
+//历史交易
+export const tradeHisQuest = {
+	getTradeList: (params) => { return postData(`/trade/his/query`, params) },//查询代理管理员成交记录
+	getUserTradeList: (params) => { return postData(`/trade/his/queryUser`, params) },//查询客户成交记录
+	queryClosePosition: (params) => { return postData(`/trade/his/queryClosePosition`, params) },//查询代理管理员平仓记录
+	queryUserClosePosition: (params) => { return postData(`/trade/his/queryUserClosePosition`, params) },//查询客户平仓记录
+	queryWTList: (params) => { return postData(`/weituo/his/query`, params) },//查询代理管理员委托记录
+	queryUserWTList: (params) => { return postData(`/weituo/his/queryUser`, params) },//查询客户委托记录	
+};
 
 // 推广链接
 export const getReferralLink = (params) => { return postData(`/agent/getReferralLink`, params)};
@@ -109,7 +125,7 @@ export const channelQuest = {
 	selectValid: (params) => { return postData(`/channel/selectValid`, params) },//获取有效通道列表
 	switchChannel: (params) => { return postData(`/trade/account/switchChannel`, params) },//切换通道
 	selectCustomerByChannel: (params) => { return postData(`/risk/selectCustomerByChannel`, params) },//根据通道查询代理	
-};
+}
 
 //系统管理 - 用户管理
 export const systemUserQuest = {
@@ -118,7 +134,7 @@ export const systemUserQuest = {
 	add: (params) => { return postData(`/user/addAdmin`, params) },//新增系统用户
 	modify: (params) => { return postData(`/user/modify`, params) },//修改系统用户
 	getRole: (params) => { return postData(`/role/selectValidRole`, params) },//获取角色
-};
+}
 
 //系统管理 - 系统参数
 export const systemParameterQuest = {

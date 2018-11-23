@@ -91,6 +91,8 @@
 			</el-table-column>
 			<el-table-column prop="status" label="状态" width="150" :formatter="(row,col,cellValue) => formatter('CommonStatus',cellValue)">
 			</el-table-column>
+			<el-table-column prop="content" label="内容" width="150">
+			</el-table-column>			
 			<el-table-column prop="remark" label="备注" width="150">
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="150">
@@ -432,6 +434,13 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="24">
+						<el-form-item label="内容" prop="content">
+							<el-input type="textarea" resize="none" v-model="modifyForm.content"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>				
+				<el-row :gutter="20">
+					<el-col :span="24">
 						<el-form-item label="备注" prop="remark">
 							<el-input type="textarea" resize="none" v-model="modifyForm.remark"></el-input>
 						</el-form-item>
@@ -505,7 +514,8 @@
 					tempCloseTradeTime2: [],
 					openTradeTime2: "",
 					tempOpenTradeTime2: [],
-					season: ""
+					season: "",
+					content:""
 				},
 				modifyType: "add",
 				modifyFormRules:{
@@ -531,12 +541,14 @@
 			},
 			// 获取商品列表
 			getGoods(pageNo){
+				this.listLoading = true;
 				this.filters.pageNo = pageNo;
 				goodsQuest.getGoods(this.filters).then(res=>{
 					this.curPage = pageNo;
 					this.tableData = res.content.dataList;
 					this.tableDataTotal = res.content.count;
-				}).catch(err=>console.error(err))
+					this.listLoading = false;
+				}).catch(err=>{console.error(err);this.listLoading = false;})
 			},
 			// 新增商品 type add/modify
 			updateGoods(type,row){
@@ -584,7 +596,8 @@
 							tempCloseTradeTime2: [],
 							openTradeTime2: "",
 							tempOpenTradeTime2: [],
-							season:""
+							season:"",
+							content:""
 						};
 						break;
 					case 'modify':
@@ -614,7 +627,7 @@
 							agentCommissionStart: row.agentCommissionStart,
 							agentCommissionOver: row.agentCommissionOver,
 							tempIsForceSend: row.isForceSend,
-							tempDayOpen: row.dayOpen.split(";").map((item,index) => {
+							tempDayOpen: row.dayOpen?row.dayOpen.split(";").map((item,index) => {
 								let tempDate = new Date();
 								tempDate.setHours(item.split(":")[0])
 								tempDate.setMinutes(item.split(":")[1])
@@ -622,8 +635,10 @@
 								return {
 									tempDayOpenTime: tempDate
 								}
-							}),
-							tempDayClose: row.dayClose.split(";").map((item,index) => {
+							}):[{
+								tempDayOpenTime: ""
+							}],
+							tempDayClose: row.dayClose?row.dayClose.split(";").map((item,index) => {
 								let tempDate = new Date();
 								tempDate.setHours(item.split("-")[0].split(":")[0])
 								tempDate.setMinutes(item.split("-")[0].split(":")[1])
@@ -632,7 +647,10 @@
 									tempDayCloseTime: tempDate,
 									tempDayCloseOvernight: item.split("-")[1] === "Y",
 								}
-							}),
+							}):[{
+								tempDayCloseTime: "",
+								tempDayCloseOvernight: false,
+							}],
 							closeTradeTime: row.closeTradeTime,
 							tempCloseTradeTime: row.closeTradeTime?row.closeTradeTime.split(";").map(item => {
 								let tempDate1 = new Date();
@@ -693,7 +711,8 @@
 									openTradeTimeE: tempDate2
 								}
 							}):[],
-							season: row.season
+							season: row.season,
+							content:row.content
 						};
 						break;
 				}

@@ -13,7 +13,7 @@
 				<p class="top-title">天德星管理后台</p>
 			</el-col>
 			<el-col :span="4" class="userinfo">
-				<p style="margin: 0;">{{sysUserName}}<a href="javascript:;" style="color:white;margin-left: 10px;text-decoration:none;" @click="logout">退出登录</a></p>
+				<p style="margin: 0;"><a href="/index" style="color:white;margin-left: 10px;text-decoration:none;">{{sysUserName}}</a><a href="javascript:;" style="color:white;margin-left: 10px;text-decoration:none;" @click="logout">退出登录</a></p>
 			</el-col>
 		</el-col>
 		<el-col :span="24" class="main">

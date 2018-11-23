@@ -13,6 +13,11 @@
 					<el-cascader v-model="filters.superiorUserId" :options="options" @active-item-change="makeCascader"></el-cascader>
 				</el-form-item>
 				<el-form-item>
+					<el-select v-model="filters.isConfig" placeholder="配置状态">
+						<el-option v-for="item in configOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>		
+				<el-form-item>
 					<el-button type="primary" v-on:click="()=>getAgents(1)">查询</el-button>
 				</el-form-item>
 				<el-form-item>
@@ -209,8 +214,10 @@
 				filters:{
 					userAccountNo: "",
 					userName: "",
+					isConfig: 0,
 					superiorUserId: [],
 				},
+				configOptions: buildOptions("GoodsGroupConfigStatus",true),
 				tableData: [],//表格数据
 				listLoading: false,//表格加载中标识
 				listLoading2: false,//表格加载中标识
@@ -320,6 +327,7 @@
 					"pageNo": pageNo,
 					"userAccountNo":this.filters.userAccountNo,
 					"userName":this.filters.userName,
+					"isConfig":this.filters.isConfig,
 					"superiorUserId":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? this.filters.superiorUserId[this.filters.superiorUserId.length - 2] : this.filters.superiorUserId[this.filters.superiorUserId.length - 1]) : "",
 					"cascadeType":this.filters.superiorUserId.length > 0 ? (this.filters.superiorUserId[this.filters.superiorUserId.length - 1] === "straight" ? 1 : 2) : ""//1是直属 2是级联
 				}).then(res => {
